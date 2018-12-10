@@ -71,7 +71,7 @@ class LoginPage extends Component {
                         <Grid.Column width={9 } floated='right'>
                             <Card fluid={true} >
                             <Card.Content>
-                                <Image src='/assets/images/vrimage.png' />
+                                <Image src="/images/vrimage.png" />
                                 <Card.Description>
                                     <span>
                                     Te eum doming eirmod, nominati pertinacia argumentum ad his. Ex eam alia facete scriptorem,
