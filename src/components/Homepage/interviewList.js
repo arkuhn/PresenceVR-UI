@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar"
-import { Button, Header, Card, Grid, Modal, List, Input, Image, Loader, Dimmer, Divider } from 'semantic-ui-react';
-import InterviewAPI from '../../utils/InterviewAPI';
-import InterviewCard from '../InterviewCard/interviewCard'
-import InterviewForm from '../InterviewCard/InterviewForm';
-import _ from 'lodash';
+import { Dimmer, Divider, Grid, Header, List, Loader } from 'semantic-ui-react';
 import { firebaseAuth } from '../../utils/firebase';
+import InterviewAPI from '../../utils/InterviewAPI';
+import InterviewCard from '../InterviewCard/interviewCard';
 
 
 class InterviewList extends Component {
@@ -24,7 +20,9 @@ class InterviewList extends Component {
     updateList() {
         this.setState({loading: true})
         InterviewAPI.getAllInterviews(this.props.hostEmail).then((interviews) => {  
-            this.setState({interviews: interviews.data});
+            if(interviews){
+                this.setState({interviews: interviews.data});
+            }
             this.setState({loading: false})
         });
     }
