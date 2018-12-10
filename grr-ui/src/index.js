@@ -1,9 +1,9 @@
-import AssetMgmt from "./templates/AssetMgmt/AssetMgmt";
-import RoomList from "./templates/RoomList/RoomList";
-import Homepage from "./templates/Homepage/Homepage";
-import LoginPage from "./templates/LoginPage/LoginPage"
-import InterviewPage from "./templates/InterviewPage/InterviewPage"
-import UploadPage from "./templates/UploadPage/Upload";
+import AssetMgmt from "./components/AssetMgmt/AssetMgmt";
+import RoomList from "./components/RoomList/RoomList";
+import Homepage from "./components/Homepage/Homepage";
+import LoginPage from "./components/LoginPage/LoginPage"
+import InterviewPage from "./components/InterviewPage/InterviewPage"
+import UploadPage from "./components/UploadPage/Upload";
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 var ReactDOM = require('react-dom');

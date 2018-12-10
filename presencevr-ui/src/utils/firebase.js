@@ -27,7 +27,7 @@ export function loginWithGoogle() {
         var user = result.user;
 
     })
-    .catch((err) => {
+    .catch((error) => {
         loading = false;
         // Handle Errors here.
         var errorCode = error.code;

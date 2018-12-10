@@ -1,0 +1,13 @@
+a-scene {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+.aframeContainer {
+  width: 100%;
+  position: relative;
+  padding-bottom: 70%;
+  box-sizing: border-box;
+}
+  
