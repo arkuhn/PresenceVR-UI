@@ -1,11 +1,9 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar"
-import { Header, Modal, List, Icon, Button, Divider } from 'semantic-ui-react';
-import { FilePond, registerPlugin } from 'react-filepond';
-import 'filepond/dist/filepond.min.css';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
+import 'filepond/dist/filepond.min.css';
+import React, { Component } from 'react';
+import { FilePond, registerPlugin } from 'react-filepond';
+import { Button, Divider, Header, Icon, List, Modal } from 'semantic-ui-react';
 
 registerPlugin(FilePondPluginImagePreview);
 

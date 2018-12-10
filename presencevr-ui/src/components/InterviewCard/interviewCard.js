@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar"
-import { Button, Header, Card, Grid, Modal, List, Input, Image, Divider } from 'semantic-ui-react';
-import InterviewAPI from '../../utils/InterviewAPI';
+import { Button, Card, Divider, Image, List } from 'semantic-ui-react';
+import CancelInterview from './cancelInterview';
 import InterviewForm from './InterviewForm';
-import CancelInterview from './cancelInterview'
-import LeaveInterview from './leaveInterview'
-import _ from 'lodash';
-import {firebaseAuth} from "../../utils/firebase";
+import LeaveInterview from './leaveInterview';
 
 class InterviewCard extends Component {
     constructor(props) {

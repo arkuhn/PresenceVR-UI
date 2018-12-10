@@ -1,13 +1,7 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar"
-import { Header, Modal, List, Icon, Button, Divider } from 'semantic-ui-react';
-import './aframeInterview.css'
+import './aframeInterview.css';
 
 class AframeInterview extends Component {
-    constructor(props) {
-        super(props)
-    }
 
     render() {
         return (

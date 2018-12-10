@@ -1,9 +1,6 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar"
-import { Button, Header, List, Modal, Input} from 'semantic-ui-react';
-import InterviewAPI from '../../utils/InterviewAPI'
-import {firebaseAuth} from "../../utils/firebase";
+import React from 'react';
+import { Button, Header, Input, List, Modal } from 'semantic-ui-react';
+import InterviewAPI from '../../utils/InterviewAPI';
 
 class InterviewForm extends React.Component {
     constructor(props) {

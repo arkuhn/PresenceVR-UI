@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
-import './Homepage.css';
 import { Redirect } from 'react-router-dom';
-import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar"
-import InterviewList from "./interviewList"
-import InterviewForm from '../InterviewCard/InterviewForm'
-import { Button, Header, Icon, Grid, Segment, Menu, List, Card, Popup, Divider} from 'semantic-ui-react';
-import {firebaseAuth} from '../../utils/firebase'
+import { Divider, Grid, Header, Icon, Segment } from 'semantic-ui-react';
+import { firebaseAuth } from '../../utils/firebase';
+import InterviewForm from '../InterviewCard/InterviewForm';
+import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar";
+import './Homepage.css';
+import InterviewList from "./interviewList";
 
 class Homepage extends Component {
-    
-    constructor(props){
-        super(props);
-    }
 
     render() {
         if (!firebaseAuth.currentUser) {

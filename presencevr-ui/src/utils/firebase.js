@@ -1,4 +1,4 @@
-import firebase from 'firebase'
+import firebase from 'firebase';
 
 
 var config = {
@@ -20,15 +20,18 @@ export function loginWithGoogle() {
     loading = true;
     return firebaseAuth.signInWithRedirect(googleProvider)
     .then((result) => {
+        /*
         loading = false;
         // This gives you a Google Access Token. You can use it to access the Google API.
         var token = result.credential.accessToken;
         // The signed-in user info.
         var user = result.user;
+        */
 
     })
     .catch((error) => {
         loading = false;
+        /*
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -36,6 +39,7 @@ export function loginWithGoogle() {
         var email = error.email;
         // The firebase.auth.AuthCredential type that was used.
         var credential = error.credential;
+        */
     });
 }
 

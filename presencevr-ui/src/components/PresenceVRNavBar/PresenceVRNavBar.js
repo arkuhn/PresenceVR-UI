@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { Button, Dropdown, Header, Icon, List, Menu, Modal } from 'semantic-ui-react';
+import { firebaseAuth, logout } from '../../utils/firebase';
 import './PresenceVRNavBar.css';
-import { Link, Redirect } from 'react-router-dom';
-import { Menu, Header, Button, Modal, Dropdown, Icon, List, Segment } from 'semantic-ui-react';
-import {logout, firebaseAuth} from '../../utils/firebase'
 
 class PresenceVRNavBar extends Component {
 

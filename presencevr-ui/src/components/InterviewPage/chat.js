@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar"
-import { Header, Modal, List, Icon, Button, Divider } from 'semantic-ui-react';
+import { Header, Icon } from 'semantic-ui-react';
 
 
 function ChatMessage(props) {
@@ -21,10 +19,6 @@ function ChatMessage(props) {
 }
 
 class ChatBox extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const messages = this.props.messages;
 

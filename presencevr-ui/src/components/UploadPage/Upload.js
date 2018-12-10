@@ -1,10 +1,8 @@
-import React, {Component} from 'react';
-import PresenceVRNavBar from '../PresenceVRNavBar/PresenceVRNavBar';
-//import './RoomList.css';
-import {API_URL} from "../../config/api.config";
+import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Button, Header, Icon, Grid, Image, Card, Segment, Divider, List } from 'semantic-ui-react';
-import {firebaseAuth} from '../../utils/firebase'
+import { Card, Grid } from 'semantic-ui-react';
+import { firebaseAuth } from '../../utils/firebase';
+import PresenceVRNavBar from '../PresenceVRNavBar/PresenceVRNavBar';
 
 class UploadPage extends Component {
 	

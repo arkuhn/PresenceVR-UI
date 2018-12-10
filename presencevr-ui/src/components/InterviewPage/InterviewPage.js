@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import './InterviewPage.css';
 import { Redirect } from 'react-router-dom';
-import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar"
-import Environments from "./environments";
-import Assets from "./assets";
-import Participants from "./participants";
-import ChatPane from "./chat";
-import AframeInterview from "./aframeInterview"
-import { Grid, Header, Divider, Icon, Button } from 'semantic-ui-react';
+import { Button, Divider, Grid, Header, Icon } from 'semantic-ui-react';
+import { firebaseAuth } from '../../utils/firebase';
 import InterviewAPI from "../../utils/InterviewAPI";
-import {firebaseAuth} from '../../utils/firebase'
+import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar";
+import AframeInterview from "./aframeInterview";
+import Assets from "./assets";
+import ChatPane from "./chat";
+import Environments from "./environments";
+import './InterviewPage.css';
+import Participants from "./participants";
 
 class InterviewPage extends Component {
     constructor(props) {

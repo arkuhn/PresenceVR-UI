@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar"
-import { Grid, Header, Divider, List, Icon, Button } from 'semantic-ui-react';
+import { Header, Icon, List } from 'semantic-ui-react';
 
 function Participant(props) {
     return (
@@ -19,10 +17,6 @@ function Participant(props) {
 
 
 class Participants extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     generateParticipants() {
         const statuses = ["Online", "Offline"]
         if (this.props.participants.length === 0) {
