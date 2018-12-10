@@ -1,8 +1,6 @@
 import axios from 'axios';
-import {API_URL} from "../templates/api.config";
-import { firebaseAuth } from './firebase'
-var _ = require("lodash");
-    
+import { API_URL } from "../config/api.config";
+import { firebaseAuth } from './firebase';    
 
 function getInterview(id){
     return firebaseAuth.currentUser.getIdToken(true).then((token) => {
