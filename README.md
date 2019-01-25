@@ -15,9 +15,9 @@ There are two configuration files necessary to run the client. They are:
 - To configure authentication for the front end client, copy the provided template file (*/src/config/firebase.config.js.template*) and remove the '.template' extension.
 - Navigate to your firebase project in the [Google Firebase Console](https://console.firebase.google.com/u/0/)
 - Go to the authentication tab in the left pane
-  ![](.\docs\authentication.JPG)
+  ![](/docs/authentication.JPG)
 - Go to the 'web setup' of your project at the top right of the page
-  ![](.\docs\websetup.JPG)
+  ![](/docs/websetup.JPG)
 - Copy and paste the provided config string into your 'firebase.config.js' file that you've created using the template.
 
 ## Available Scripts
