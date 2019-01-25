@@ -1,14 +1,5 @@
 import firebase from 'firebase';
-
-
-var config = {
-    apiKey: "AIzaSyDF3kCQm2TH07c7sDVsJkb1K0Vk38fwf18",
-    authDomain: "presencevr-ak.firebaseapp.com",
-    databaseURL: "https://presencevr-ak.firebaseio.com",
-    projectId: "presencevr-ak",
-    storageBucket: "presencevr-ak.appspot.com",
-    messagingSenderId: "786453047013"
-};
+import { config } from '../config/firebase.config'
 
 firebase.initializeApp(config);
 
