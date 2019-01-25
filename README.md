@@ -1,5 +1,25 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+
+
+## Config
+
+There are two configuration files necessary to run the client. They are:
+
+`.\src\config\api.config.js`
+
+- This api configuration is simply the address and port of the server to contact for api calls. Defaults are localhost and 8080 respectively.
+
+`.\src\config\firebase.config.js`
+
+- To configure authentication for the front end client, copy the provided template file (*/src/config/firebase.config.js.template*) and remove the '.template' extension.
+- Navigate to your firebase project in the [Google Firebase Console](https://console.firebase.google.com/u/0/)
+- Go to the authentication tab in the left pane
+  ![](/docs/authentication.JPG)
+- Go to the 'web setup' of your project at the top right of the page
+  ![](/docs/websetup.JPG)
+- Copy and paste the provided config string into your 'firebase.config.js' file that you've created using the template.
+
 ## Available Scripts
 
 In the project directory, you can run:
