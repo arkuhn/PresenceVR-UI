@@ -52,7 +52,7 @@ class Assets extends Component {
     updateList() {
         this.setState({loading: true})
         UploadAPI.getUploads().then((uploads) => {  
-            if (uploads.data) {
+            if (uploads && uploads.data) {
                 this.setState({assets: uploads.data.filter(upload => upload.type === 'asset'), loading: false});
             }
             else {
