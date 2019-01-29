@@ -3,7 +3,7 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css
 import 'filepond/dist/filepond.min.css';
 import React, { Component } from 'react';
 import { FilePond, registerPlugin } from 'react-filepond';
-import { Button, Dimmer, Loader, Header, Icon, List, Modal } from 'semantic-ui-react';
+import { Button, Segment, Dimmer, Loader, Header, Icon, List, Checkbox } from 'semantic-ui-react';
 import UploadAPI from '../../utils/UploadAPI';
 
 registerPlugin(FilePondPluginImagePreview);
@@ -18,6 +18,7 @@ function Asset(props) {
             {props.owner}
             </List.Description>
         </List.Content>
+        <Checkbox />
     </List.Item>
     )
 }
@@ -51,7 +52,12 @@ class Assets extends Component {
     updateList() {
         this.setState({loading: true})
         UploadAPI.getUploads().then((uploads) => {  
-            this.setState({assets: uploads.data.filter(upload => upload.type === 'asset'), loading: false});
+            if (uploads.data) {
+                this.setState({assets: uploads.data.filter(upload => upload.type === 'asset'), loading: false});
+            }
+            else {
+                this.setState({assets: []})
+            }
         });
     }
 
@@ -64,6 +70,8 @@ class Assets extends Component {
     }
 
     onChange = (e) => {
+        console.log(e.target)
+
         switch (e.target.name) {
           case 'uploadedFile':
             this.setState({ uploadedFile: e.target.files[0] });
@@ -71,6 +79,7 @@ class Assets extends Component {
           default:
             this.setState({ [e.target.name]: e.target.value });
         }
+        console.log(this.state)
       }
 
     onSubmit(e) {
@@ -81,30 +90,28 @@ class Assets extends Component {
             return
         }
         formData.append('uploadedFile', this.state.uploadedFile);
-
-        UploadAPI.uploadFile(formData, 'asset')
+        this.setState({loading: true})
+        UploadAPI.uploadFile(formData, 'asset').then((response) => {
+            this.updateList()
+        })
         this.handleModelClose()
-        this.updateList()
     }
 
 
     loadAssetsModal() {
         return (
-            <Modal open={this.state.modalOpen} trigger={ <div><Button primary onClick={this.renderAssets} content='Render' /> <Button secondary onClick={this.handleModelOpen} content='Upload more'/> </div> } open={this.state.modalOpen} onClose={this.handleClose} closeIcon>
-                <Header icon='boxes' content='Select an asset to load' />
-                <Modal.Content>
-                    <form onSubmit={this.onSubmit}>
-                    <br/>
-                        <input 
-                            type="file"
-                            name="uploadedFile"
-                            onChange={this.onChange}
-                        />
-                    <br/>                    
-                    <Button type="submit" onClick={this.onSubmit} fluid>Upload</Button>
-                    </form>
-                </Modal.Content>
-            </Modal>
+            <form onSubmit={this.onSubmit}>
+
+                <Segment>
+                <Button secondary content='Upload' onClick={this.onSubmit} />
+                <input 
+                    type="file"
+                    name="uploadedFile"
+                    onChange={this.onChange}
+                />
+                </Segment>
+        
+            </form>
         )    
     }
     generateAssets() {
