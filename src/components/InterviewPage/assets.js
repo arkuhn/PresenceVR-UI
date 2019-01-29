@@ -8,17 +8,23 @@ import UploadAPI from '../../utils/UploadAPI';
 
 registerPlugin(FilePondPluginImagePreview);
 
+function renderAsset() {
+        //TODO PATCH update interview 'rendered assets' property and reload page
+}
+
 function Asset(props) {
     return (
+    
     <List.Item active={false} >
-        <Icon name={props.icon} />
-        <List.Content>
-            <List.Header>{props.name}</List.Header>
-            <List.Description>
+    <List.Content floated='left'>
+            <Icon name={props.icon} />
+            <b>{props.name}</b> <br/>
             {props.owner}
-            </List.Description>
         </List.Content>
-        <Checkbox />
+
+        <List.Content floated='right'>
+            <Checkbox toggle onClick={renderAsset}/>
+        </List.Content>
     </List.Item>
     )
 }
@@ -66,7 +72,8 @@ class Assets extends Component {
     }
 
     renderAssets() {
-        //TODO update interview 'rendered assets' property and reload page
+                //TODO update interview 'rendered assets' property and reload page
+
     }
 
     onChange = (e) => {
