@@ -3,7 +3,7 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css
 import 'filepond/dist/filepond.min.css';
 import React, { Component } from 'react';
 import { FilePond, registerPlugin } from 'react-filepond';
-import { Button, Divider, Header, Icon, List, Modal } from 'semantic-ui-react';
+import { Button, Dimmer, Loader, Header, Icon, List, Modal } from 'semantic-ui-react';
 import UploadAPI from '../../utils/UploadAPI';
 
 registerPlugin(FilePondPluginImagePreview);
@@ -15,7 +15,7 @@ function Asset(props) {
         <List.Content>
             <List.Header>{props.name}</List.Header>
             <List.Description>
-            Uploaded on {props.date}
+            {props.owner}
             </List.Description>
         </List.Content>
     </List.Item>
@@ -27,10 +27,11 @@ class Assets extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            uploads: [],
             modalOpen: false,
-            assetUpload: ''
+            uploadedFile: '',
+            loading: false
         }
-        this.assets = []
 
         this.handleModelClose = this.handleModelClose.bind(this)
         this.handleModelOpen = this.handleModelOpen.bind(this)
@@ -47,10 +48,21 @@ class Assets extends Component {
         this.setState({ modalOpen: true})
     }
 
+    updateList() {
+        this.setState({loading: true})
+        UploadAPI.getUploads().then((uploads) => {  
+            this.setState({uploads: uploads.data, loading: false});
+        });
+    }
+
+    componentDidMount() {
+        this.updateList()
+    }
+
     onChange = (e) => {
         switch (e.target.name) {
-          case 'assetUpload':
-            this.setState({ assetUpload: e.target.files[0] });
+          case 'uploadedFile':
+            this.setState({ uploadedFile: e.target.files[0] });
             break;
           default:
             this.setState({ [e.target.name]: e.target.value });
@@ -61,23 +73,24 @@ class Assets extends Component {
         e.preventDefault();
         let formData = new FormData();
   
-        formData.append('assetUpload', this.state.assetUpload);
-        formData.append('test', '123')
-        console.log(formData)
-        UploadAPI.assetUpload(formData)
+        formData.append('uploadedFile', this.state.uploadedFile);
+
+        UploadAPI.uploadFile(formData, 'asset')
+        this.handleModelClose()
+        this.updateList()
     }
 
 
     loadAssetsModal() {
         return (
-            <Modal trigger={ <Button fluid onClick={this.handleModelOpen} content='Load more'/> } open={this.state.modalOpen} onClose={this.handleClose} closeIcon>
+            <Modal open={this.state.modalOpen} trigger={ <Button fluid onClick={this.handleModelOpen} content='Load more'/> } open={this.state.modalOpen} onClose={this.handleClose} closeIcon>
                 <Header icon='boxes' content='Select an asset to load' />
                 <Modal.Content>
                     <form onSubmit={this.onSubmit}>
                     <br/>
                         <input 
                             type="file"
-                            name="assetUpload"
+                            name="uploadedFile"
                             onChange={this.onChange}
                         />
                     <br/>                    
@@ -88,11 +101,29 @@ class Assets extends Component {
         )    
     }
     generateAssets() {
-        if (this.props.assets.length === 0) {
-            return <p> No environments added!</p>
+        if (this.state.loading) {
+            return (<div>
+                <br/>
+                <br/>
+                <Dimmer active inverted>
+                    <Loader> Loading assets </Loader>
+                </Dimmer>
+            </div>)
         }
-        return this.props.assets.map((asset) => {
-            return <Asset name={asset.name} date={'0/0/00'} icon='boxes'/>
+        if (this.state.uploads.filter(upload => upload.type === 'asset').length === 0) {
+            return (
+            <List.Item>
+            <List.Content>
+                <List.Header>No assets to show!</List.Header>
+            </List.Content>
+            </List.Item>)
+        }
+    
+        return this.state.uploads.filter(upload => upload.type === 'asset').map((upload) => {
+            return  (  
+                <Asset name={upload.name} owner={upload.owner} icon='boxes'/>
+            )
+            
         })
     }
 
