@@ -2,18 +2,31 @@ import axios from 'axios';
 import { API_URL } from "../config/api.config";
 import { firebaseAuth } from './firebase';    
 
-//Takes in an interview object
-function assetUpload(data){
+//Upload a file
+function uploadFile(data, type){
     return firebaseAuth.currentUser.getIdToken(true).then((token) => {
         let config = {
             headers: { 
-                'Authorization': `${token}`
+                'Authorization': `${token}`,
+                'type': type
             }
         };
-        console.log('data')
-        console.log(data)
-        return axios.post(API_URL + '/api/upload/assets',  data , config).then((response) => {
-            console.log('Asset uploaded response');
+        return axios.post(API_URL + '/api/uploads',  data , config).then((response) => {
+            console.log('Upload response');
+            console.log(response);
+            return response;
+        }).catch((error) => {
+            console.log(error);
+        });
+    })
+}
+
+function getUploads() {
+    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+        let config = {headers: {Authorization: `${token}`}};
+        return axios.get(API_URL + `/api/uploads`
+        , config).then((response) => {
+            console.log('Got all uploads for host response');
             console.log(response);
             return response;
         }).catch((error) => {
@@ -23,5 +36,6 @@ function assetUpload(data){
 }
 
 export default {
-    assetUpload
+    uploadFile,
+    getUploads
 }
