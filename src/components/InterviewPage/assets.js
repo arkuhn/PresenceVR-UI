@@ -4,6 +4,7 @@ import 'filepond/dist/filepond.min.css';
 import React, { Component } from 'react';
 import { FilePond, registerPlugin } from 'react-filepond';
 import { Button, Divider, Header, Icon, List, Modal } from 'semantic-ui-react';
+import UploadAPI from '../../utils/UploadAPI';
 
 registerPlugin(FilePondPluginImagePreview);
 
@@ -26,7 +27,8 @@ class Assets extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            modalOpen: false
+            modalOpen: false,
+            assetUpload: ''
         }
         this.assets = []
 
@@ -34,6 +36,8 @@ class Assets extends Component {
         this.handleModelOpen = this.handleModelOpen.bind(this)
         this.loadAssetsModal = this.loadAssetsModal.bind(this);
         this.generateAssets = this.generateAssets.bind(this)
+        this.onChange = this.onChange.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
     }
     handleModelClose() { 
         this.setState({ modalOpen: false })
@@ -43,20 +47,42 @@ class Assets extends Component {
         this.setState({ modalOpen: true})
     }
 
+    onChange = (e) => {
+        switch (e.target.name) {
+          case 'assetUpload':
+            this.setState({ assetUpload: e.target.files[0] });
+            break;
+          default:
+            this.setState({ [e.target.name]: e.target.value });
+        }
+      }
+
+    onSubmit(e) {
+        e.preventDefault();
+        let formData = new FormData();
+  
+        formData.append('assetUpload', this.state.assetUpload);
+        formData.append('test', '123')
+        console.log(formData)
+        UploadAPI.assetUpload(formData)
+    }
+
+
     loadAssetsModal() {
         return (
             <Modal trigger={ <Button fluid onClick={this.handleModelOpen} content='Load more'/> } open={this.state.modalOpen} onClose={this.handleClose} closeIcon>
                 <Header icon='boxes' content='Select an asset to load' />
                 <Modal.Content>
-                    <List horizontal selection>
+                    <form onSubmit={this.onSubmit}>
                     <br/>
-                        {this.assets.map((asset)=> {
-                            return <Asset name={asset.name} date={asset.date} icon='chevron right'/>
-                        })}
-                    </List>
-                    <Divider />
-                    <FilePond />
-                    <Button onClick={this.handleModelClose} fluid>Close</Button>
+                        <input 
+                            type="file"
+                            name="assetUpload"
+                            onChange={this.onChange}
+                        />
+                    <br/>                    
+                    <Button type="submit" onClick={this.onSubmit} fluid>Upload</Button>
+                    </form>
                 </Modal.Content>
             </Modal>
         )    
