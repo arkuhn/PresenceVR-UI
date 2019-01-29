@@ -10,7 +10,7 @@ registerPlugin(FilePondPluginImagePreview);
 
 function Asset(props) {
     return (
-    <List.Item as='a'>
+    <List.Item active={false} >
         <Icon name={props.icon} />
         <List.Content>
             <List.Header>{props.name}</List.Header>
@@ -27,7 +27,7 @@ class Assets extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            uploads: [],
+            assets: [],
             modalOpen: false,
             uploadedFile: '',
             loading: false
@@ -51,12 +51,16 @@ class Assets extends Component {
     updateList() {
         this.setState({loading: true})
         UploadAPI.getUploads().then((uploads) => {  
-            this.setState({uploads: uploads.data, loading: false});
+            this.setState({assets: uploads.data.filter(upload => upload.type === 'asset'), loading: false});
         });
     }
 
     componentDidMount() {
         this.updateList()
+    }
+
+    renderAssets() {
+        //TODO update interview 'rendered assets' property and reload page
     }
 
     onChange = (e) => {
@@ -72,7 +76,10 @@ class Assets extends Component {
     onSubmit(e) {
         e.preventDefault();
         let formData = new FormData();
-  
+        if (!this.state.uploadedFile) {
+            this.handleModelClose()
+            return
+        }
         formData.append('uploadedFile', this.state.uploadedFile);
 
         UploadAPI.uploadFile(formData, 'asset')
@@ -83,7 +90,7 @@ class Assets extends Component {
 
     loadAssetsModal() {
         return (
-            <Modal open={this.state.modalOpen} trigger={ <Button fluid onClick={this.handleModelOpen} content='Load more'/> } open={this.state.modalOpen} onClose={this.handleClose} closeIcon>
+            <Modal open={this.state.modalOpen} trigger={ <div><Button primary onClick={this.renderAssets} content='Render' /> <Button secondary onClick={this.handleModelOpen} content='Upload more'/> </div> } open={this.state.modalOpen} onClose={this.handleClose} closeIcon>
                 <Header icon='boxes' content='Select an asset to load' />
                 <Modal.Content>
                     <form onSubmit={this.onSubmit}>
@@ -110,7 +117,7 @@ class Assets extends Component {
                 </Dimmer>
             </div>)
         }
-        if (this.state.uploads.filter(upload => upload.type === 'asset').length === 0) {
+        if (this.state.assets.length === 0) {
             return (
             <List.Item>
             <List.Content>
@@ -119,17 +126,15 @@ class Assets extends Component {
             </List.Item>)
         }
     
-        return this.state.uploads.filter(upload => upload.type === 'asset').map((upload) => {
+        return this.state.assets.map((asset) => {
             return  (  
-                <Asset name={upload.name} owner={upload.owner} icon='boxes'/>
+                <Asset name={asset.name} owner={asset.owner} icon='boxes'/>
             )
             
         })
     }
 
     render() {
-        this.assets= [] // Clear assets everytime this is re-rendered
-
         const css = ` 
         .AssetsList {
             height:250px;
@@ -145,7 +150,7 @@ class Assets extends Component {
                     <Icon name='boxes' />
                     Assets
                 </Header>
-                <List className="AssetsList">
+                <List selection={true} className="AssetsList">
                     {this.generateAssets()}
                 </List>
                 {this.loadAssetsModal()}
