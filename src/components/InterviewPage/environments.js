@@ -3,7 +3,7 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css
 import 'filepond/dist/filepond.min.css';
 import React, { Component } from 'react';
 import { FilePond, registerPlugin } from 'react-filepond';
-import { Button, Divider, Header, Icon, List, Modal } from 'semantic-ui-react';
+import { Button, Form, Checkbox, Divider, Header, Icon, List, Modal } from 'semantic-ui-react';
 
 registerPlugin(FilePondPluginImagePreview);
 
@@ -26,24 +26,25 @@ class Environments extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            modalOpen: false
+            modalOpen: false,
         }
         this.Environments = []
-
-        this.handleModelClose = this.handleModelClose.bind(this)
-        this.handleModelOpen = this.handleModelOpen.bind(this)
-        this.loadEnvironmentsModal = this.loadEnvironmentsModal.bind(this);
-        this.generateEnvironments = this.generateEnvironments.bind(this)
     }
-    handleModelClose() { 
+
+    handleChange = (e, { value }) => {
+        this.setState({ value })
+        console.log(this.state)
+    }
+
+    handleModelClose = () => { 
         this.setState({ modalOpen: false })
     }
 
-    handleModelOpen() {
+    handleModelOpen = () => {
         this.setState({ modalOpen: true})
     }
 
-    loadEnvironmentsModal() {
+    loadEnvironmentsModal = () => {
         return (
             <Modal trigger={ <Button fluid onClick={this.handleModelOpen} content='Load more'/> } open={this.state.modalOpen} onClose={this.handleClose} closeOnDocumentClick closeIcon>
                 <Header icon='boxes' content='Select an Environment to load' />
@@ -61,7 +62,7 @@ class Environments extends Component {
             </Modal>
         )    
     }
-    generateEnvironments() {
+    generateEnvironments = () => {
         if (this.props.environments.length === 0) {
             return <p> No environments added!</p>
         }
@@ -88,10 +89,55 @@ class Environments extends Component {
                     <Icon name='image outline' />
                     Environments
                 </Header>
-                <List className="EnvironmentsList">
-                    {this.generateEnvironments()}
-                </List>
-                {this.loadEnvironmentsModal()}
+                <Form>
+                    <Form.Field>
+                    Selected environment: <b>{this.state.value}</b>
+                    </Form.Field>
+                    <Form.Field>
+                    <Checkbox
+                        radio
+                        defaultChecked
+                        label='Default'
+                        name='checkboxRadioGroup'
+                        value='default'
+                        checked={this.state.value === 'this'}
+                        onChange={this.handleChange}
+                    />
+                    </Form.Field>
+                    <Form.Field>
+                    <Checkbox
+                        radio
+                        toggle
+                        label='Starry'
+                        name='checkboxRadioGroup'
+                        value='starry'
+                        checked={this.state.value === 'that'}
+                        onChange={this.handleChange}
+                    />
+                    </Form.Field>
+                    <Form.Field>
+                    <Checkbox
+                        radio
+                        toggle
+                        label='Japan'
+                        name='checkboxRadioGroup'
+                        value='japan'
+                        checked={this.state.value === 'that'}
+                        onChange={this.handleChange}
+                    />
+                    </Form.Field>
+                    <Form.Field>
+                    <Checkbox
+                        radio
+                        toggle
+                        label='Tron'
+                        name='checkboxRadioGroup'
+                        value='tron'
+                        checked={this.state.value === 'that'}
+                        onChange={this.handleChange}
+                    />
+                    </Form.Field>
+                </Form>
                 <style>{css}</style>
             </div>
         );
