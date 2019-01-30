@@ -5,32 +5,33 @@ import React, { Component } from 'react';
 import { FilePond, registerPlugin } from 'react-filepond';
 import { Button, Segment, Dimmer, Loader, Header, Icon, List, Checkbox } from 'semantic-ui-react';
 import UploadAPI from '../../utils/UploadAPI';
-import InterviewAPI from '../../utils/InterviewAPI';
 
 registerPlugin(FilePondPluginImagePreview);
 
-function renderAsset(id, interview) {
-        //TODO PATCH update interview 'rendered assets' property and reload page
-        console.log("we hit!!!!!!!!!!!")
-        InterviewAPI.updateAssetList(id, interview).then(() => window.location.reload());
-}
+class Asset extends Component {
+    constructor(props) {
+        super(props)
+    }
 
-function Asset(props) {
-    return (
-    
-    <List.Item active={false} >
-    <List.Content floated='left'>
-            <Icon name={props.icon} />
-            <b>{props.name}</b> <br/>
-            {props.owner}
-        </List.Content>
+    renderAsset = (event) =>  {
+        this.props.updateInterviewCallback()
+    }
 
-        <List.Content floated='right'>
-            <Button onClick={renderAsset(props.id, props.interview)}>Render</Button>
-            <Button onClick={renderAsset(props.id, props.interview)}>Remove</Button>
-        </List.Content>
-    </List.Item>
-    )
+    render() {
+        return (
+            <List.Item active={false} >
+            <List.Content floated='left'>
+                    <Icon name={this.props.icon} />
+                    <b>{this.props.name}</b> <br/>
+                    {this.props.owner}
+                </List.Content>
+        
+                <List.Content floated='right'>
+                    <Checkbox toggle onClick={this.renderAsset}/>
+                </List.Content>
+            </List.Item>
+            )
+    }
 }
 
 
@@ -43,24 +44,17 @@ class Assets extends Component {
             uploadedFile: '',
             loading: false
         }
-
-        this.handleModelClose = this.handleModelClose.bind(this)
-        this.handleModelOpen = this.handleModelOpen.bind(this)
-        this.loadAssetsModal = this.loadAssetsModal.bind(this);
-        this.generateAssets = this.generateAssets.bind(this)
-        this.onChange = this.onChange.bind(this)
-        this.onSubmit = this.onSubmit.bind(this)
     }
-    
-    handleModelClose() { 
+
+    handleModelClose = () => { 
         this.setState({ modalOpen: false })
     }
 
-    handleModelOpen() {
+    handleModelOpen = () => {
         this.setState({ modalOpen: true})
     }
 
-    updateList() {
+    updateList = () => {
         this.setState({loading: true})
         UploadAPI.getUploads().then((uploads) => {  
             if (uploads && uploads.data) {
@@ -72,18 +66,11 @@ class Assets extends Component {
         });
     }
 
-    componentDidMount() {
+    componentDidMount = () => {
         this.updateList()
     }
 
-    renderAssets() {
-                //TODO update interview 'rendered assets' property and reload page
-
-    }
-
     onChange = (e) => {
-        console.log(e.target)
-
         switch (e.target.name) {
           case 'uploadedFile':
             this.setState({ uploadedFile: e.target.files[0] });
@@ -91,10 +78,9 @@ class Assets extends Component {
           default:
             this.setState({ [e.target.name]: e.target.value });
         }
-        console.log(this.state)
       }
 
-    onSubmit(e) {
+    onSubmit = (e) => {
         e.preventDefault();
         let formData = new FormData();
         if (!this.state.uploadedFile) {
@@ -110,7 +96,7 @@ class Assets extends Component {
     }
 
 
-    loadAssetsModal() {
+    loadAssetsModal = () => {
         return (
             <form onSubmit={this.onSubmit}>
 
@@ -126,7 +112,7 @@ class Assets extends Component {
             </form>
         )    
     }
-    generateAssets() {
+    generateAssets = () => {
         if (this.state.loading) {
             return (<div>
                 <br/>
@@ -145,12 +131,9 @@ class Assets extends Component {
             </List.Item>)
         }
     
-        var interview = this.props.interview;
-
         return this.state.assets.map((asset) => {
             return  (  
-                //pass in asset ID and interview ID as props
-                <Asset id={asset._id} interview={interview} ssname={asset.name} owner={asset.owner} icon='boxes'/>
+                <Asset name={asset.name} owner={asset.owner} icon='boxes' updateInterviewCallback={this.props.updateInterviewCallback}/>
             )
             
         })
