@@ -16,6 +16,9 @@ function Asset(props) {
     return (
     
     <List.Item active={false} >
+    <List.Content floated='right'>
+        <Button icon='trash alternate outline' />
+    </List.Content>
     <List.Content floated='left'>
             <Icon name={props.icon} />
             <b>{props.name}</b> <br/>
