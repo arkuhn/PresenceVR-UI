@@ -3,19 +3,27 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css
 import 'filepond/dist/filepond.min.css';
 import React, { Component } from 'react';
 import { FilePond, registerPlugin } from 'react-filepond';
-import { Button, Divider, Header, Icon, List, Modal } from 'semantic-ui-react';
+import { Button, Segment, Dimmer, Loader, Header, Icon, List, Checkbox } from 'semantic-ui-react';
+import UploadAPI from '../../utils/UploadAPI';
 
 registerPlugin(FilePondPluginImagePreview);
 
+function renderAsset() {
+        //TODO PATCH update interview 'rendered assets' property and reload page
+}
+
 function Asset(props) {
     return (
-    <List.Item as='a'>
-        <Icon name={props.icon} />
-        <List.Content>
-            <List.Header>{props.name}</List.Header>
-            <List.Description>
-            Uploaded on {props.date}
-            </List.Description>
+    
+    <List.Item active={false} >
+    <List.Content floated='left'>
+            <Icon name={props.icon} />
+            <b>{props.name}</b> <br/>
+            {props.owner}
+        </List.Content>
+
+        <List.Content floated='right'>
+            <Checkbox toggle onClick={renderAsset}/>
         </List.Content>
     </List.Item>
     )
@@ -26,14 +34,18 @@ class Assets extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            modalOpen: false
+            assets: [],
+            modalOpen: false,
+            uploadedFile: '',
+            loading: false
         }
-        this.assets = []
 
         this.handleModelClose = this.handleModelClose.bind(this)
         this.handleModelOpen = this.handleModelOpen.bind(this)
         this.loadAssetsModal = this.loadAssetsModal.bind(this);
         this.generateAssets = this.generateAssets.bind(this)
+        this.onChange = this.onChange.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
     }
     handleModelClose() { 
         this.setState({ modalOpen: false })
@@ -43,36 +55,100 @@ class Assets extends Component {
         this.setState({ modalOpen: true})
     }
 
+    updateList() {
+        this.setState({loading: true})
+        UploadAPI.getUploads().then((uploads) => {  
+            if (uploads && uploads.data) {
+                this.setState({assets: uploads.data.filter(upload => upload.type === 'asset'), loading: false});
+            }
+            else {
+                this.setState({assets: []})
+            }
+        });
+    }
+
+    componentDidMount() {
+        this.updateList()
+    }
+
+    renderAssets() {
+                //TODO update interview 'rendered assets' property and reload page
+
+    }
+
+    onChange = (e) => {
+        console.log(e.target)
+
+        switch (e.target.name) {
+          case 'uploadedFile':
+            this.setState({ uploadedFile: e.target.files[0] });
+            break;
+          default:
+            this.setState({ [e.target.name]: e.target.value });
+        }
+        console.log(this.state)
+      }
+
+    onSubmit(e) {
+        e.preventDefault();
+        let formData = new FormData();
+        if (!this.state.uploadedFile) {
+            this.handleModelClose()
+            return
+        }
+        formData.append('uploadedFile', this.state.uploadedFile);
+        this.setState({loading: true})
+        UploadAPI.uploadFile(formData, 'asset').then((response) => {
+            this.updateList()
+        })
+        this.handleModelClose()
+    }
+
+
     loadAssetsModal() {
         return (
-            <Modal trigger={ <Button fluid onClick={this.handleModelOpen} content='Load more'/> } open={this.state.modalOpen} onClose={this.handleClose} closeIcon>
-                <Header icon='boxes' content='Select an asset to load' />
-                <Modal.Content>
-                    <List horizontal selection>
-                    <br/>
-                        {this.assets.map((asset)=> {
-                            return <Asset name={asset.name} date={asset.date} icon='chevron right'/>
-                        })}
-                    </List>
-                    <Divider />
-                    <FilePond />
-                    <Button onClick={this.handleModelClose} fluid>Close</Button>
-                </Modal.Content>
-            </Modal>
+            <form onSubmit={this.onSubmit}>
+
+                <Segment>
+                <Button secondary content='Upload' onClick={this.onSubmit} />
+                <input 
+                    type="file"
+                    name="uploadedFile"
+                    onChange={this.onChange}
+                />
+                </Segment>
+        
+            </form>
         )    
     }
     generateAssets() {
-        if (this.props.assets.length === 0) {
-            return <p> No environments added!</p>
+        if (this.state.loading) {
+            return (<div>
+                <br/>
+                <br/>
+                <Dimmer active inverted>
+                    <Loader> Loading assets </Loader>
+                </Dimmer>
+            </div>)
         }
-        return this.props.assets.map((asset) => {
-            return <Asset name={asset.name} date={'0/0/00'} icon='boxes'/>
+        if (this.state.assets.length === 0) {
+            return (
+            <List.Item>
+            <List.Content>
+                <List.Header>No assets to show!</List.Header>
+            </List.Content>
+            </List.Item>)
+        }
+    
+        return this.state.assets.map((asset) => {
+            return  (  
+                <Asset name={asset.name} owner={asset.owner} icon='boxes'/>
+            )
+            
         })
     }
 
     render() {
-        this.assets= [] // Clear assets everytime this is re-rendered
-
         const css = ` 
         .AssetsList {
             height:250px;
@@ -88,7 +164,7 @@ class Assets extends Component {
                     <Icon name='boxes' />
                     Assets
                 </Header>
-                <List className="AssetsList">
+                <List selection={true} className="AssetsList">
                     {this.generateAssets()}
                 </List>
                 {this.loadAssetsModal()}
