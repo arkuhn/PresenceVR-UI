@@ -14,6 +14,7 @@ class Asset extends Component {
         super(props)
     }
 
+<<<<<<< HEAD
     renderAsset = (event) =>  {
         InterviewAPI.renderAssets(this.props.id, this.props.interview);
         console.log("we hit!!!");
@@ -37,6 +38,26 @@ class Asset extends Component {
             </List.Item>
             )
     }
+=======
+function Asset(props) {
+    return (
+    
+    <List.Item active={false} >
+    <List.Content floated='right'>
+        <Button icon='trash alternate outline' />
+    </List.Content>
+    <List.Content floated='left'>
+            <Icon name={props.icon} />
+            <b>{props.name}</b> <br/>
+            {props.owner}
+        </List.Content>
+
+        <List.Content floated='right'>
+            <Checkbox toggle onClick={renderAsset}/>
+        </List.Content>
+    </List.Item>
+    )
+>>>>>>> Standard trash button added above Asset name
 }
 
 
