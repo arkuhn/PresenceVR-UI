@@ -6,6 +6,14 @@ import 'aframe-environment-component'
 
 class AframeInterview extends Component {
 
+/*     constructor(props) {
+        super(props);
+    }
+    
+    run = () => {
+
+    }
+ */
     render() {
         return (
             <Scene className="aframeContainer" embedded> 

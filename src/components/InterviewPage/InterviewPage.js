@@ -97,7 +97,7 @@ class InterviewPage extends Component {
                     <Grid.Column width={8}>
                         {/* Browser mode */}
                         <Grid.Row>
-                            <AframeInterview />
+                            <AframeInterview assets={this.state.interview.loadedAssets}/>
                             <br/>
                             <br/>
                         </Grid.Row>
@@ -119,7 +119,7 @@ class InterviewPage extends Component {
                         <Divider/>
                         {/* Assets */}
                         <Grid.Row>
-                            <Assets assets={this.state.interview.loadedAssets} updateInterviewCallback={this.updateInterview}/>
+                            <Assets interview={this.id} assets={this.state.interview.loadedAssets} updateInterviewCallback={this.updateInterview}/>
                         </Grid.Row>
                     </Grid.Column>
                 </Grid>
