@@ -44,7 +44,7 @@ function Asset(props) {
     
     <List.Item active={false} >
     <List.Content floated='right'>
-        <Button icon='trash alternate outline' />
+        <Icon corner color='red' name='trash alternate outline' link onClick={() => {console.log("PRESSED!")}} aria-hidden='Delete' />
     </List.Content>
     <List.Content floated='left'>
             <Icon name={props.icon} />
