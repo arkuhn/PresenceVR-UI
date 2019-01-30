@@ -17,12 +17,17 @@ class Asset extends Component {
         this.props.updateInterviewCallback()
     }
 
+    deleteAsset = () => {
+        UploadAPI.deleteUpload(this.props.id).then((response) => {
+            this.props.updateInterviewCallback()
+        });
+    }
 
     render() {
         return (
             <List.Item active={false} >
             <List.Content floated='right'>
-                <Icon corner color='red' name='trash alternate outline' link onClick={() => {console.log(this.props.id)}} aria-hidden='Delete' />
+                <Icon corner color='red' name='trash alternate outline' link onClick={this.deleteAsset} aria-hidden='Delete' />
             </List.Content>
             <List.Content floated='left'>
                     <Icon name={this.props.icon} />
