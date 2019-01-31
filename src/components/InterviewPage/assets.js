@@ -38,42 +38,22 @@ class Asset extends Component {
     }
 
     render() {
-        if(this.props.assetList && this.isLoaded(this.props.id, this.props.assetList)){
-            return (
-                <List.Item active={false} >
-                    <List.Content floated='right'>
-                        <Icon corner color='red' name='trash alternate outline' link onClick={this.deleteAsset} aria-hidden='Delete' />
-                    </List.Content>
-                    <List.Content floated='left'>
-                        <Icon name={this.props.icon} />
-                        <b>{this.props.name}</b> <br />
-                        {this.props.owner}
-                    </List.Content>
-    
-                    <List.Content floated='right'>
-                        <Checkbox toggle checked='true' />
-                    </List.Content>
-                </List.Item>
-            );
-        }
-        else {
-            return (
-                <List.Item active={false} >
-                    <List.Content floated='right'>
-                        <Icon corner color='red' name='trash alternate outline' link onClick={this.deleteAsset} aria-hidden='Delete' />
-                    </List.Content>
-                    <List.Content floated='left'>
-                        <Icon name={this.props.icon} />
-                        <b>{this.props.name}</b> <br />
-                        {this.props.owner}
-                    </List.Content>
-    
-                    <List.Content floated='right'>
-                        <Checkbox toggle onClick={this.renderAsset} />
-                    </List.Content>
-                </List.Item>
-            );
-        }
+        return (
+            <List.Item active={false} >
+                <List.Content floated='right'>
+                    <Icon corner color='red' name='trash alternate outline' link onClick={this.deleteAsset} aria-hidden='Delete' />
+                </List.Content>
+                <List.Content floated='left'>
+                    <Icon name={this.props.icon} />
+                    <b>{this.props.name}</b> <br />
+                    {this.props.owner}
+                </List.Content>
+
+                <List.Content floated='right'>
+                    <Checkbox toggle onClick={this.renderAsset} checked={this.isLoaded} />
+                </List.Content>
+            </List.Item>
+        );
     }
 }
 
