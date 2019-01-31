@@ -14,12 +14,19 @@ class Asset extends Component {
         super(props)
     }
 
-    renderAsset = (event) =>  {
+    isLoaded = (id, assetList) => {
+        for(var i = 0; i < assetList.length; i ++){
+            if(assetList[i] === id){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    renderAsset = (event) => {
         InterviewAPI.renderAssets(this.props.id, this.props.interview);
         console.log("we hit!!!");
         this.props.updateInterviewCallback();
-        console.log("testing123")
-        console.log(UploadAPI.getUpload(this.props.id));
     }
 
     deleteAsset = () => {
@@ -29,19 +36,42 @@ class Asset extends Component {
     }
 
     render() {
-        return (
-            <List.Item active={false} >
-            <List.Content floated='left'>
-                    <Icon name={this.props.icon} />
-                    <b>{this.props.name}</b> <br/>
-                    {this.props.owner}
-                </List.Content>
-        
-                <List.Content floated='right'>
-                    <Checkbox toggle onClick={this.renderAsset}/>
-                </List.Content>
-            </List.Item>
-            )
+        if(this.props.assetList && this.isLoaded(this.props.id, this.props.assetList)){
+            return (
+                <List.Item active={false} >
+                    <List.Content floated='right'>
+                        <Icon corner color='red' name='trash alternate outline' link onClick={this.deleteAsset} aria-hidden='Delete' />
+                    </List.Content>
+                    <List.Content floated='left'>
+                        <Icon name={this.props.icon} />
+                        <b>{this.props.name}</b> <br />
+                        {this.props.owner}
+                    </List.Content>
+    
+                    <List.Content floated='right'>
+                        <Checkbox toggle checked='true' />
+                    </List.Content>
+                </List.Item>
+            );
+        }
+        else {
+            return (
+                <List.Item active={false} >
+                    <List.Content floated='right'>
+                        <Icon corner color='red' name='trash alternate outline' link onClick={this.deleteAsset} aria-hidden='Delete' />
+                    </List.Content>
+                    <List.Content floated='left'>
+                        <Icon name={this.props.icon} />
+                        <b>{this.props.name}</b> <br />
+                        {this.props.owner}
+                    </List.Content>
+    
+                    <List.Content floated='right'>
+                        <Checkbox toggle onClick={this.renderAsset} />
+                    </List.Content>
+                </List.Item>
+            );
+        }
     }
 }
 
@@ -57,22 +87,22 @@ class Assets extends Component {
         }
     }
 
-    handleModelClose = () => { 
+    handleModelClose = () => {
         this.setState({ modalOpen: false })
     }
 
     handleModelOpen = () => {
-        this.setState({ modalOpen: true})
+        this.setState({ modalOpen: true })
     }
 
     updateList = () => {
-        this.setState({loading: true})
-        UploadAPI.getUploads().then((uploads) => {  
+        this.setState({ loading: true })
+        UploadAPI.getUploads().then((uploads) => {
             if (uploads && uploads.data) {
-                this.setState({assets: uploads.data.filter(upload => upload.type === 'asset'), loading: false});
+                this.setState({ assets: uploads.data.filter(upload => upload.type === 'asset'), loading: false });
             }
             else {
-                this.setState({assets: []})
+                this.setState({ assets: [] })
             }
         });
     }
@@ -83,13 +113,13 @@ class Assets extends Component {
 
     onChange = (e) => {
         switch (e.target.name) {
-          case 'uploadedFile':
-            this.setState({ uploadedFile: e.target.files[0] });
-            break;
-          default:
-            this.setState({ [e.target.name]: e.target.value });
+            case 'uploadedFile':
+                this.setState({ uploadedFile: e.target.files[0] });
+                break;
+            default:
+                this.setState({ [e.target.name]: e.target.value });
         }
-      }
+    }
 
     onSubmit = (e) => {
         e.preventDefault();
@@ -99,7 +129,7 @@ class Assets extends Component {
             return
         }
         formData.append('uploadedFile', this.state.uploadedFile);
-        this.setState({loading: true})
+        this.setState({ loading: true })
         UploadAPI.uploadFile(formData, 'asset').then((response) => {
             this.updateList()
         })
@@ -112,22 +142,22 @@ class Assets extends Component {
             <form onSubmit={this.onSubmit}>
 
                 <Segment>
-                <Button secondary content='Upload' onClick={this.onSubmit} />
-                <input 
-                    type="file"
-                    name="uploadedFile"
-                    onChange={this.onChange}
-                />
+                    <Button secondary content='Upload' onClick={this.onSubmit} />
+                    <input
+                        type="file"
+                        name="uploadedFile"
+                        onChange={this.onChange}
+                    />
                 </Segment>
-        
+
             </form>
-        )    
+        )
     }
     generateAssets = () => {
         if (this.state.loading) {
             return (<div>
-                <br/>
-                <br/>
+                <br />
+                <br />
                 <Dimmer active inverted>
                     <Loader> Loading assets </Loader>
                 </Dimmer>
@@ -135,26 +165,29 @@ class Assets extends Component {
         }
         if (this.state.assets.length === 0) {
             return (
-            <List.Item>
-            <List.Content>
-                <List.Header>No assets to show!</List.Header>
-            </List.Content>
-            </List.Item>)
+                <List.Item>
+                    <List.Content>
+                        <List.Header>No assets to show!</List.Header>
+                    </List.Content>
+                </List.Item>)
         }
 
         var interview = this.props.interview;
-    
+
         return this.state.assets.map((asset) => {
-            return  (  
-                <Asset name={asset.name}
-                id={asset._id}
-                owner={asset.owner}
-                icon='boxes'
-                updateInterviewCallback={this.props.updateInterviewCallback}
-                updateAssetsCallback={this.updateList}
-                />
+            return (
+                <Asset 
+                    name={asset.name} 
+                    owner={asset.owner}
+                    id={asset._id} 
+                    interview={interview}
+                    icon='boxes'
+                    updateInterviewCallback={this.props.updateInterviewCallback}
+                    updateAssetsCallback={this.updateList}
+                    assetList={this.props.assets}
+                ></Asset>
             )
-            
+
         })
     }
 
