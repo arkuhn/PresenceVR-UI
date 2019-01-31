@@ -146,7 +146,7 @@ class Assets extends Component {
                 id={asset._id}
                 owner={asset.owner}
                 icon='boxes'
-                updateInterviewCallback={this.updateInterviewCallback}
+                updateInterviewCallback={this.props.updateInterviewCallback}
                 updateAssetsCallback={this.updateList}
                 />
             )
