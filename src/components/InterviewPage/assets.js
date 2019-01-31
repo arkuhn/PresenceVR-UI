@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import { FilePond, registerPlugin } from 'react-filepond';
 import { Button, Segment, Dimmer, Loader, Header, Icon, List, Checkbox } from 'semantic-ui-react';
 import UploadAPI from '../../utils/UploadAPI';
+import InterviewAPI from '../../utils/InterviewAPI';
 
 registerPlugin(FilePondPluginImagePreview);
 
@@ -14,6 +15,8 @@ class Asset extends Component {
     }
 
     renderAsset = (event) =>  {
+        InterviewAPI.renderAssets(this.props.id, this.props.interview);
+        console.log("we hit!!!")
         this.props.updateInterviewCallback()
     }
 
@@ -130,10 +133,12 @@ class Assets extends Component {
             </List.Content>
             </List.Item>)
         }
+
+        var interview = this.props.interview;
     
         return this.state.assets.map((asset) => {
             return  (  
-                <Asset name={asset.name} owner={asset.owner} icon='boxes' updateInterviewCallback={this.props.updateInterviewCallback}/>
+                <Asset name={asset.name} owner={asset.owner} id={asset._id} interview={interview} icon='boxes' updateInterviewCallback={this.props.updateInterviewCallback}/>
             )
             
         })

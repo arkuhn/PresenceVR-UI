@@ -119,7 +119,7 @@ class InterviewPage extends Component {
                         <Divider/>
                         {/* Assets */}
                         <Grid.Row>
-                            <Assets assets={this.state.interview.loadedAssets} updateInterviewCallback={this.updateInterview}/>
+                            <Assets assets={this.state.interview.loadedAssets} interview={this.id} updateInterviewCallback={this.updateInterview}/>
                         </Grid.Row>
                     </Grid.Column>
                 </Grid>
