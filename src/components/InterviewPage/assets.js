@@ -14,10 +14,10 @@ class Asset extends Component {
         super(props)
     }
 
-    isLoaded = (id, assetList) => {
+    isLoaded = () => {
         if(this.props.assetList) {
-            for(var i = 0; i < assetList.length; i ++){
-                if(assetList[i] === id){
+            for(var i = 0; i < this.props.assetList.length; i ++){
+                if(this.props.assetList[i] === this.props.id){
                     return true;
                 }
             }
