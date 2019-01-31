@@ -19,7 +19,7 @@ class Asset extends Component {
 
     deleteAsset = () => {
         UploadAPI.deleteUpload(this.props.id).then((response) => {
-            this.props.updateInterviewCallback()
+            this.props.updateAssetsCallback()
         });
     }
 
@@ -142,7 +142,12 @@ class Assets extends Component {
     
         return this.state.assets.map((asset) => {
             return  (  
-                <Asset name={asset.name} id={asset._id} owner={asset.owner} icon='boxes' updateInterviewCallback={this.props.updateInterviewCallback}/>
+                <Asset name={asset.name}
+                id={asset._id}
+                owner={asset.owner}
+                icon='boxes'
+                updateAssetsCallback={this.updateList}
+                />
             )
             
         })
