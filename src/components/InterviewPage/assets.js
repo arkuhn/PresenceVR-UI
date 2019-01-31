@@ -15,9 +15,11 @@ class Asset extends Component {
     }
 
     isLoaded = (id, assetList) => {
-        for(var i = 0; i < assetList.length; i ++){
-            if(assetList[i] === id){
-                return true;
+        if(this.props.assetList) {
+            for(var i = 0; i < assetList.length; i ++){
+                if(assetList[i] === id){
+                    return true;
+                }
             }
         }
         return false;
