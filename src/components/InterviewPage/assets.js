@@ -15,11 +15,13 @@ class Asset extends Component {
     }
 
     renderAsset = (event) =>  {
-        InterviewAPI.renderAssets(this.props.id, this.props.interview);
-        console.log("we hit!!!");
-        this.props.updateInterviewCallback();
-        console.log("testing123")
-        console.log(UploadAPI.getUpload(this.props.id));
+        this.props.updateInterviewCallback()
+    }
+
+    deleteAsset = () => {
+        UploadAPI.deleteUpload(this.props.id).then((response) => {
+            this.props.updateAssetsCallback()
+        });
     }
 
     render() {
@@ -140,7 +142,12 @@ class Assets extends Component {
     
         return this.state.assets.map((asset) => {
             return  (  
-                <Asset name={asset.name} owner={asset.owner} id={asset._id} interview={interview} icon='boxes' updateInterviewCallback={this.props.updateInterviewCallback}/>
+                <Asset name={asset.name}
+                id={asset._id}
+                owner={asset.owner}
+                icon='boxes'
+                updateAssetsCallback={this.updateList}
+                />
             )
             
         })
