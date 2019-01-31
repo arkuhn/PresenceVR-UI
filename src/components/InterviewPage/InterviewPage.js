@@ -97,7 +97,7 @@ class InterviewPage extends Component {
                     <Grid.Column width={8}>
                         {/* Browser mode */}
                         <Grid.Row>
-                            <AframeInterview />
+                            <AframeInterview assets={this.state.interview.loadedAssets}/>
                             <br/>
                             <br/>
                         </Grid.Row>
