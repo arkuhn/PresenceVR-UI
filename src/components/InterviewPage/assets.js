@@ -16,8 +16,10 @@ class Asset extends Component {
 
     renderAsset = (event) =>  {
         InterviewAPI.renderAssets(this.props.id, this.props.interview);
-        console.log("we hit!!!")
-        this.props.updateInterviewCallback()
+        console.log("we hit!!!");
+        this.props.updateInterviewCallback();
+        console.log("testing123")
+        console.log(UploadAPI.getUpload(this.props.id));
     }
 
     deleteAsset = () => {

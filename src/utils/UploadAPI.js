@@ -55,10 +55,28 @@ function deleteUpload(id) {
         }).catch((error) => {
             console.log(error);
 <<<<<<< HEAD
+<<<<<<< HEAD
         });
 =======
         })
 >>>>>>> Created deleteUpload API method and used it in Asset component
+=======
+        });
+    })
+}
+            
+function getUpload(id) {
+    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+        let config = {headers: {Authorization: `${token}`}};
+        return axios.get(API_URL + `/api/uploads${id}`
+        , config).then((response) => {
+            console.log('Got  upload for host response');
+            console.log(response);
+            return response;
+        }).catch((error) => {
+            console.log(error);
+        });
+>>>>>>> Adans changes
     })
 }
 
@@ -69,5 +87,9 @@ export default {
     getUpload
 =======
     deleteUpload
+<<<<<<< HEAD
 >>>>>>> Created deleteUpload API method and used it in Asset component
+=======
+    getUpload
+>>>>>>> Adans changes
 }
