@@ -35,7 +35,22 @@ function getUploads() {
     })
 }
 
+function deleteUpload(id) {
+    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+        let config = {headers: {Authorization: `${token}`}};
+        return axios.delete(API_URL + '/api/uploads/' + `${id}`,
+        config).then((response) => {
+            console.log('Attempting to delete upload:');
+            console.log(response);
+            return response;
+        }).catch((error) => {
+            console.log(error);
+        })
+    })
+}
+
 export default {
     uploadFile,
-    getUploads
+    getUploads,
+    deleteUpload
 }
