@@ -1,23 +1,24 @@
 import axios from 'axios';
 import { API_URL } from "../config/api.config";
-import { firebaseAuth } from './firebase';    
+import { firebaseAuth, safeGetUser } from './firebase';    
 
 function getInterview(id){
-    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
-        let config = {headers: {Authorization: `${token}`}};
-        return axios.get(API_URL + `/api/interview/${id}`, config).then((response) => {
-            console.log('got a result');
-            console.log(response);
-            return response;
-        }).catch((error) => {
-            console.log(error);
+        return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
+            let config = {headers: {Authorization: `${token}`}};
+            return axios.get(API_URL + `/api/interview/${id}`, config).then((response) => {
+                console.log('got a result');
+                console.log(response);
+                return response;
+            }).catch((error) => {
+                console.log(error);
+            })
         })
-    })
+
 }
 
 //Takes in an interview object
 function createInterview(data){
-    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+    return  safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`}};
         return axios.post(API_URL + '/api/interviews', { data }, config).then((response) => {
             console.log('Interview created response');
@@ -31,7 +32,7 @@ function createInterview(data){
 
 //returns all interviews for user. takes in host
 function getAllInterviews(id){
-    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+    return  safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`}};
         return axios.get(API_URL + `/api/interviews/${id}`
         , config).then((response) => {
@@ -46,7 +47,7 @@ function getAllInterviews(id){
 
 //takes in updated interview object
 function updateInterview(data){
-    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+    return  safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`}};
         return axios.put(API_URL + `/api/interviews/`, { data }, config).then((response) => {
             console.log('Update interview result');
@@ -60,7 +61,7 @@ function updateInterview(data){
 
 //will work same as interview object
 function deleteInterview(id){
-    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+    return  safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`, id }};
         return axios.delete(API_URL + `/api/interviews/`, config).then((response) => {
             console.log('Delete interview result');
@@ -74,7 +75,7 @@ function deleteInterview(id){
 
 //remove the current participant from the interview
 function leaveInterview(id){
-    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+    return  safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`}};
         return axios.patch(API_URL + `/api/interviews/${id}`, {}, config).then((response) => {
             console.log('Removing participant from interview');
@@ -87,7 +88,7 @@ function leaveInterview(id){
 }
 
 function updateAssetList(assetId, id){
-    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+    return  safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`}};
         return axios.patch(API_URL + `/api/interviews/${id}/${assetId}`, {}, config).then((response) => {
             console.log('Updating Loaded Asset List');
