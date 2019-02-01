@@ -7,21 +7,14 @@ import UploadAPI from '../../utils/UploadAPI';
 
 class AframeInterview extends Component {
 
-    constructor(props){
+/*     constructor(props) {
         super(props);
-    }
-
-    componentDidMount(){
-        this.run();
     }
     
     run = () => {
-        /* console.log(this.props.assets);
-        this.props.assets.map( (asset, index) =>{
-            console.log(UploadAPI.getUpload(asset));
-        }); */
+
     }
-    
+ */
     render() {
         return (
             <Scene className="aframeContainer" embedded> 

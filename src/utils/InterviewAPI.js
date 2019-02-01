@@ -86,11 +86,11 @@ function leaveInterview(id){
     });
 }
 
-function renderAssets(assetId, id){
+function updateAssetList(assetId, id){
     return firebaseAuth.currentUser.getIdToken(true).then((token) => {
         let config = {headers: {Authorization: `${token}`}};
         return axios.patch(API_URL + `/api/interviews/${id}/${assetId}`, {}, config).then((response) => {
-            console.log('Updating Rendered Assets');
+            console.log('Updating Loaded Asset List');
             console.log(response);
             return response;
         }).catch((error) => {
@@ -100,5 +100,5 @@ function renderAssets(assetId, id){
 }
 
 export default {
-    getInterview, createInterview, getAllInterviews, updateInterview, deleteInterview, leaveInterview, renderAssets
+    getInterview, createInterview, getAllInterviews, updateInterview, deleteInterview, leaveInterview, updateAssetList
 }
