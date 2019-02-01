@@ -98,7 +98,6 @@ class Assets extends Component {
         e.preventDefault();
         let formData = new FormData();
         if (!this.state.uploadedFile) {
-            this.handleModelClose()
             return
         }
         formData.append('uploadedFile', this.state.uploadedFile);
@@ -106,7 +105,6 @@ class Assets extends Component {
         UploadAPI.uploadFile(formData, 'asset').then((response) => {
             this.updateList()
         })
-        this.handleModelClose()
     }
 
 
@@ -149,8 +147,7 @@ class Assets extends Component {
 
         return this.state.assets.map((asset) => {
             var loaded = false
-            
-            if (this.props.loadedAssets.indexOf(asset._id) > 0) {
+            if (this.props.loadedAssets.indexOf(asset._id) >= 0) {
                 loaded = true
             }
             return (

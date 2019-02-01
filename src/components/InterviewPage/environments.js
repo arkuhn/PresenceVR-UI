@@ -26,7 +26,6 @@ class Environments extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            modalOpen: false,
             value: 'default'
         }
         this.Environments = []
@@ -37,32 +36,7 @@ class Environments extends Component {
         console.log(this.state)
     }
 
-    handleModelClose = () => { 
-        this.setState({ modalOpen: false })
-    }
 
-    handleModelOpen = () => {
-        this.setState({ modalOpen: true})
-    }
-
-    loadEnvironmentsModal = () => {
-        return (
-            <Modal trigger={ <Button fluid onClick={this.handleModelOpen} content='Load more'/> } open={this.state.modalOpen} onClose={this.handleClose} closeOnDocumentClick closeIcon>
-                <Header icon='boxes' content='Select an Environment to load' />
-                <Modal.Content>
-                    <List horizontal selection>
-                    <br/>
-                        {this.environments.map((environment)=> {
-                            return <Environment name={environment.name} date={environment.date} icon='chevron right'/>
-                        })}
-                    </List>
-                    <Divider />
-                    <FilePond />
-                    <Button onClick={this.handleModelClose} fluid>Close</Button>
-                </Modal.Content>
-            </Modal>
-        )    
-    }
     generateEnvironments = () => {
         if (this.props.environments.length === 0) {
             return <p> No environments added!</p>
