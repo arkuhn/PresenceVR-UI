@@ -27,6 +27,7 @@ class Environments extends Component {
         super(props)
         this.state = {
             modalOpen: false,
+            value: 'default'
         }
         this.Environments = []
     }
@@ -96,11 +97,11 @@ class Environments extends Component {
                     <Form.Field>
                     <Checkbox
                         radio
-                        defaultChecked
+                        toggle
                         label='Default'
                         name='checkboxRadioGroup'
                         value='default'
-                        checked={this.state.value === 'this'}
+                        checked={this.state.value === 'default'}
                         onChange={this.handleChange}
                     />
                     </Form.Field>
@@ -111,7 +112,7 @@ class Environments extends Component {
                         label='Starry'
                         name='checkboxRadioGroup'
                         value='starry'
-                        checked={this.state.value === 'that'}
+                        checked={this.state.value === 'starry'}
                         onChange={this.handleChange}
                     />
                     </Form.Field>
@@ -122,7 +123,7 @@ class Environments extends Component {
                         label='Japan'
                         name='checkboxRadioGroup'
                         value='japan'
-                        checked={this.state.value === 'that'}
+                        checked={this.state.value === 'japan'}
                         onChange={this.handleChange}
                     />
                     </Form.Field>
@@ -133,7 +134,7 @@ class Environments extends Component {
                         label='Tron'
                         name='checkboxRadioGroup'
                         value='tron'
-                        checked={this.state.value === 'that'}
+                        checked={this.state.value === 'tron'}
                         onChange={this.handleChange}
                     />
                     </Form.Field>
