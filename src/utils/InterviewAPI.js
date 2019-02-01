@@ -46,10 +46,10 @@ function getAllInterviews(id){
 }
 
 //takes in updated interview object
-function updateInterview(data){
+function updateInterview(data, id){
     return  safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`}};
-        return axios.put(API_URL + `/api/interviews/`, { data }, config).then((response) => {
+        return axios.put(API_URL + `/api/interviews/${id}`, { data }, config).then((response) => {
             console.log('Update interview result');
             console.log(response);
             return response;

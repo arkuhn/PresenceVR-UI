@@ -17,7 +17,6 @@ class InterviewPage extends Component {
         this.id = this.props.match.params.id;
         this.state = {interview: {
             participants: [],
-            loadedEnvironments: [],
             loadedAssets: [],
             details: '',
             host: ''
@@ -125,7 +124,7 @@ class InterviewPage extends Component {
                     <Grid.Column width={8}>
                         {/* Browser mode */}
                         <Grid.Row>
-                            <AframeInterview assets={this.state.interview.loadedAssets}/>
+                            <AframeInterview assets={this.state.interview.loadedAssets} environment={this.state.interview.loadedEnvironment}/>
                             <br/>
                             <br/>
                         </Grid.Row>
@@ -142,7 +141,7 @@ class InterviewPage extends Component {
                     <Grid.Column width={4}>
                         {/* Environments */}
                         <Grid.Row>
-                            <Environments environments={this.state.interview.loadedEnvironments}/>
+                            <Environments environment={this.state.interview.loadedEnvironment} interviewId={this.id} updateInterviewCallback={this.updateInterview}/>
                         </Grid.Row>
                         <Divider/>
                         {/* Assets */}
