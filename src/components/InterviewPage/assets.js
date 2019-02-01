@@ -5,16 +5,44 @@ import React, { Component } from 'react';
 import { FilePond, registerPlugin } from 'react-filepond';
 import { Button, Segment, Dimmer, Loader, Header, Icon, List, Checkbox } from 'semantic-ui-react';
 import UploadAPI from '../../utils/UploadAPI';
+import InterviewAPI from '../../utils/InterviewAPI';
 
 registerPlugin(FilePondPluginImagePreview);
 
 class Asset extends Component {
     constructor(props) {
         super(props)
+        this.state = {
+            isRendered: false
+        };
     }
 
-    renderAsset = (event) =>  {
-        this.props.updateInterviewCallback()
+    componentDidMount() {
+        this.setState({isRendered: this.isLoaded()});
+    }
+
+    isLoaded = () => {
+        if(this.props.assetList) {
+            for(var i = 0; i < this.props.assetList.length; i ++){
+                if(this.props.assetList[i] === this.props.id){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    renderAsset = (event) => {
+        this.setState(state => ({isRendered: !state.isRendered}));
+        InterviewAPI.renderAssets(this.props.id, this.props.interview).then((response) => {
+            this.props.updateInterviewCallback();
+        });
+    }
+
+    deleteAsset = () => {
+        UploadAPI.deleteUpload(this.props.id).then((response) => {
+            this.props.updateAssetsCallback()
+        });
     }
 
     deleteAsset = () => {
@@ -26,20 +54,27 @@ class Asset extends Component {
     render() {
         return (
             <List.Item active={false} >
+<<<<<<< HEAD
             <List.Content floated='right'>
                 <Icon corner color='red' name='trash alternate outline' link onClick={this.deleteAsset} aria-hidden='Delete' />
             </List.Content>
             <List.Content floated='left'>
+=======
+                <List.Content floated='right'>
+                    <Icon corner color='red' name='trash alternate outline' link onClick={this.deleteAsset} aria-hidden='Delete' />
+                </List.Content>
+                <List.Content floated='left'>
+>>>>>>> 254eb36c9388e6470e3338341069ca3bea2e5653
                     <Icon name={this.props.icon} />
-                    <b>{this.props.name}</b> <br/>
+                    <b>{this.props.name}</b> <br />
                     {this.props.owner}
                 </List.Content>
-        
+
                 <List.Content floated='right'>
-                    <Checkbox toggle onClick={this.renderAsset}/>
+                    <Checkbox toggle onChange={this.renderAsset} checked={this.state.isRendered} defaultChecked={this.isLoaded} />
                 </List.Content>
             </List.Item>
-            )
+        );
     }
 }
 
@@ -55,22 +90,22 @@ class Assets extends Component {
         }
     }
 
-    handleModelClose = () => { 
+    handleModelClose = () => {
         this.setState({ modalOpen: false })
     }
 
     handleModelOpen = () => {
-        this.setState({ modalOpen: true})
+        this.setState({ modalOpen: true })
     }
 
     updateList = () => {
-        this.setState({loading: true})
-        UploadAPI.getUploads().then((uploads) => {  
+        this.setState({ loading: true })
+        UploadAPI.getUploads().then((uploads) => {
             if (uploads && uploads.data) {
-                this.setState({assets: uploads.data.filter(upload => upload.type === 'asset'), loading: false});
+                this.setState({ assets: uploads.data.filter(upload => upload.type === 'asset'), loading: false });
             }
             else {
-                this.setState({assets: []})
+                this.setState({ assets: [] })
             }
         });
     }
@@ -81,13 +116,13 @@ class Assets extends Component {
 
     onChange = (e) => {
         switch (e.target.name) {
-          case 'uploadedFile':
-            this.setState({ uploadedFile: e.target.files[0] });
-            break;
-          default:
-            this.setState({ [e.target.name]: e.target.value });
+            case 'uploadedFile':
+                this.setState({ uploadedFile: e.target.files[0] });
+                break;
+            default:
+                this.setState({ [e.target.name]: e.target.value });
         }
-      }
+    }
 
     onSubmit = (e) => {
         e.preventDefault();
@@ -97,7 +132,7 @@ class Assets extends Component {
             return
         }
         formData.append('uploadedFile', this.state.uploadedFile);
-        this.setState({loading: true})
+        this.setState({ loading: true })
         UploadAPI.uploadFile(formData, 'asset').then((response) => {
             this.updateList()
         })
@@ -110,22 +145,22 @@ class Assets extends Component {
             <form onSubmit={this.onSubmit}>
 
                 <Segment>
-                <Button secondary content='Upload' onClick={this.onSubmit} />
-                <input 
-                    type="file"
-                    name="uploadedFile"
-                    onChange={this.onChange}
-                />
+                    <Button secondary content='Upload' onClick={this.onSubmit} />
+                    <input
+                        type="file"
+                        name="uploadedFile"
+                        onChange={this.onChange}
+                    />
                 </Segment>
-        
+
             </form>
-        )    
+        )
     }
     generateAssets = () => {
         if (this.state.loading) {
             return (<div>
-                <br/>
-                <br/>
+                <br />
+                <br />
                 <Dimmer active inverted>
                     <Loader> Loading assets </Loader>
                 </Dimmer>
@@ -133,14 +168,17 @@ class Assets extends Component {
         }
         if (this.state.assets.length === 0) {
             return (
-            <List.Item>
-            <List.Content>
-                <List.Header>No assets to show!</List.Header>
-            </List.Content>
-            </List.Item>)
+                <List.Item>
+                    <List.Content>
+                        <List.Header>No assets to show!</List.Header>
+                    </List.Content>
+                </List.Item>)
         }
-    
+
+        var interview = this.props.interview;
+
         return this.state.assets.map((asset) => {
+<<<<<<< HEAD
             return  (  
                 <Asset name={asset.name}
                 id={asset._id}
@@ -149,8 +187,21 @@ class Assets extends Component {
                 updateInterviewCallback={this.props.updateInterviewCallback}
                 updateAssetsCallback={this.updateList}
                 />
+=======
+            return (
+                <Asset 
+                    name={asset.name} 
+                    owner={asset.owner}
+                    id={asset._id} 
+                    interview={interview}
+                    icon='boxes'
+                    updateInterviewCallback={this.props.updateInterviewCallback}
+                    updateAssetsCallback={this.updateList}
+                    assetList={this.props.assets}
+                ></Asset>
+>>>>>>> 254eb36c9388e6470e3338341069ca3bea2e5653
             )
-            
+
         })
     }
 
