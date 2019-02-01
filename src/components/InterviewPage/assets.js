@@ -58,7 +58,7 @@ class Asset extends Component {
                 </List.Content>
 
                 <List.Content floated='right'>
-                    <Checkbox toggle onChange={this.renderAsset} checked={this.state.isRendered} defaultChecked={this.isLoaded} />
+                    <Checkbox toggle onChange={this.renderAsset} checked={this.state.isRendered} />
                 </List.Content>
             </List.Item>
         );
