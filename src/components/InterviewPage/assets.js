@@ -12,6 +12,13 @@ registerPlugin(FilePondPluginImagePreview);
 class Asset extends Component {
     constructor(props) {
         super(props)
+        this.state = {
+            isRendered: false
+        };
+    }
+
+    componentDidMount() {
+        this.setState({isRendered: this.isLoaded()});
     }
 
     isLoaded = () => {
@@ -26,9 +33,11 @@ class Asset extends Component {
     }
     
     renderAsset = (event) => {
-        InterviewAPI.renderAssets(this.props.id, this.props.interview);
-        console.log("we hit!!!");
-        this.props.updateInterviewCallback();
+        console.log("HERE!");
+        this.setState(state => ({isRendered: !state.isRendered}));
+        InterviewAPI.renderAssets(this.props.id, this.props.interview).then((response) => {
+            this.props.updateInterviewCallback();
+        });
     }
 
     deleteAsset = () => {
@@ -50,7 +59,7 @@ class Asset extends Component {
                 </List.Content>
 
                 <List.Content floated='right'>
-                    <Checkbox toggle onClick={this.renderAsset} checked={this.isLoaded} />
+                    <Checkbox toggle onChange={this.renderAsset} checked={this.state.isRendered} defaultChecked={this.isLoaded} />
                 </List.Content>
             </List.Item>
         );
