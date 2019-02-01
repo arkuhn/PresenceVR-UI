@@ -4,7 +4,7 @@ import { firebaseAuth, safeGetUser } from './firebase';
 
 //Upload a file
 function uploadFile(data, type){
-    return safeGetUser().then((user) => user.getIdToken(true)).getIdToken(true).then((token) => {
+    return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {
             headers: { 
                 'Authorization': `${token}`,
