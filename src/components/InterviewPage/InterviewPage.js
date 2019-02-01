@@ -18,9 +18,11 @@ class InterviewPage extends Component {
         this.state = {interview: {
             participants: [],
             loadedEnvironments: [],
-            loadedAssets: []
+            loadedAssets: [],
+            details: '',
+            host: ''
         },
-        loaded: false}
+        upToDate: false}
 
         this.updateInterview = this.updateInterview.bind(this);
     }
@@ -31,14 +33,14 @@ class InterviewPage extends Component {
             console.log(data.data);
             this.setState({
                 interview: data.data,
-                loaded: true
+                upToDate: true
             });
         });
     }
 
     //This is a temp fix for losing state on refresh
     componentDidUpdate() {
-        if (!this.state.loaded) {
+        if (!this.state.upToDate) {
             this.updateInterview()
         }
     }
@@ -97,8 +99,8 @@ class InterviewPage extends Component {
                         <Grid.Column  width={4}>
                         <Header as='h1' textAlign='center'>
                             <Header.Content>
-                            Interview Name
-                            <Header.Subheader>These are the interview details.</Header.Subheader>
+                            {this.state.interview.details}
+                            <Header.Subheader>Hosted by {this.state.interview.host}</Header.Subheader>
                             </Header.Content>
                         </Header>
                         </Grid.Column>
