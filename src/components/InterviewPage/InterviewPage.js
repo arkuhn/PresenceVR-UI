@@ -19,27 +19,30 @@ class InterviewPage extends Component {
             participants: [],
             loadedEnvironments: [],
             loadedAssets: []
-        }}
+        },
+        loaded: false}
 
         this.updateInterview = this.updateInterview.bind(this);
     }
 
     updateInterview() {
-        InterviewAPI.getInterview(this.id).then((data) => {
+        return InterviewAPI.getInterview(this.id).then((data) => {
             console.log('got data');
             console.log(data.data);
             this.setState({
-                interview: data.data
+                interview: data.data,
+                loaded: true
             });
         });
-        console.log(this.state.interview);
-        console.log("test");
     }
 
-    componentDidMount() {
-        this.updateInterview()
+    //This is a temp fix for losing state on refresh
+    componentDidUpdate() {
+        if (!this.state.loaded) {
+            this.updateInterview()
+        }
     }
-
+    
     componentWillMount() {
         this.setState({loading: true})
         // Bind the variable to the instance of the class.
@@ -49,7 +52,8 @@ class InterviewPage extends Component {
             user // User Details
           });
         });
-    
+        this.updateInterview()
+        
     }
 
     componentWillUnmount() {
@@ -81,6 +85,7 @@ class InterviewPage extends Component {
         if (!this.state.loading && !this.state.user) {
             return <Redirect to='/'/>
         }
+        
         return (
             <div className="InterviewPage">
                 <PresenceVRNavBar/>
@@ -140,7 +145,7 @@ class InterviewPage extends Component {
                         <Divider/>
                         {/* Assets */}
                         <Grid.Row>
-                            <Assets assets={this.state.interview.loadedAssets} interview={this.id} updateInterviewCallback={this.updateInterview}/>
+                            <Assets loadedAssets={this.state.interview.loadedAssets} interview={this.id} updateInterviewCallback={this.updateInterview}/>
                         </Grid.Row>
                     </Grid.Column>
                 </Grid>

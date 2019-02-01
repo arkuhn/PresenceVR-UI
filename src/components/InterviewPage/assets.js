@@ -17,21 +17,6 @@ class Asset extends Component {
         };
     }
 
-    componentDidMount() {
-        this.setState({isRendered: this.isLoaded()});
-    }
-
-    isLoaded = () => {
-        if(this.props.assetList) {
-            for(var i = 0; i < this.props.assetList.length; i ++){
-                if(this.props.assetList[i] === this.props.id){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    
     renderAsset = (event) => {
         this.setState(state => ({isRendered: !state.isRendered}));
         InterviewAPI.updateAssetList(this.props.id, this.props.interview).then((response) => {
@@ -64,7 +49,7 @@ class Asset extends Component {
                 </List.Content>
 
                 <List.Content floated='right'>
-                    <Checkbox toggle onChange={this.renderAsset} checked={this.state.isRendered} />
+                    <Checkbox toggle onChange={this.renderAsset} checked={this.props.loaded} />
                 </List.Content>
             </List.Item>
         );
@@ -77,19 +62,11 @@ class Assets extends Component {
         super(props)
         this.state = {
             assets: [],
-            modalOpen: false,
             uploadedFile: '',
             loading: false
         }
     }
 
-    handleModelClose = () => {
-        this.setState({ modalOpen: false })
-    }
-
-    handleModelOpen = () => {
-        this.setState({ modalOpen: true })
-    }
 
     updateList = () => {
         this.setState({ loading: true })
@@ -98,7 +75,7 @@ class Assets extends Component {
                 this.setState({ assets: uploads.data.filter(upload => upload.type === 'asset'), loading: false });
             }
             else {
-                this.setState({ assets: [] })
+                this.setState({ assets: [], loading: false })
             }
         });
     }
@@ -133,7 +110,7 @@ class Assets extends Component {
     }
 
 
-    loadAssetsModal = () => {
+    uploadBox = () => {
         return (
             <form onSubmit={this.onSubmit}>
 
@@ -149,7 +126,7 @@ class Assets extends Component {
             </form>
         )
     }
-    generateAssets = () => {
+    renderAssets = () => {
         if (this.state.loading) {
             return (<div>
                 <br />
@@ -171,11 +148,17 @@ class Assets extends Component {
         var interview = this.props.interview;
 
         return this.state.assets.map((asset) => {
+            var loaded = false
+            
+            if (this.props.loadedAssets.indexOf(asset._id) > 0) {
+                loaded = true
+            }
             return (
                 <Asset 
                     name={asset.name} 
                     owner={asset.owner}
                     id={asset._id} 
+                    loaded={loaded}
                     interview={interview}
                     icon='boxes'
                     updateInterviewCallback={this.props.updateInterviewCallback}
@@ -204,9 +187,9 @@ class Assets extends Component {
                     Assets
                 </Header>
                 <List selection={true} className="AssetsList">
-                    {this.generateAssets()}
+                    {this.renderAssets()}
                 </List>
-                {this.loadAssetsModal()}
+                {this.uploadBox()}
                 <style>{css}</style>
             </div>
         );
