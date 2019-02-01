@@ -28,7 +28,7 @@ class AframeInterview extends Component {
                         var randomY = Math.random() * (6 - 1) + 1
                         var randomZ = Math.random() * (2 - 0) + 0
                         var randomD = Math.random() * (6 - 2) + 1
-                        return <Entity geometry={{primitive: 'box', width: randomD, height: randomD}} material={{src: `${API_URL}${asset.data.fullpath}`}} position={{x: randomX, y: randomY, z: randomZ}} /> 
+                        return <Entity geometry={{primitive: 'box', width: 0.001, height: randomD}} material={{src: `${API_URL}${asset.data.fullpath}`}} position={{x: randomX, y: randomY, z: randomZ}} /> 
                     
                     }
                 })
