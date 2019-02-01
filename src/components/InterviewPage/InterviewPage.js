@@ -124,7 +124,7 @@ class InterviewPage extends Component {
                     <Grid.Column width={8}>
                         {/* Browser mode */}
                         <Grid.Row>
-                            <AframeInterview assets={this.state.interview.loadedAssets} environment={this.state.interview.loadedEnvironment}/>
+                            <AframeInterview loadedAssets={this.state.interview.loadedAssets} updateInterviewCallback={this.updateInterview} environment={this.state.interview.loadedEnvironment}/>
                             <br/>
                             <br/>
                         </Grid.Row>
