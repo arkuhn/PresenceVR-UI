@@ -54,24 +54,17 @@ class Asset extends Component {
     render() {
         return (
             <List.Item active={false} >
-<<<<<<< HEAD
-            <List.Content floated='right'>
-                <Icon corner color='red' name='trash alternate outline' link onClick={this.deleteAsset} aria-hidden='Delete' />
-            </List.Content>
-            <List.Content floated='left'>
-=======
                 <List.Content floated='right'>
                     <Icon corner color='red' name='trash alternate outline' link onClick={this.deleteAsset} aria-hidden='Delete' />
                 </List.Content>
                 <List.Content floated='left'>
->>>>>>> 254eb36c9388e6470e3338341069ca3bea2e5653
                     <Icon name={this.props.icon} />
                     <b>{this.props.name}</b> <br />
                     {this.props.owner}
                 </List.Content>
 
                 <List.Content floated='right'>
-                    <Checkbox toggle onChange={this.renderAsset} checked={this.state.isRendered} defaultChecked={this.isLoaded} />
+                    <Checkbox toggle onChange={this.renderAsset} checked={this.state.isRendered} />
                 </List.Content>
             </List.Item>
         );
@@ -178,16 +171,6 @@ class Assets extends Component {
         var interview = this.props.interview;
 
         return this.state.assets.map((asset) => {
-<<<<<<< HEAD
-            return  (  
-                <Asset name={asset.name}
-                id={asset._id}
-                owner={asset.owner}
-                icon='boxes'
-                updateInterviewCallback={this.props.updateInterviewCallback}
-                updateAssetsCallback={this.updateList}
-                />
-=======
             return (
                 <Asset 
                     name={asset.name} 
@@ -199,7 +182,6 @@ class Assets extends Component {
                     updateAssetsCallback={this.updateList}
                     assetList={this.props.assets}
                 ></Asset>
->>>>>>> 254eb36c9388e6470e3338341069ca3bea2e5653
             )
 
         })
