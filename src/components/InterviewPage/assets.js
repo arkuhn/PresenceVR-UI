@@ -33,7 +33,6 @@ class Asset extends Component {
     }
     
     renderAsset = (event) => {
-        console.log("HERE!");
         this.setState(state => ({isRendered: !state.isRendered}));
         InterviewAPI.renderAssets(this.props.id, this.props.interview).then((response) => {
             this.props.updateInterviewCallback();
