@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { Button, Dropdown, Header, Icon, List, Menu, Modal } from 'semantic-ui-react';
 import { firebaseAuth, logout } from '../../utils/firebase';
 import './PresenceVRNavBar.css';
@@ -11,13 +11,29 @@ class PresenceVRNavBar extends Component {
         this.state = { activeItem: 'PresenceVR' }
     }
 
+    componentWillMount() {
+        this.setState({loading: true})
+        // Bind the variable to the instance of the class.
+        this.authFirebaseListener = firebaseAuth.onAuthStateChanged((user) => {
+          this.setState({
+            loading: false,  // For the loader maybe
+            user
+          });
+        });
+    
+    }
+
+    componentWillUnmount() {
+        this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
+    }
+
     handleItemClick (e, { name }) {
         this.setState({ activeItem: name })
     }
 
     handleLogOut() {
         logout()
-        window.location.reload();
+        return <Redirect to="/" />
     }
 
     accountButton () {
@@ -75,6 +91,10 @@ class PresenceVRNavBar extends Component {
     render() {
 
         const { activeItem } = this.state
+
+        if (!this.state.loading && !this.state.user) {
+            return <Redirect to='/'/>
+        }
 
         return (
             <div className="PresenceVRNavBar">

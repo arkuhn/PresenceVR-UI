@@ -5,28 +5,55 @@ import React, { Component } from 'react';
 import { FilePond, registerPlugin } from 'react-filepond';
 import { Button, Segment, Dimmer, Loader, Header, Icon, List, Checkbox } from 'semantic-ui-react';
 import UploadAPI from '../../utils/UploadAPI';
+import InterviewAPI from '../../utils/InterviewAPI';
 
 registerPlugin(FilePondPluginImagePreview);
 
-function renderAsset() {
-        //TODO PATCH update interview 'rendered assets' property and reload page
-}
+class Asset extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            isRendered: false
+        };
+    }
 
-function Asset(props) {
-    return (
-    
-    <List.Item active={false} >
-    <List.Content floated='left'>
-            <Icon name={props.icon} />
-            <b>{props.name}</b> <br/>
-            {props.owner}
-        </List.Content>
+    renderAsset = (event) => {
+        this.setState(state => ({isRendered: !state.isRendered}));
+        InterviewAPI.updateAssetList(this.props.id, this.props.interview).then((response) => {
+            this.props.updateInterviewCallback();
+        });
+    }
 
-        <List.Content floated='right'>
-            <Checkbox toggle onClick={renderAsset}/>
-        </List.Content>
-    </List.Item>
-    )
+    deleteAsset = () => {
+        UploadAPI.deleteUpload(this.props.id).then((response) => {
+            this.props.updateAssetsCallback()
+        });
+    }
+
+    deleteAsset = () => {
+        UploadAPI.deleteUpload(this.props.id).then((response) => {
+            this.props.updateAssetsCallback()
+        });
+    }
+
+    render() {
+        return (
+            <List.Item active={false} >
+                <List.Content floated='right'>
+                    <Icon corner color='red' name='trash alternate outline' link onClick={this.deleteAsset} aria-hidden='Delete' />
+                </List.Content>
+                <List.Content floated='left'>
+                    <Icon name={this.props.icon} />
+                    <b>{this.props.name}</b> <br />
+                    {this.props.owner}
+                </List.Content>
+
+                <List.Content floated='right'>
+                    <Checkbox toggle onChange={this.renderAsset} checked={this.props.loaded} />
+                </List.Content>
+            </List.Item>
+        );
+    }
 }
 
 
@@ -35,61 +62,39 @@ class Assets extends Component {
         super(props)
         this.state = {
             assets: [],
-            modalOpen: false,
             uploadedFile: '',
             loading: false
         }
-
-        this.handleModelClose = this.handleModelClose.bind(this)
-        this.handleModelOpen = this.handleModelOpen.bind(this)
-        this.loadAssetsModal = this.loadAssetsModal.bind(this);
-        this.generateAssets = this.generateAssets.bind(this)
-        this.onChange = this.onChange.bind(this)
-        this.onSubmit = this.onSubmit.bind(this)
-    }
-    handleModelClose() { 
-        this.setState({ modalOpen: false })
     }
 
-    handleModelOpen() {
-        this.setState({ modalOpen: true})
-    }
 
-    updateList() {
-        this.setState({loading: true})
-        UploadAPI.getUploads().then((uploads) => {  
+    updateList = () => {
+        this.setState({ loading: true })
+        UploadAPI.getUploads().then((uploads) => {
             if (uploads && uploads.data) {
-                this.setState({assets: uploads.data.filter(upload => upload.type === 'asset'), loading: false});
+                this.setState({ assets: uploads.data.filter(upload => upload.type === 'asset'), loading: false });
             }
             else {
-                this.setState({assets: []})
+                this.setState({ assets: [], loading: false })
             }
         });
     }
 
-    componentDidMount() {
+    componentDidMount = () => {
         this.updateList()
     }
 
-    renderAssets() {
-                //TODO update interview 'rendered assets' property and reload page
-
+    onChange = (e) => {
+        switch (e.target.name) {
+            case 'uploadedFile':
+                this.setState({ uploadedFile: e.target.files[0] });
+                break;
+            default:
+                this.setState({ [e.target.name]: e.target.value });
+        }
     }
 
-    onChange = (e) => {
-        console.log(e.target)
-
-        switch (e.target.name) {
-          case 'uploadedFile':
-            this.setState({ uploadedFile: e.target.files[0] });
-            break;
-          default:
-            this.setState({ [e.target.name]: e.target.value });
-        }
-        console.log(this.state)
-      }
-
-    onSubmit(e) {
+    onSubmit = (e) => {
         e.preventDefault();
         let formData = new FormData();
         if (!this.state.uploadedFile) {
@@ -97,7 +102,7 @@ class Assets extends Component {
             return
         }
         formData.append('uploadedFile', this.state.uploadedFile);
-        this.setState({loading: true})
+        this.setState({ loading: true })
         UploadAPI.uploadFile(formData, 'asset').then((response) => {
             this.updateList()
         })
@@ -105,27 +110,27 @@ class Assets extends Component {
     }
 
 
-    loadAssetsModal() {
+    uploadBox = () => {
         return (
             <form onSubmit={this.onSubmit}>
 
                 <Segment>
-                <Button secondary content='Upload' onClick={this.onSubmit} />
-                <input 
-                    type="file"
-                    name="uploadedFile"
-                    onChange={this.onChange}
-                />
+                    <Button secondary content='Upload' onClick={this.onSubmit} />
+                    <input
+                        type="file"
+                        name="uploadedFile"
+                        onChange={this.onChange}
+                    />
                 </Segment>
-        
+
             </form>
-        )    
+        )
     }
-    generateAssets() {
+    renderAssets = () => {
         if (this.state.loading) {
             return (<div>
-                <br/>
-                <br/>
+                <br />
+                <br />
                 <Dimmer active inverted>
                     <Loader> Loading assets </Loader>
                 </Dimmer>
@@ -133,18 +138,35 @@ class Assets extends Component {
         }
         if (this.state.assets.length === 0) {
             return (
-            <List.Item>
-            <List.Content>
-                <List.Header>No assets to show!</List.Header>
-            </List.Content>
-            </List.Item>)
+                <List.Item>
+                    <List.Content>
+                        <List.Header>No assets to show!</List.Header>
+                    </List.Content>
+                </List.Item>)
         }
-    
+
+        var interview = this.props.interview;
+
         return this.state.assets.map((asset) => {
-            return  (  
-                <Asset name={asset.name} owner={asset.owner} icon='boxes'/>
-            )
+            var loaded = false
             
+            if (this.props.loadedAssets.indexOf(asset._id) > 0) {
+                loaded = true
+            }
+            return (
+                <Asset 
+                    name={asset.name} 
+                    owner={asset.owner}
+                    id={asset._id} 
+                    loaded={loaded}
+                    interview={interview}
+                    icon='boxes'
+                    updateInterviewCallback={this.props.updateInterviewCallback}
+                    updateAssetsCallback={this.updateList}
+                    assetList={this.props.assets}
+                ></Asset>
+            )
+
         })
     }
 
@@ -165,9 +187,9 @@ class Assets extends Component {
                     Assets
                 </Header>
                 <List selection={true} className="AssetsList">
-                    {this.generateAssets()}
+                    {this.renderAssets()}
                 </List>
-                {this.loadAssetsModal()}
+                {this.uploadBox()}
                 <style>{css}</style>
             </div>
         );

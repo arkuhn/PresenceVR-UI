@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Button, Divider, Grid, Header, Icon } from 'semantic-ui-react';
+import { Button, Divider, Grid, Header, Icon, Dimmer, Loader } from 'semantic-ui-react';
 import { firebaseAuth } from '../../utils/firebase';
 import InterviewAPI from "../../utils/InterviewAPI";
 import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar";
@@ -18,26 +18,48 @@ class InterviewPage extends Component {
         this.state = {interview: {
             participants: [],
             loadedEnvironments: [],
-            loadedAssets: []
-        }}
+            loadedAssets: [],
+            details: '',
+            host: ''
+        },
+        upToDate: false}
 
         this.updateInterview = this.updateInterview.bind(this);
     }
 
     updateInterview() {
-        InterviewAPI.getInterview(this.id).then((data) => {
+        return InterviewAPI.getInterview(this.id).then((data) => {
             console.log('got data');
             console.log(data.data);
             this.setState({
-                interview: data.data
+                interview: data.data,
+                upToDate: true
             });
         });
-        console.log(this.state.interview);
-        console.log("test");
     }
 
-    componentDidMount() {
+    //This is a temp fix for losing state on refresh
+    componentDidUpdate() {
+        if (!this.state.upToDate) {
+            this.updateInterview()
+        }
+    }
+    
+    componentWillMount() {
+        this.setState({loading: true})
+        // Bind the variable to the instance of the class.
+        this.authFirebaseListener = firebaseAuth.onAuthStateChanged((user) => {
+          this.setState({
+            loading: false,  // For the loader maybe
+            user // User Details
+          });
+        });
         this.updateInterview()
+        
+    }
+
+    componentWillUnmount() {
+        this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
     }
 
     configuration() {
@@ -57,9 +79,15 @@ class InterviewPage extends Component {
     }
 
     render() {
-        if (!firebaseAuth.currentUser) {
-            return <Redirect to='/' />
+        if (this.state.loading) {
+            return <Dimmer active>
+                        <Loader />
+                    </Dimmer>
         }
+        if (!this.state.loading && !this.state.user) {
+            return <Redirect to='/'/>
+        }
+        
         return (
             <div className="InterviewPage">
                 <PresenceVRNavBar/>
@@ -71,8 +99,8 @@ class InterviewPage extends Component {
                         <Grid.Column  width={4}>
                         <Header as='h1' textAlign='center'>
                             <Header.Content>
-                            Interview Name
-                            <Header.Subheader>These are the interview details.</Header.Subheader>
+                            {this.state.interview.details}
+                            <Header.Subheader>Hosted by {this.state.interview.host}</Header.Subheader>
                             </Header.Content>
                         </Header>
                         </Grid.Column>
@@ -97,7 +125,7 @@ class InterviewPage extends Component {
                     <Grid.Column width={8}>
                         {/* Browser mode */}
                         <Grid.Row>
-                            <AframeInterview />
+                            <AframeInterview assets={this.state.interview.loadedAssets}/>
                             <br/>
                             <br/>
                         </Grid.Row>
@@ -119,7 +147,7 @@ class InterviewPage extends Component {
                         <Divider/>
                         {/* Assets */}
                         <Grid.Row>
-                            <Assets assets={this.state.interview.loadedAssets}/>
+                            <Assets loadedAssets={this.state.interview.loadedAssets} interview={this.id} updateInterviewCallback={this.updateInterview}/>
                         </Grid.Row>
                     </Grid.Column>
                 </Grid>

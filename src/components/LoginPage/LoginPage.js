@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { Button, Card, Divider, Grid, Header, Icon, Image, Segment } from 'semantic-ui-react';
+import { Button, Card, Divider, Dimmer,Loader, Grid, Header, Icon, Image, Segment } from 'semantic-ui-react';
 import { firebaseAuth, loginWithGoogle } from "../../utils/firebase";
 import './LoginPage.css';
 
@@ -8,22 +8,35 @@ class LoginPage extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            loggedIn: false
-        }
+
     }
 
-    componentDidMount() {
-        firebaseAuth.onAuthStateChanged((user) => {
-            if (user){
-                this.setState({loggedIn: true})
-            }
-        })
+    componentWillMount() {
+        this.setState({loading: true})
+        // Bind the variable to the instance of the class.
+        this.authFirebaseListener = firebaseAuth.onAuthStateChanged((user) => {
+          this.setState({
+            loading: false,  // For the loader maybe
+            user, // User Details
+            isAuth: true
+          });
+        });
+    
+    }
+
+    componentWillUnmount() {
+        this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
     }
 
     render() {
-        if (this.state.loggedIn || firebaseAuth.currentUser) {
+
+        if (this.state.user) {
             return <Redirect to='/home' />
+        }
+        if (this.state.loading) {
+            return <Dimmer active>
+                            <Loader />
+                        </Dimmer>
         }
         return (
             <div>
