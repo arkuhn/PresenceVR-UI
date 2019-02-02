@@ -28,7 +28,7 @@ class AframeInterview extends Component {
                         var posX = 0
                         var posY = 2.5
                         index = index - 3
-                        return <Entity geometry={{primitive: 'box', depth: 0.001}} material={{src: `${API_URL}${asset.data.fullpath}`}} position={{x: posX, y: posY, z: index}} /> 
+                        return <Entity geometry={{primitive: 'box', width:5, height:5, depth: 0.001}} material={{src: `${API_URL}${asset.data.fullpath}`}} position={{x: posX, y: posY, z: index}} /> 
                     
                     }
                 })
@@ -46,8 +46,7 @@ class AframeInterview extends Component {
             <Scene className="aframeContainer" embedded> 
                 <Entity id="box" geometry="primitive: box" material="color: red"></Entity>
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
-                <a-light type="point" color="white" position="3 5 5"></a-light>
-
+                <a-light type="point" color="white" type="ambient" position="0 8 0"></a-light>
                 <Entity geometry={{primitive: 'box'}} material={{src: `https://b3h2.scene7.com/is/image/BedBathandBeyond/185908365252857p?$imagePLP$&wid=256&hei=256`}} position={{x: 0, y: 5, z: -10}} />
                 {this.state.renderedAssets}
             </Scene>
