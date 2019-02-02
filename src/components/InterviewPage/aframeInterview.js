@@ -25,10 +25,23 @@ class AframeInterview extends Component {
                 return UploadAPI.getUpload(assetId).then((asset) => {
                     if (asset) {
                         console.log(asset)
+                        var varheight = asset.data.height
+                        var varwidth = asset.data.width
+                        var ratio = 0
+                        if (varheight > varwidth){
+                            ratio = varwidth/varheight
+                            varheight = 5
+                            varwidth = 5 * ratio
+                        }
+                        else{
+                            ratio = varheight/varwidth
+                            varheight = 5 * ratio
+                            varwidth = 5 
+                        }
                         var posX = 0
-                        var posY = 2.5
+                        var posY = (varheight/2)
                         index = index - 3
-                        return <Entity geometry={{primitive: 'box', width:5, height:5, depth: 0.001}} material={{src: `${API_URL}${asset.data.fullpath}`}} position={{x: posX, y: posY, z: index}} /> 
+                        return <Entity geometry={{primitive: 'box', width:varwidth, height:varheight, depth: 0.001}} material={{src: `${API_URL}${asset.data.fullpath}`}} position={{x: posX, y: posY, z: index}} /> 
                     
                     }
                 })
