@@ -23,30 +23,32 @@ class AframeInterview extends Component {
             var assetPromises = data.loadedAssets.map((assetId) => {
                 return UploadAPI.getUpload(assetId)
                 .then((asset) => {
-                    return Promise.all([Promise.resolve(asset), UploadAPI.getUploadFile(asset.data.name)])
-                .then(([asset, file]) => {
-                    if (file) {
-                        var varheight = asset.data.height
-                        var varwidth = asset.data.width
-                        var ratio = 0
-                        if (varheight > varwidth){
-                            ratio = varwidth/varheight
-                            varheight = 6
-                            varwidth = 6 * ratio
-                        }
-                        else{
-                            ratio = varheight/varwidth
-                            varheight = 6 * ratio
-                            varwidth = 6 
-                        }
-                        var posX = 0
-                        var posY = (varheight/2)
-                        index = index - 3
-                        var source = 'url(data:' + asset.data.filetype + ';base64,' + file.data +')'
-                    
-                        return <Entity key={asset.data._id} geometry={{primitive: 'box', width:varwidth, height:varheight, depth: 0.001}} material={{src: source, npot: true}} position={{x: posX, y: posY, z: index}} /> 
+                    if(asset) {
+                        return Promise.all([Promise.resolve(asset), UploadAPI.getUploadFile(asset.data.name)])
+                        .then(([asset, file]) => {
+                            if (file) {
+                                var varheight = asset.data.height
+                                var varwidth = asset.data.width
+                                var ratio = 0
+                                if (varheight > varwidth){
+                                    ratio = varwidth/varheight
+                                    varheight = 6
+                                    varwidth = 6 * ratio
+                                }
+                                else{
+                                    ratio = varheight/varwidth
+                                    varheight = 6 * ratio
+                                    varwidth = 6 
+                                }
+                                var posX = 0
+                                var posY = (varheight/2)
+                                index = index - 3
+                                var source = 'url(data:' + asset.data.filetype + ';base64,' + file.data +')'
+                            
+                                return <Entity key={asset.data._id} geometry={{primitive: 'box', width:varwidth, height:varheight, depth: 0.001}} material={{src: source, npot: true}} position={{x: posX, y: posY, z: index}} /> 
+                            }
+                        })
                     }
-                })
                 })
             })
     
