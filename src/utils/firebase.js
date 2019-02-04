@@ -1,5 +1,6 @@
-import firebase from 'firebase';
 import { config } from '../config/firebase.config'
+const firebase = require('firebase/app');
+require('firebase/auth');
 
 firebase.initializeApp(config);
 

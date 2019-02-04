@@ -1,14 +1,10 @@
-import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
 import 'filepond/dist/filepond.min.css';
 import React, { Component } from 'react';
-import { Button, Form, Checkbox, Divider, Header, Icon, List, Modal } from 'semantic-ui-react';
+import { Checkbox, Form, Header, Icon } from 'semantic-ui-react';
 import InterviewAPI from '../../utils/InterviewAPI';
 
 class Environments extends Component {
-    constructor(props) {
-        super(props)
-    }
 
     handleChange = (e, { value }) => {
         this.setState({ value })

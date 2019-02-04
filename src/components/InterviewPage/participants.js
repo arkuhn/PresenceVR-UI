@@ -22,8 +22,8 @@ class Participants extends Component {
         if (this.props.participants.length === 0) {
             return <p> No particpants added!</p>
         }
-        return this.props.participants.map((participant) => {
-            return <Participant name={participant} status={statuses[Math.floor(Math.random() * 2)]}/>
+        return this.props.participants.map((participant, index) => {
+            return <Participant key={index} name={participant} status={statuses[Math.floor(Math.random() * 2)]}/>
         })
     }
 

@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
-import './aframeInterview.css';
 import 'aframe';
-import {Entity, Scene} from 'aframe-react';
-import 'aframe-environment-component'
+import 'aframe-environment-component';
+import { Entity, Scene } from 'aframe-react';
+import React, { Component } from 'react';
 import UploadAPI from '../../utils/UploadAPI';
-import {API_URL} from '../../config/api.config'
+import './aframeInterview.css';
 
 class AframeInterview extends Component {
 
@@ -45,7 +44,7 @@ class AframeInterview extends Component {
                         index = index - 3
                         var source = 'url(data:' + asset.data.filetype + ';base64,' + file.data +')'
                     
-                        return <Entity geometry={{primitive: 'box', width:varwidth, height:varheight, depth: 0.001}} material={{src: source}} position={{x: posX, y: posY, z: index}} /> 
+                        return <Entity key={asset.data._id} geometry={{primitive: 'box', width:varwidth, height:varheight, depth: 0.001}} material={{src: source, npot: true}} position={{x: posX, y: posY, z: index}} /> 
                     }
                 })
                 })
@@ -62,7 +61,7 @@ class AframeInterview extends Component {
             <Scene className="aframeContainer" embedded> 
                 <Entity id="box" geometry="primitive: box" material="color: red"></Entity>
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
-                <a-light type="point" color="white" type="ambient" position="0 8 0"></a-light>
+                <a-light type="point" color="white" position="0 8 0"></a-light>
                 <Entity geometry={{primitive: 'box'}} material={{src: `https://b3h2.scene7.com/is/image/BedBathandBeyond/185908365252857p?$imagePLP$&wid=256&hei=256`}} position={{x: 0, y: 5, z: -10}} />
                 {this.state.renderedAssets}
             </Scene>

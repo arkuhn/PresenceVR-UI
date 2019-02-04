@@ -2,10 +2,10 @@ import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
 import 'filepond/dist/filepond.min.css';
 import React, { Component } from 'react';
-import { FilePond, registerPlugin } from 'react-filepond';
-import { Button, Segment, Dimmer, Loader, Header, Icon, List, Checkbox } from 'semantic-ui-react';
-import UploadAPI from '../../utils/UploadAPI';
+import { registerPlugin } from 'react-filepond';
+import { Button, Checkbox, Dimmer, Header, Icon, List, Loader, Segment } from 'semantic-ui-react';
 import InterviewAPI from '../../utils/InterviewAPI';
+import UploadAPI from '../../utils/UploadAPI';
 
 registerPlugin(FilePondPluginImagePreview);
 
@@ -152,6 +152,7 @@ class Assets extends Component {
             }
             return (
                 <Asset 
+                    key={asset._id}
                     name={asset.name} 
                     owner={asset.owner}
                     id={asset._id} 
