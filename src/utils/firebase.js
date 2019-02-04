@@ -7,6 +7,16 @@ export const firebaseAuth = firebase.auth();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 var loading = false;
 
+
+export function safeGetUser() {
+    return new Promise( function(resolve, reject) {
+        var unsubscribe = firebaseAuth.onAuthStateChanged((user) => {     
+            resolve (user)
+        });
+        unsubscribe()
+    })
+}
+
 export function loginWithGoogle() {
     loading = true;
     return firebaseAuth.signInWithRedirect(googleProvider)

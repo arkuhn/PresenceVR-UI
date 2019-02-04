@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { API_URL } from "../config/api.config";
-import { firebaseAuth } from './firebase';    
+import { firebaseAuth, safeGetUser } from './firebase';    
 
 //Upload a file
 function uploadFile(data, type){
-    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+    return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {
             headers: { 
                 'Authorization': `${token}`,
@@ -22,7 +22,7 @@ function uploadFile(data, type){
 }
 
 function getUploads() {
-    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+    return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`}};
         return axios.get(API_URL + `/api/uploads`
         , config).then((response) => {
@@ -36,7 +36,7 @@ function getUploads() {
 }
 
 function deleteUpload(id) {
-    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+    return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`}};
         return axios.delete(API_URL + '/api/uploads/' + `${id}`,
         config).then((response) => {
@@ -50,9 +50,9 @@ function deleteUpload(id) {
 }
             
 function getUpload(id) {
-    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+    return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`}};
-        return axios.get(API_URL + `/api/uploads${id}`
+        return axios.get(API_URL + `/api/uploads/${id}`
         , config).then((response) => {
             console.log('Got  upload for host response');
             console.log(response);
