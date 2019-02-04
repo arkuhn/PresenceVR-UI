@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Divider, Grid, Header, Icon, Segment, Dimmer, Loader} from 'semantic-ui-react';
-import { firebaseAuth, safeGetUser } from '../../utils/firebase';
+import { Dimmer, Divider, Grid, Header, Icon, Loader, Segment } from 'semantic-ui-react';
+import { firebaseAuth } from '../../utils/firebase';
 import InterviewForm from '../InterviewCard/InterviewForm';
 import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar";
 import './Homepage.css';
@@ -47,9 +47,9 @@ class Homepage extends Component {
                     <Grid centered className='ui grid'>
                         
                         {/* Header */}
-                        <Grid.Column width={3} />
+                        <Grid.Column width={1} />
     
-                        <Grid.Column width={10}>
+                        <Grid.Column width={14}>
                             <Grid.Row>
                                 <br/>
                                 <Header as='h1'>
@@ -65,13 +65,11 @@ class Homepage extends Component {
                             
                             <InterviewList hostEmail={firebaseAuth.currentUser.email}/>
     
-                            <Segment basic floated='right'>
-                                <InterviewForm type='create'/>
-                            </Segment>
+                            
     
                         </Grid.Column>
     
-                        <Grid.Column width={3} />
+                        <Grid.Column width={1} />
                                 
                     </Grid>
                 </div>

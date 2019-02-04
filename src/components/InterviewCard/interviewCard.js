@@ -25,9 +25,9 @@ class InterviewCard extends Component {
                 </List.Item>
             )
         }
-        return this.props.participants.map((participant) => {
+        return this.props.participants.map((participant, index) => {
             return (
-                <List.Item>
+                <List.Item key={index}>
                 {participant}    
                 </List.Item>
             )
@@ -53,9 +53,9 @@ class InterviewCard extends Component {
                             Join
                         </Button>
 
-                        <InterviewForm type='edit' id={this.props.id} participants={this.props.participants} date={this.props.date} time={this.props.time} details={this.props.details} />
+                        <InterviewForm updateInterviewListCallback={this.props.updateInterviewListCallback} type='edit' id={this.props.id} participants={this.props.participants} date={this.props.date} time={this.props.time} details={this.props.details} />
 
-                        <CancelInterview id={this.props.id} />
+                        <CancelInterview updateInterviewListCallback={this.props.updateInterviewListCallback} id={this.props.id} />
                     </div>
                 </Card.Content>
             </Card.Content>

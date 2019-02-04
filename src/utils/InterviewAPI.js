@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_URL } from "../config/api.config";
-import { firebaseAuth, safeGetUser } from './firebase';    
+import { safeGetUser } from './firebase';
 
 function getInterview(id){
         return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
