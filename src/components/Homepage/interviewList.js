@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Dimmer, Divider, Grid, Header, List, Loader } from 'semantic-ui-react';
+import { Dimmer, Divider, Segment, Grid, Header, List, Loader } from 'semantic-ui-react';
 import { firebaseAuth } from '../../utils/firebase';
 import InterviewAPI from '../../utils/InterviewAPI';
+import InterviewForm from '../InterviewCard/InterviewForm'
 import InterviewCard from '../InterviewCard/interviewCard';
 
 
@@ -67,7 +68,8 @@ class InterviewList extends Component {
                                     icon='calendar alternate outline'
                                     id={interview._id}
                                     host={hosting} 
-                                    key={interview._id}/>
+                                    key={interview._id}
+                                    updateInterviewListCallback={this.updateList}/>
                 )
             }
         })
@@ -123,6 +125,9 @@ class InterviewList extends Component {
                             <Header as='h2'>
                                 <Header.Content>
                                     Hosted Interviews
+                                    <Segment basic floated='right'>
+                                        <InterviewForm updateInterviewListCallback={this.updateList} type='create'/>
+                                    </Segment>
                                 </Header.Content>
                             </Header>
                             <Divider />

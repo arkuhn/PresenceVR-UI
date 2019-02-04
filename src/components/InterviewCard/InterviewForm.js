@@ -53,9 +53,9 @@ class InterviewForm extends React.Component {
         }
 
         if (this.props.type === 'create') {
-            InterviewAPI.createInterview(data).then(() => window.location.reload())
+            InterviewAPI.createInterview(data).then(() => this.props.updateInterviewListCallback())
         } else {
-            InterviewAPI.updateInterview(data, this.state.id).then(() => window.location.reload())
+            InterviewAPI.updateInterview(data, this.state.id).then(() => this.props.updateInterviewListCallback())
         }
         this.setState({ modalOpen: false })
         

@@ -65,9 +65,7 @@ class Homepage extends Component {
                             
                             <InterviewList hostEmail={firebaseAuth.currentUser.email}/>
     
-                            <Segment basic floated='right'>
-                                <InterviewForm type='create'/>
-                            </Segment>
+                            
     
                         </Grid.Column>
     
