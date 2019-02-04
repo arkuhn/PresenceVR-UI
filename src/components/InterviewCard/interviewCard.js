@@ -25,9 +25,9 @@ class InterviewCard extends Component {
                 </List.Item>
             )
         }
-        return this.props.participants.map((participant) => {
+        return this.props.participants.map((participant, index) => {
             return (
-                <List.Item>
+                <List.Item key={index}>
                 {participant}    
                 </List.Item>
             )

@@ -66,7 +66,8 @@ class InterviewList extends Component {
                                     image={face} 
                                     icon='calendar alternate outline'
                                     id={interview._id}
-                                    host={hosting} />
+                                    host={hosting} 
+                                    key={interview._id}/>
                 )
             }
         })
