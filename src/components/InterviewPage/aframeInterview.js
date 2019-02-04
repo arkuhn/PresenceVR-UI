@@ -20,11 +20,13 @@ class AframeInterview extends Component {
     //Not sure why env prop updates but not loadedAssets, this is a hack to fix
     componentWillReceiveProps(data) {
         if (data.loadedAssets) {
-            var index = 0
+            var index = 0;
             var assetPromises = data.loadedAssets.map((assetId) => {
-                return UploadAPI.getUpload(assetId).then((asset) => {
-                    if (asset) {
-                        console.log(asset)
+                return UploadAPI.getUpload(assetId)
+                .then((asset) => {
+                    return Promise.all([Promise.resolve(asset), UploadAPI.getUploadFile(asset.data.name)])
+                .then(([asset, file]) => {
+                    if (file) {
                         var varheight = asset.data.height
                         var varwidth = asset.data.width
                         var ratio = 0
@@ -41,9 +43,11 @@ class AframeInterview extends Component {
                         var posX = 0
                         var posY = (varheight/2)
                         index = index - 3
-                        return <Entity geometry={{primitive: 'box', width:varwidth, height:varheight, depth: 0.001}} material={{src: `${API_URL}${asset.data.fullpath}`}} position={{x: posX, y: posY, z: index}} /> 
+                        var source = 'url(data:' + asset.data.filetype + ';base64,' + file.data +')'
                     
+                        return <Entity geometry={{primitive: 'box', width:varwidth, height:varheight, depth: 0.001}} material={{src: source}} position={{x: posX, y: posY, z: index}} /> 
                     }
+                })
                 })
             })
     
@@ -55,7 +59,6 @@ class AframeInterview extends Component {
 
     render() {
         return (
-           
             <Scene className="aframeContainer" embedded> 
                 <Entity id="box" geometry="primitive: box" material="color: red"></Entity>
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>

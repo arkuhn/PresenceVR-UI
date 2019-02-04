@@ -63,9 +63,24 @@ function getUpload(id) {
     })
 }
 
+function getUploadFile(filename) {
+    return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
+        let config = {headers: {Authorization: `${token}`}};
+        return axios.get(API_URL + `/uploads/${filename}`
+        , config).then((response) => {
+            console.log('Got  upload for host response');
+            console.log(response);
+            return response;
+        }).catch((error) => {
+            console.log(error);
+        });
+    })
+}
+
 export default {
     uploadFile,
     getUploads,
     deleteUpload,
-    getUpload
+    getUpload,
+    getUploadFile
 }
