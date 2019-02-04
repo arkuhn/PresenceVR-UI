@@ -45,12 +45,6 @@ class Asset extends Component {
         });
     }
 
-    deleteAsset = () => {
-        UploadAPI.deleteUpload(this.props.id).then((response) => {
-            this.props.updateAssetsCallback()
-        });
-    }
-
     render() {
         return (
             <List.Item active={false} >
