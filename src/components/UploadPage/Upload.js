@@ -1,14 +1,36 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Card, Grid } from 'semantic-ui-react';
+import { Card, Grid, Dimmer, Loader } from 'semantic-ui-react';
 import { firebaseAuth } from '../../utils/firebase';
 import PresenceVRNavBar from '../PresenceVRNavBar/PresenceVRNavBar';
 
 class UploadPage extends Component {
+
+	componentWillMount() {
+        this.setState({loading: true})
+        // Bind the variable to the instance of the class.
+        this.authFirebaseListener = firebaseAuth.onAuthStateChanged((user) => {
+          this.setState({
+            loading: false,  // For the loader maybe
+            user, // User Details
+            isAuth: true
+          });
+        });
+    
+    }
+
+    componentWillUnmount() {
+        this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
+    }
 	
 	render() {
-		if (!firebaseAuth.currentUser) {
-            return <Redirect to='/' />
+		if (this.state.loading) {
+            return <Dimmer active>
+                        <Loader />
+                    </Dimmer>
+        }
+        if (!this.state.loading && !this.state.user) {
+            return <Redirect to='/'/>
         }
 		return (
 			<div className="UploadPage">

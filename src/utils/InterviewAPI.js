@@ -1,23 +1,24 @@
 import axios from 'axios';
 import { API_URL } from "../config/api.config";
-import { firebaseAuth } from './firebase';    
+import { firebaseAuth, safeGetUser } from './firebase';    
 
 function getInterview(id){
-    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
-        let config = {headers: {Authorization: `${token}`}};
-        return axios.get(API_URL + `/api/interview/${id}`, config).then((response) => {
-            console.log('got a result');
-            console.log(response);
-            return response;
-        }).catch((error) => {
-            console.log(error);
+        return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
+            let config = {headers: {Authorization: `${token}`}};
+            return axios.get(API_URL + `/api/interview/${id}`, config).then((response) => {
+                console.log('got a result');
+                console.log(response);
+                return response;
+            }).catch((error) => {
+                console.log(error);
+            })
         })
-    })
+
 }
 
 //Takes in an interview object
 function createInterview(data){
-    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+    return  safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`}};
         return axios.post(API_URL + '/api/interviews', { data }, config).then((response) => {
             console.log('Interview created response');
@@ -31,7 +32,7 @@ function createInterview(data){
 
 //returns all interviews for user. takes in host
 function getAllInterviews(id){
-    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+    return  safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`}};
         return axios.get(API_URL + `/api/interviews/${id}`
         , config).then((response) => {
@@ -45,10 +46,10 @@ function getAllInterviews(id){
 }
 
 //takes in updated interview object
-function updateInterview(data){
-    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+function updateInterview(data, id){
+    return  safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`}};
-        return axios.put(API_URL + `/api/interviews/`, { data }, config).then((response) => {
+        return axios.put(API_URL + `/api/interviews/${id}`, { data }, config).then((response) => {
             console.log('Update interview result');
             console.log(response);
             return response;
@@ -60,7 +61,7 @@ function updateInterview(data){
 
 //will work same as interview object
 function deleteInterview(id){
-    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+    return  safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`, id }};
         return axios.delete(API_URL + `/api/interviews/`, config).then((response) => {
             console.log('Delete interview result');
@@ -74,7 +75,7 @@ function deleteInterview(id){
 
 //remove the current participant from the interview
 function leaveInterview(id){
-    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+    return  safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`}};
         return axios.patch(API_URL + `/api/interviews/${id}`, {}, config).then((response) => {
             console.log('Removing participant from interview');
@@ -86,11 +87,11 @@ function leaveInterview(id){
     });
 }
 
-function renderAssets(assetId, id){
-    return firebaseAuth.currentUser.getIdToken(true).then((token) => {
+function updateAssetList(assetId, id){
+    return  safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`}};
         return axios.patch(API_URL + `/api/interviews/${id}/${assetId}`, {}, config).then((response) => {
-            console.log('Updating Rendered Assets');
+            console.log('Updating Loaded Asset List');
             console.log(response);
             return response;
         }).catch((error) => {
@@ -100,5 +101,5 @@ function renderAssets(assetId, id){
 }
 
 export default {
-    getInterview, createInterview, getAllInterviews, updateInterview, deleteInterview, leaveInterview, renderAssets
+    getInterview, createInterview, getAllInterviews, updateInterview, deleteInterview, leaveInterview, updateAssetList
 }

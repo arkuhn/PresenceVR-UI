@@ -2,77 +2,23 @@ import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
 import 'filepond/dist/filepond.min.css';
 import React, { Component } from 'react';
-import { FilePond, registerPlugin } from 'react-filepond';
-import { Button, Divider, Header, Icon, List, Modal } from 'semantic-ui-react';
-
-registerPlugin(FilePondPluginImagePreview);
-
-function Environment(props) {
-    return (
-    <List.Item as='a'>
-        <Icon name={props.icon} />
-        <List.Content>
-            <List.Header>{props.name}</List.Header>
-            <List.Description>
-            Uploaded on {props.date}
-            </List.Description>
-        </List.Content>
-    </List.Item>
-    )
-}
-
+import { Button, Form, Checkbox, Divider, Header, Icon, List, Modal } from 'semantic-ui-react';
+import InterviewAPI from '../../utils/InterviewAPI';
 
 class Environments extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-            modalOpen: false
-        }
-        this.Environments = []
-
-        this.handleModelClose = this.handleModelClose.bind(this)
-        this.handleModelOpen = this.handleModelOpen.bind(this)
-        this.loadEnvironmentsModal = this.loadEnvironmentsModal.bind(this);
-        this.generateEnvironments = this.generateEnvironments.bind(this)
-    }
-    handleModelClose() { 
-        this.setState({ modalOpen: false })
     }
 
-    handleModelOpen() {
-        this.setState({ modalOpen: true})
-    }
-
-    loadEnvironmentsModal() {
-        return (
-            <Modal trigger={ <Button fluid onClick={this.handleModelOpen} content='Load more'/> } open={this.state.modalOpen} onClose={this.handleClose} closeOnDocumentClick closeIcon>
-                <Header icon='boxes' content='Select an Environment to load' />
-                <Modal.Content>
-                    <List horizontal selection>
-                    <br/>
-                        {this.environments.map((environment)=> {
-                            return <Environment name={environment.name} date={environment.date} icon='chevron right'/>
-                        })}
-                    </List>
-                    <Divider />
-                    <FilePond />
-                    <Button onClick={this.handleModelClose} fluid>Close</Button>
-                </Modal.Content>
-            </Modal>
-        )    
-    }
-    generateEnvironments() {
-        if (this.props.environments.length === 0) {
-            return <p> No environments added!</p>
-        }
-        return this.props.environments.map((environment) => {
-            return <Environment name={environment.name} date={'0/0/00'} icon='image outline'/>
+    handleChange = (e, { value }) => {
+        this.setState({ value })
+        console.log(this.state)
+        InterviewAPI.updateInterview({loadedEnvironment: value}, this.props.interviewId).then ((response) =>{
+            this.props.updateInterviewCallback();
         })
     }
 
     render() {
-        this.environments= [] // Clear Environments everytime this is re-rendered
-
         const css = ` 
         .EnvironmentsList {
             height:250px;
@@ -88,10 +34,51 @@ class Environments extends Component {
                     <Icon name='image outline' />
                     Environments
                 </Header>
-                <List className="EnvironmentsList">
-                    {this.generateEnvironments()}
-                </List>
-                {this.loadEnvironmentsModal()}
+                <Form>
+                    <Form.Field>
+                    Selected environment: <b>{this.props.environment}</b>
+                    </Form.Field>
+                    <Form.Field>
+                    <Checkbox
+                        toggle
+                        label='Default'
+                        name='checkboxRadioGroup'
+                        value='default'
+                        checked={this.props.environment === 'default'}
+                        onChange={this.handleChange}
+                    />
+                    </Form.Field>
+                    <Form.Field>
+                    <Checkbox
+                        toggle
+                        label='Starry'
+                        name='checkboxRadioGroup'
+                        value='starry'
+                        checked={this.props.environment === 'starry'}
+                        onChange={this.handleChange}
+                    />
+                    </Form.Field>
+                    <Form.Field>
+                    <Checkbox
+                        toggle
+                        label='Japan'
+                        name='checkboxRadioGroup'
+                        value='japan'
+                        checked={this.props.environment === 'japan'}
+                        onChange={this.handleChange}
+                    />
+                    </Form.Field>
+                    <Form.Field>
+                    <Checkbox
+                        toggle
+                        label='Tron'
+                        name='checkboxRadioGroup'
+                        value='tron'
+                        checked={this.props.environment === 'tron'}
+                        onChange={this.handleChange}
+                    />
+                    </Form.Field>
+                </Form>
                 <style>{css}</style>
             </div>
         );
