@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dimmer, Divider, Segment, Grid, Header, List, Loader } from 'semantic-ui-react';
+import { Dimmer, Divider, Card, Segment, Grid, Header, List, Loader } from 'semantic-ui-react';
 import { firebaseAuth } from '../../utils/firebase';
 import InterviewAPI from '../../utils/InterviewAPI';
 import InterviewForm from '../InterviewCard/InterviewForm'
@@ -125,12 +125,14 @@ class InterviewList extends Component {
                             <Header as='h2'>
                                 <Header.Content>
                                     Hosted Interviews
-                                    <Segment basic floated='right'>
-                                        <InterviewForm updateInterviewListCallback={this.updateList} type='create'/>
-                                    </Segment>
                                 </Header.Content>
-                            </Header>
+                            </Header>                 
                             <Divider />
+                            <Card.Group>            
+                                {this.populateHostList()}
+                            </Card.Group>
+                            <InterviewForm updateInterviewListCallback={this.updateList} type='create'/>
+
                         </Grid.Column>
                         <Grid.Column width={8}>
                             <Header as='h2'>
@@ -139,15 +141,9 @@ class InterviewList extends Component {
                                 </Header.Content>
                             </Header>
                             <Divider />
-                        </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row>
-                        <Grid.Column width={8}>
-                            {this.populateHostList()}
-                        </Grid.Column>
-
-                        <Grid.Column width={8}>
-                            {this.populateNonHostList()}
+                            <Card.Group>
+                                {this.populateNonHostList()}
+                            </Card.Group>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

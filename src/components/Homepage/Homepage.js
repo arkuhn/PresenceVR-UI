@@ -47,9 +47,9 @@ class Homepage extends Component {
                     <Grid centered className='ui grid'>
                         
                         {/* Header */}
-                        <Grid.Column width={3} />
+                        <Grid.Column width={1} />
     
-                        <Grid.Column width={10}>
+                        <Grid.Column width={14}>
                             <Grid.Row>
                                 <br/>
                                 <Header as='h1'>
@@ -69,7 +69,7 @@ class Homepage extends Component {
     
                         </Grid.Column>
     
-                        <Grid.Column width={3} />
+                        <Grid.Column width={1} />
                                 
                     </Grid>
                 </div>
