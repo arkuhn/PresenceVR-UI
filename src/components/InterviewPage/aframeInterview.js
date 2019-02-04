@@ -31,13 +31,13 @@ class AframeInterview extends Component {
                         var ratio = 0
                         if (varheight > varwidth){
                             ratio = varwidth/varheight
-                            varheight = 5
-                            varwidth = 5 * ratio
+                            varheight = 6
+                            varwidth = 6 * ratio
                         }
                         else{
                             ratio = varheight/varwidth
-                            varheight = 5 * ratio
-                            varwidth = 5 
+                            varheight = 6 * ratio
+                            varwidth = 6 
                         }
                         var posX = 0
                         var posY = (varheight/2)
