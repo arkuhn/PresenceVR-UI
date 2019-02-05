@@ -25,6 +25,9 @@ class Asset extends Component {
     }
 
     deleteAsset = () => {
+        if(this.state.isRendered){
+            this.renderAsset();
+        }
         UploadAPI.deleteUpload(this.props.id).then((response) => {
             this.props.updateAssetsCallback()
         });
