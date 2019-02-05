@@ -28,12 +28,14 @@ class InterviewPage extends Component {
 
     updateInterview() {
         return InterviewAPI.getInterview(this.id).then((data) => {
-            console.log('got data');
-            console.log(data.data);
-            this.setState({
-                interview: data.data,
-                upToDate: true
-            });
+            if(data){
+                console.log('got data');
+                console.log(data.data);
+                this.setState({
+                    interview: data.data,
+                    upToDate: true
+                });
+            }
         });
     }
 
