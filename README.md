@@ -17,15 +17,19 @@ To deploy the application:
 
 2. Drop the provided config files (*api.config.js* and *firebase.config.js*) in the ''**src/configs/**'' directory
 
-3. Run the `npm install && npm build && npm run deploy`
+3. Run 
 
-4. Go get coffee
+   ```
+   npm install
+   npm run build
+   npm run deploy
+   ```
 
-5. Navigate to one of the following URLs (depending on which config files you used)
+4. Navigate to one of the following URLs (depending on which config files you used)
 
-   Development:
+   Development: https://presencevr-dev.firebaseapp.com
 
-   Production:
+   Production: https://presence-vr.firebaseapp.com
 
 
 
