@@ -9,52 +9,96 @@ class AframeInterview extends Component {
 
    constructor(props) {
         super(props);
-        console.log(this.props)
         this.state = ({
-            renderedAssets: [],
-            loaded: false
+            lights: [],
+            entities: [],
+            loadedAssets: [],
         })
     }
 
-    //Not sure why env prop updates but not loadedAssets, this is a hack to fix
-    componentWillReceiveProps(data) {
-        if (data.loadedAssets) {
-            var index = 0;
-            var assetPromises = data.loadedAssets.map((assetId) => {
-                return UploadAPI.getUpload(assetId)
-                .then((asset) => {
-                    if(asset) {
-                        return Promise.all([Promise.resolve(asset), UploadAPI.getUploadFile(asset.data.name)])
-                        .then(([asset, file]) => {
+    getDimensions = (loadedAsset) => {
+        var varheight = loadedAsset.data.height
+        var varwidth = loadedAsset.data.width
+        var ratio = 0
+        if (varheight > varwidth){
+            ratio = varwidth/varheight
+            varheight = 6
+            varwidth = 6 * ratio
+        }
+        else{
+            ratio = varheight/varwidth
+            varheight = 6 * ratio
+            varwidth = 6 
+        }
+
+        return [varheight, varwidth]
+    }
+
+    getLoadedAssetPromises = (loadedAssetIds) => {
+        return loadedAssetIds.map((loadedAssetId, index) => {
+            return UploadAPI.getUpload(loadedAssetId)
+            .then((loadedAsset) => {
+                if(loadedAsset) {
+                    return Promise.all([Promise.resolve(loadedAsset), Promise.resolve(index), UploadAPI.getUploadFile(loadedAsset.data.name)])
+                        .then(([loadedAsset, index, file]) => {
                             if (file) {
-                                var varheight = asset.data.height
-                                var varwidth = asset.data.width
-                                var ratio = 0
-                                if (varheight > varwidth){
-                                    ratio = varwidth/varheight
-                                    varheight = 6
-                                    varwidth = 6 * ratio
+                                var [varheight, varwidth] = this.getDimensions(loadedAsset)
+                                
+                                return {
+                                    file: file.data,
+                                    type: loadedAsset.data.filetype,
+                                    height: varheight,
+                                    width: varwidth,
+                                    name: loadedAsset.data.name,
+                                    id: loadedAsset.data._id,
+                                    x: index * 8,
+                                    y: (varheight/2),
+                                    z: -3
                                 }
-                                else{
-                                    ratio = varheight/varwidth
-                                    varheight = 6 * ratio
-                                    varwidth = 6 
-                                }
-                                var posX = 0
-                                var posY = (varheight/2)
-                                index = index - 3
-                                var source = 'url(data:' + asset.data.filetype + ';base64,' + file.data +')'
-                            
-                                return <Entity key={asset.data._id} geometry={{primitive: 'box', width:varwidth, height:varheight, depth: 0.001}} material={{src: source, npot: true}} position={{x: posX, y: posY, z: index}} /> 
                             }
-                        })
-                    }
+                    })
+                }
+            })
+        })
+    }
+
+    renderLoadedAssets = (loadedAssetPromises) => {
+        Promise.all(loadedAssetPromises).then((loadedAssets)=> {
+            this.setState({loadedAssets}, () => {
+                var entities = []
+                var lights = []
+                loadedAssets.forEach((loadedAsset) => {
+                    //Entities
+                    entities.push(
+                        <Entity key={loadedAsset.id} 
+                                geometry={{primitive: 'box', width:loadedAsset.width, height:loadedAsset.height, depth: 0.001}}
+                                material={{src: 'data:' + loadedAsset.type + ';base64,' + loadedAsset.file , npot: true}}
+                                position={{x: loadedAsset.x, y: loadedAsset.y, z: loadedAsset.z}} 
+                        /> 
+                    )
+                    
+                    //lights
+                    lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${loadedAsset.height * 1.5} ${loadedAsset.z * -6}`}/>)
+
+                    this.setState({entities, lights})
                 })
             })
-    
-            Promise.all(assetPromises).then((assets)=> {
-                this.setState({renderedAssets: assets})
-            })
+
+        })
+    }
+
+    componentWillReceiveProps(data) {
+        console.log('HERE', data)
+        //data.loadedAssets is named poorly, its really just a list of ids
+        if (data.loadedAssets) {
+            // If the list is empty reset all of our rendered data
+            if (data.loadedAssets.length === 0) { return this.setState({loadedAssets: [], entities: [], lights: [], assets: []})}
+
+            //We must first get all the Asset data using the id (name, type, the file, size, etc)
+            var loadedAssetPromises = this.getLoadedAssetPromises(data.loadedAssets)
+
+            // Then we can render by adding entities and a light per loaded Asset
+            this.renderLoadedAssets(loadedAssetPromises)
         }
     }
 
@@ -62,8 +106,8 @@ class AframeInterview extends Component {
         return (
             <Scene className="aframeContainer" embedded> 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
-                <a-light type="point" color="white" position="0 8 0"></a-light>
-                {this.state.renderedAssets}
+                {this.state.entities}
+                {this.state.lights}
             </Scene>
         )
     }
