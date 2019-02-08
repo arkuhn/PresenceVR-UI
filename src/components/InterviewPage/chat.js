@@ -22,8 +22,8 @@ class ChatBox extends Component {
     render() {
         const messages = this.props.messages;
 
-        return messages.map((message) => {
-            return <ChatMessage user={message.user} message={message.message} timestamp={message.timestamp} />
+        return messages.map((message, index) => {
+            return <ChatMessage key={index} user={message.user} message={message.message} timestamp={message.timestamp} />
         });
     }
 }
@@ -42,7 +42,7 @@ class ChatBar extends Component {
 class ChatPane extends Component {
     constructor(props) {
         super(props);
-        this.state = {messages: new Array()}
+        this.state = {messages: []}
     }
 
     componentDidMount() {

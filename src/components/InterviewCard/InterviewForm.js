@@ -53,9 +53,9 @@ class InterviewForm extends React.Component {
         }
 
         if (this.props.type === 'create') {
-            InterviewAPI.createInterview(data).then(() => window.location.reload())
+            InterviewAPI.createInterview(data).then(() => this.props.updateInterviewListCallback())
         } else {
-            InterviewAPI.updateInterview(data, this.state.id).then(() => window.location.reload())
+            InterviewAPI.updateInterview(data, this.state.id).then(() => this.props.updateInterviewListCallback())
         }
         this.setState({ modalOpen: false })
         
@@ -72,7 +72,7 @@ class InterviewForm extends React.Component {
 
     getTrigger() {
         if (this.props.type === 'create') {
-            return <Button circular icon='add' onClick={this.handleOpen} floated='right' size='small' />
+            return <Button circular icon='pencil alternate' onClick={this.handleOpen}  floated='right' size='Medium' />
         } else {
             return <Button basic onClick={this.handleOpen} color='grey' >Edit</Button>
         }

@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { API_URL } from "../config/api.config";
-import { firebaseAuth, safeGetUser } from './firebase';    
+import { safeGetUser } from './firebase';
 
 function getInterview(id){
         return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
             let config = {headers: {Authorization: `${token}`}};
-            return axios.get(API_URL + `/api/interview/${id}`, config).then((response) => {
+            return axios.get(API_URL + `/api/interviews/${id}`, config).then((response) => {
                 console.log('got a result');
                 console.log(response);
                 return response;
@@ -34,7 +34,7 @@ function createInterview(data){
 function getAllInterviews(id){
     return  safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`}};
-        return axios.get(API_URL + `/api/interviews/${id}`
+        return axios.get(API_URL + `/api/interviews/`
         , config).then((response) => {
             console.log('Got all interviews for host response');
             console.log(response);
