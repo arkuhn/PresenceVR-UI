@@ -68,20 +68,20 @@ class AframeInterview extends Component {
                 var entities = []
                 var lights = []
                 loadedAssets.forEach((loadedAsset) => {
-                    //Entities
-                    entities.push(
+                    if (loadedAsset) {
+                        //Entities
+                        entities.push(
                         <Entity key={loadedAsset.id} 
                                 geometry={{primitive: 'box', width:loadedAsset.width, height:loadedAsset.height, depth: 0.001}}
                                 material={{src: 'data:' + loadedAsset.type + ';base64,' + loadedAsset.file , npot: true}}
                                 position={{x: loadedAsset.x, y: loadedAsset.y, z: loadedAsset.z}} 
-                        /> 
-                    )
+                        /> )
                     
-                    //lights
-                    lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${loadedAsset.height * 1.5} ${loadedAsset.z * -6}`}/>)
-
-                    this.setState({entities, lights})
+                        //lights
+                        lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${loadedAsset.height * 1.5} ${loadedAsset.z * -6}`}/>)
+                    }
                 })
+                this.setState({entities, lights})
             })
 
         })
