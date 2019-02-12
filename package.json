@@ -7,6 +7,7 @@
     "aframe-environment-component": "^1.1.0",
     "aframe-look-at-component": "^0.7.0",
     "aframe-react": "^4.4.0",
+    "aframe-teleport-controls": "^0.3.1",
     "axios": "^0.18.0",
     "filepond": "^3.5.0",
     "filepond-plugin-image-preview": "^3.1.4",
