@@ -8,7 +8,7 @@ class Asset extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            isRendered: false
+            isRendered: this.props.loaded
         };
     }
 
