@@ -74,7 +74,7 @@ class AframeInterview extends Component {
                         entities.push(
                         <Entity key={loadedAsset.id} 
                                 geometry={{primitive: 'box', width:loadedAsset.width, height:loadedAsset.height, depth: 0.001}}
-                                material={{src: 'data:' + loadedAsset.type + ';base64,' + loadedAsset.file , npot: true}}
+                                material={{src: 'data:' + loadedAsset.type + ';base64,' + loadedAsset.file, npot:true}}
                                 position={{x: loadedAsset.x, y: loadedAsset.y, z: loadedAsset.z}} 
                         /> )
                     
@@ -89,7 +89,6 @@ class AframeInterview extends Component {
     }
 
     componentWillReceiveProps(data) {
-        console.log('HERE', data)
         //data.loadedAssets is named poorly, its really just a list of ids
         if (data.loadedAssets) {
             // If the list is empty reset all of our rendered data
@@ -107,11 +106,11 @@ class AframeInterview extends Component {
         return (
             <Scene className="aframeContainer" embedded> 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
-                <a-entity id="cameraRig">
-                    <a-entity id="head" camera wasd-controls look-controls position= "0 2 0"></a-entity>
-                    <a-entity laser-controls id="left-hand" teleport-controls="cameraRig: #cameraRig; teleportOrigin: #head; type: line; maxLength: 20;" ></a-entity>
-                    <a-entity laser-controls id="right-hand" teleport-controls="cameraRig: #cameraRig; teleportOrigin: #head; type: line; maxLength: 20;" ></a-entity>
-                </a-entity>
+                <Entity id="cameraRig">
+                    <Entity id="head" camera wasd-controls look-controls position={{x: 0, y: 2, z:0}} />
+                    <Entity laser-controls id="left-hand" teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20}} />
+                    <Entity laser-controls id="right-hand" teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20}} />
+                </Entity>
                 {this.state.entities}
                 {this.state.lights}
             </Scene>
