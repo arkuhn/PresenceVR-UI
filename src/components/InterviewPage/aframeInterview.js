@@ -109,8 +109,8 @@ class AframeInterview extends Component {
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
                 <a-entity id="cameraRig">
                     <a-entity id="head" camera wasd-controls look-controls position= "0 2 0"></a-entity>
-                    <a-entity laser-controls id="left-hand" teleport-controls="cameraRig: #cameraRig; teleportOrigin: #head;" ></a-entity>
-                    <a-entity laser-controls id="right-hand" teleport-controls="cameraRig: #cameraRig; teleportOrigin: #head;" ></a-entity>
+                    <a-entity laser-controls id="left-hand" teleport-controls="cameraRig: #cameraRig; teleportOrigin: #head; type: line; maxLength: 20;" ></a-entity>
+                    <a-entity laser-controls id="right-hand" teleport-controls="cameraRig: #cameraRig; teleportOrigin: #head; type: line; maxLength: 20;" ></a-entity>
                 </a-entity>
                 {this.state.entities}
                 {this.state.lights}
