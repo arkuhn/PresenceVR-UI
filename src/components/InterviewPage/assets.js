@@ -1,13 +1,8 @@
-import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
-import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
-import 'filepond/dist/filepond.min.css';
 import React, { Component } from 'react';
-import { registerPlugin } from 'react-filepond';
 import { Button, Checkbox, Dimmer, Header, Icon, List, Loader, Segment } from 'semantic-ui-react';
 import InterviewAPI from '../../utils/InterviewAPI';
 import UploadAPI from '../../utils/UploadAPI';
 
-registerPlugin(FilePondPluginImagePreview);
 
 class Asset extends Component {
     constructor(props) {

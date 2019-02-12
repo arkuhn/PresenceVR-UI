@@ -1,5 +1,3 @@
-import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
-import 'filepond/dist/filepond.min.css';
 import React, { Component } from 'react';
 import { Checkbox, Form, Header, Icon } from 'semantic-ui-react';
 import InterviewAPI from '../../utils/InterviewAPI';
