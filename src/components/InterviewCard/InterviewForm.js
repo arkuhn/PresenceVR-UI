@@ -72,7 +72,7 @@ class InterviewForm extends React.Component {
 
     getTrigger() {
         if (this.props.type === 'create') {
-            return <Button circular icon='pencil alternate' onClick={this.handleOpen}  floated='right' size='Medium' />
+            return <Button circular icon='pencil alternate' onClick={this.handleOpen}  floated='right' size='medium' />
         } else {
             return <Button basic onClick={this.handleOpen} color='grey' >Edit</Button>
         }

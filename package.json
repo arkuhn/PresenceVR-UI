@@ -9,8 +9,6 @@
     "aframe-react": "^4.4.0",
     "aframe-teleport-controls": "^0.3.1",
     "axios": "^0.18.0",
-    "filepond": "^3.5.0",
-    "filepond-plugin-image-preview": "^3.1.4",
     "firebase": "^5.7.0",
     "probe-image-size": "^4.0.0",
     "react": "^16.6.3",
