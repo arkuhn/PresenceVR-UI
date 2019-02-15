@@ -1,6 +1,10 @@
 import 'aframe';
+import 'aframe-physics-system'
+import 'aframe-physics-extras'
 import 'aframe-environment-component';
 import 'aframe-teleport-controls'
+import 'super-hands'
+
 import { Entity, Scene } from 'aframe-react';
 import React, { Component } from 'react';
 import UploadAPI from '../../utils/UploadAPI';
@@ -73,9 +77,10 @@ class AframeInterview extends Component {
                         //Entities
                         entities.push(
                         <Entity key={loadedAsset.id} 
-                                geometry={{primitive: 'box', width:loadedAsset.width, height:loadedAsset.height, depth: 0.001}}
+                                geometry={{primitive: 'box', width:loadedAsset.width, height:loadedAsset.height, depth: 0.1}}
                                 material={{src: 'data:' + loadedAsset.type + ';base64,' + loadedAsset.file, npot:true}}
                                 position={{x: loadedAsset.x, y: loadedAsset.y, z: loadedAsset.z}} 
+                                hoverable grabbable stretchable draggable
                         /> )
                     
                         //lights
@@ -102,15 +107,26 @@ class AframeInterview extends Component {
         }
     }
 
+    getGamepads = () => {
+        if ((navigator.getGamepads()).length === 2) {
+            return <Entity laser-controls super-hands progressive-controls id="right-hand" teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20}} />
+        } 
+
+        return [
+            <Entity laser-controls  super-hands progressive-controls  id="left-hand" teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20}} />,
+            <Entity laser-controls super-hands progressive-controls  id="right-hand" teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20}} />
+        ];
+    }
+
     render() {
         return (
             <Scene className="aframeContainer" embedded> 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
                 <Entity id="cameraRig">
                     <Entity id="head" camera wasd-controls look-controls position={{x: 0, y: 2, z:0}} />
-                    <Entity laser-controls id="left-hand" teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20}} />
-                    <Entity laser-controls id="right-hand" teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20}} />
-                </Entity>
+                    {this.getGamepads()}
+                </Entity> 
+                
                 {this.state.entities}
                 {this.state.lights}
             </Scene>
