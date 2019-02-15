@@ -1,6 +1,4 @@
 import 'aframe';
-import 'aframe-physics-system'
-import 'aframe-physics-extras'
 import 'aframe-environment-component';
 import 'aframe-teleport-controls'
 import 'super-hands'
@@ -107,16 +105,6 @@ class AframeInterview extends Component {
         }
     }
 
-    getGamepads = () => {
-        if ((navigator.getGamepads()).length === 2) {
-            return <Entity laser-controls super-hands progressive-controls id="right-hand" teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20}} />
-        } 
-
-        return [
-            <Entity laser-controls  super-hands progressive-controls  id="left-hand" teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20}} />,
-            <Entity laser-controls super-hands progressive-controls  id="right-hand" teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20}} />
-        ];
-    }
 
     render() {
         return (
@@ -124,7 +112,8 @@ class AframeInterview extends Component {
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
                 <Entity id="cameraRig">
                     <Entity id="head" camera wasd-controls look-controls position={{x: 0, y: 2, z:0}} />
-                    {this.getGamepads()}
+                    <Entity super-hands id='right-hand' hand-controls='right' teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20}} />        
+                    <Entity super-hands id='left-hand' hand-controls='left' teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20}} />                
                 </Entity> 
                 
                 {this.state.entities}
