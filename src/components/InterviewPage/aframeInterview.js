@@ -2,6 +2,9 @@ import 'aframe';
 import 'aframe-environment-component';
 import 'aframe-teleport-controls'
 import 'networked-aframe'
+import 'aframe-physics-system'
+import 'super-hands'
+import 'aframe-extras'
 import { Entity, Scene } from 'aframe-react';
 import React, { Component } from 'react';
 import UploadAPI from '../../utils/UploadAPI';
@@ -68,10 +71,13 @@ class AframeInterview extends Component {
                     if (loadedAsset) {
                         //Entities
                         entities.push(
-                        <Entity key={loadedAsset.id} 
-                                geometry={{primitive: 'box', width:loadedAsset.width, height:loadedAsset.height, depth: 0.001}}
-                                material={{src: 'data:' + loadedAsset.type + ';base64,' + loadedAsset.file , npot: true}}
+                        <Entity key={loadedAsset.id}
+                                class="assets"
+                                static-body={{shape: "box"}}
+                                geometry={{primitive: 'box', width:loadedAsset.width, height:loadedAsset.height, depth: 0.1}}
+                                material={{src: 'data:' + loadedAsset.type + ';base64,' + loadedAsset.file}}
                                 position={{x: loadedAsset.x, y: loadedAsset.y, z: loadedAsset.z}} 
+                                hoverable grabbable stretchable draggable
                         /> )
                     
                         //lights
@@ -85,7 +91,6 @@ class AframeInterview extends Component {
     }
 
     componentWillReceiveProps(data) {
-        console.log('HERE', data)
         //data.loadedAssets is named poorly, its really just a list of ids
         if (data.loadedAssets) {
             // If the list is empty reset all of our rendered data
@@ -99,15 +104,33 @@ class AframeInterview extends Component {
         }
     }
 
+
     render() {
         return (
             <Scene className="aframeContainer" embedded networked-scene={{serverURL: "http://localhost:8080", app: "PresenceVR", room: "123", debug: true}} > 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
-                <a-entity id="cameraRig">
-                    <a-entity id="head" camera wasd-controls look-controls position= "0 2 0"></a-entity>
-                    <a-entity laser-controls id="left-hand" teleport-controls="cameraRig: #cameraRig; teleportOrigin: #head; type: line; maxLength: 20;" ></a-entity>
-                    <a-entity laser-controls id="right-hand" teleport-controls="cameraRig: #cameraRig; teleportOrigin: #head; type: line; maxLength: 20;" ></a-entity>
-                </a-entity>
+                <Entity id="cameraRig">
+                    <Entity id="head" 
+                        camera 
+                        wasd-controls 
+                        look-controls 
+                        position={{x: 0, y: 2, z:0}} 
+                    />
+                    <Entity id='right-hand' 
+                        laser-controls 
+                        raycaster={{objects: ".assets"}}
+                        super-hands={{colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}}
+                        hand-controls='right'
+                        teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20, landingNormal:"0 1 0" }} 
+                    />         
+                    <Entity id='left-hand' 
+                        laser-controls
+                        raycaster={{objects: ".assets"}}
+                        super-hands={{colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}}
+                        hand-controls='left' 
+                        teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20, landingNormal:"0 1 0" }} 
+                    />                
+                </Entity>
                 {this.state.entities}
                 {this.state.lights}
             </Scene>
