@@ -107,7 +107,7 @@ class AframeInterview extends Component {
 
     render() {
         return (
-            <Scene className="aframeContainer" embedded networked-scene={{serverURL: "http://localhost:8080", app: "PresenceVR", room: "123", debug: true}} > 
+            <Scene className="aframeContainer" embedded networked-scene={{serverURL: "http://localhost:8080", app: "PresenceVR", room: "123", debug: true, adapter: 'easyrtc'}} > 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
                 <Entity id="cameraRig">
                     <Entity id="head" 
