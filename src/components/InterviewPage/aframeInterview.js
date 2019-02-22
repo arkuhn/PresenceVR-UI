@@ -1,6 +1,7 @@
 import 'aframe';
 import 'aframe-environment-component';
 import 'aframe-teleport-controls'
+import 'networked-aframe'
 import { Entity, Scene } from 'aframe-react';
 import React, { Component } from 'react';
 import UploadAPI from '../../utils/UploadAPI';
@@ -105,7 +106,7 @@ class AframeInterview extends Component {
 
     render() {
         return (
-            <Scene className="aframeContainer" embedded> 
+            <Scene className="aframeContainer" embedded networked-scene={{serverURL: "http://localhost:8080", app: "PresenceVR", room: "123", debug: true}} > 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
                 <a-entity id="cameraRig">
                     <a-entity id="head" camera wasd-controls look-controls position= "0 2 0"></a-entity>
