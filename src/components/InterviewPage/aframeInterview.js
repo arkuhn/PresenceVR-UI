@@ -37,28 +37,23 @@ class AframeInterview extends Component {
 
     getLoadedAssetPromises = (loadedAssetIds) => {
         return loadedAssetIds.map((loadedAssetId, index) => {
-            return UploadAPI.getUpload(loadedAssetId)
-            .then((loadedAsset) => {
-                if(loadedAsset) {
-                    return Promise.all([Promise.resolve(loadedAsset), Promise.resolve(index), UploadAPI.getUploadFile(loadedAsset.data.name)])
-                        .then(([loadedAsset, index, file]) => {
-                            if (file) {
-                                var [varheight, varwidth] = this.getDimensions(loadedAsset)
-                                
-                                return {
-                                    file: file.data,
-                                    type: loadedAsset.data.filetype,
-                                    height: varheight,
-                                    width: varwidth,
-                                    name: loadedAsset.data.name,
-                                    id: loadedAsset.data._id,
-                                    x: index * 8,
-                                    y: (varheight/2),
-                                    z: -3
-                                }
-                            }
-                    })
-                }
+            return Promise.all([UploadAPI.getUpload(loadedAssetId), UploadAPI.getUploadFile(loadedAssetId)])
+            .then(([loadedAsset, file]) => {
+                if (file && loadedAsset) {
+                    var [varheight, varwidth] = this.getDimensions(loadedAsset)
+                    
+                    return {
+                        file: file.data,
+                        type: loadedAsset.data.filetype,
+                        height: varheight,
+                        width: varwidth,
+                        name: loadedAsset.data.name,
+                        id: loadedAsset.data._id,
+                        x: index * 8,
+                        y: (varheight/2),
+                        z: -3
+                    }
+                } 
             })
         })
     }
