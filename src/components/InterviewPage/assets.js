@@ -168,8 +168,8 @@ class Assets extends Component {
             max-width: 100%;
             overflow-x: hidden;
         }
-        `
-
+        ` 
+        
         return (
             <div>
                 <Header as='h3'>
@@ -182,7 +182,7 @@ class Assets extends Component {
                 {this.uploadBox()}
                 <style>{css}</style>
             </div>
-        );
+        );              
     }
 }
 

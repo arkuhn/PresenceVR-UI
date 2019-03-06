@@ -4,10 +4,12 @@ import 'aframe-teleport-controls'
 import 'aframe-physics-system'
 import 'super-hands'
 import 'aframe-extras'
+//import 'aframe-gui'
 import { Entity, Scene } from 'aframe-react';
 import React, { Component } from 'react';
 import UploadAPI from '../../utils/UploadAPI';
 import './aframeInterview.css';
+//import Assets from './assets';
 
 class AframeInterview extends Component {
 
@@ -43,20 +45,35 @@ class AframeInterview extends Component {
             return Promise.all([UploadAPI.getUpload(loadedAssetId), UploadAPI.getUploadFile(loadedAssetId)])
             .then(([loadedAsset, file]) => {
                 if (file && loadedAsset) {
-                    var [varheight, varwidth] = this.getDimensions(loadedAsset)
-                    
-                    return {
-                        file: file.data,
-                        type: loadedAsset.data.filetype,
-                        height: varheight,
-                        width: varwidth,
-                        name: loadedAsset.data.name,
-                        id: loadedAsset.data._id,
-                        x: index * 8,
-                        y: (varheight/2),
-                        z: -3
+                    if(loadedAsset.data.name.includes(".png") || loadedAsset.data.name.includes(".jpg")){
+                        var [varheight, varwidth] = this.getDimensions(loadedAsset)
+                        
+                        return {
+                            file: file.data,
+                            type: loadedAsset.data.filetype,
+                            height: varheight,
+                            width: varwidth,
+                            name: loadedAsset.data.name,
+                            id: loadedAsset.data._id,
+                            x: index * 8,
+                            y: (varheight/2),
+                            z: -3
+                        }
+                    }
+                    else if (loadedAsset.data.name.includes(".obj")){
+                       
+                        return {
+                            file: file.data,
+                            type: loadedAsset.data.filetype,
+                            name: loadedAsset.data.name,
+                            id: loadedAsset.data._id,
+                            x: index * 8,
+                            y: 1,
+                            z: -3
+                        }
                     }
                 } 
+            
             })
         })
     }
@@ -69,16 +86,29 @@ class AframeInterview extends Component {
                 loadedAssets.forEach((loadedAsset) => {
                     if (loadedAsset) {
                         //Entities
-                        entities.push(
-                        <Entity key={loadedAsset.id}
-                                class="assets"
-                                static-body={{shape: "box"}}
-                                geometry={{primitive: 'box', width:loadedAsset.width, height:loadedAsset.height, depth: 0.1}}
-                                material={{src: 'data:' + loadedAsset.type + ';base64,' + loadedAsset.file}}
-                                position={{x: loadedAsset.x, y: loadedAsset.y, z: loadedAsset.z}} 
-                                hoverable grabbable stretchable draggable
-                        /> )
-                    
+                        if (loadedAsset.name.includes(".jpg") || loadedAsset.name.includes(".png")){
+                            entities.push(
+                            <Entity key={loadedAsset.id}
+                                    class="assets"
+                                    static-body={{shape: "box"}}
+                                    geometry={{primitive: 'box', width:loadedAsset.width, height:loadedAsset.height, depth: 0.1}}
+                                    material={{src: 'data:' + loadedAsset.type + ';base64,' + loadedAsset.file}}
+                                    position={{x: loadedAsset.x, y: loadedAsset.y, z: loadedAsset.z}} 
+                                    hoverable grabbable stretchable draggable
+                            /> )
+                        }
+                        else if (loadedAsset.name.includes(".obj")){
+                            entities.push(
+                                <Entity key={loadedAsset.id}
+                                        class="assets"
+                                        static-body={{shape: "box"}}
+                                        obj-model={{obj: 'data:' + loadedAsset.type + ';base64,' + loadedAsset.file}}
+                                        position={{x: loadedAsset.x, y: loadedAsset.y, z: loadedAsset.z}} 
+                                        hoverable grabbable stretchable draggable
+                                />
+                                
+                                )
+                        }
                         //lights
                         lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${loadedAsset.height * 1.5} ${loadedAsset.z * -6}`}/>)
                     }
