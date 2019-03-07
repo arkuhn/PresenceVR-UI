@@ -96,6 +96,7 @@ class AframeInterview extends Component {
                                     position={{x: loadedAsset.x, y: loadedAsset.y, z: loadedAsset.z}} 
                                     hoverable grabbable stretchable draggable
                             /> )
+                            lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${loadedAsset.height * 1.5} ${loadedAsset.z * -6}`}/>)
                         }
                         else if (loadedAsset.name.includes(".obj")){
                             entities.push(
@@ -108,9 +109,10 @@ class AframeInterview extends Component {
                                 />
                                 
                                 )
+                                lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${10} ${loadedAsset.z * -6}`}/>)
                         }
                         //lights
-                        lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${loadedAsset.height * 1.5} ${loadedAsset.z * -6}`}/>)
+                        
                     }
                 })
                 this.setState({entities, lights})
