@@ -102,8 +102,6 @@ class PresenceVRNavBar extends Component {
                         
                     <Menu.Item as={Link} to="/home" name='PresenceVR' active={activeItem === 'home'} onClick={this.handleItemClick} icon='home' position={'left'} />
                     
-                    <Menu.Item as={Link} to="/uploads" name='uploads' active={activeItem === 'uploads'} onClick={this.handleItemClick} icon='cloud upload' />
-
                     {this.notificationBell()}
 
                     {this.helpButton()}

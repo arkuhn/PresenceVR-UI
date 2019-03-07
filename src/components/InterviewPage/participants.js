@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Header, Icon, List, Button, Modal } from 'semantic-ui-react';
+import { Header, Icon, List, Button, Modal, Popup } from 'semantic-ui-react';
 import InterviewAPI from '../../utils/InterviewAPI';
 
 
@@ -88,6 +88,18 @@ class Participants extends Component {
         })
     }
 
+    getPopUp = () => {
+        if (this.props.isHost) {
+            return 'You, the host, may remove participants, or pass host to another particpant in the interview.'
+        }
+        else if (!this.props.isHost) {
+            return 'As a participant you cannot modify who is in the interview or who has hosting permissions.'
+        }
+        else {
+            return 'You should not be here'
+        }
+    }
+
     render() {
         const css = ` 
         .ParticipantsList {
@@ -99,10 +111,14 @@ class Participants extends Component {
         `
         return (
             <div className="ParticipantsBox">
-            <Header as='h3'>
+            <Popup trigger= {
+                <Header as='h3'>
                 <Icon name='users' />
                 Participants
-            </Header>
+                </Header>
+            }
+            content={this.getPopUp()} />
+            
             <List selection={true} className="ParticipantsList">
 
                 {this.generateParticipants()}

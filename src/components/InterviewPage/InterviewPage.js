@@ -11,6 +11,10 @@ import Environments from "./environments";
 import './InterviewPage.css';
 import Participants from "./participants";
 import Host from "./host"
+import InterviewForm from "../InterviewCard/InterviewForm"
+import CancelInterview from "../InterviewCard/cancelInterview"
+import LeaveInterview from "../InterviewCard/leaveInterview"
+
 
 class InterviewPage extends Component {
     constructor(props) {
@@ -78,18 +82,34 @@ class InterviewPage extends Component {
         this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
     }
 
-    configuration() {
+    configuration(isHost) {
+        let interviewControls;
+        if (isHost) {
+            interviewControls = 
+            <Button.Group>
+                <InterviewForm updateInterviewListCallback={this.updateInterview} type='edit' id={this.state.interview._id} 
+                    participants={this.state.interview.participants} 
+                    date={this.state.interview.occursOnDate} 
+                    time={this.state.interview.occursAtTime} 
+                    details={this.state.interview.details} />
+
+                <CancelInterview updateInterviewListCallback={this.updateInterview} id={this.state.interview._id} />
+            </Button.Group>
+                
+        } else {
+            interviewControls = <LeaveInterview id={this.state.interview._id} />
+        }
         return (
                 <div>
                 <Header as='h3'>
                     <Icon name='settings' />
                     Configuration
                 </Header>
-                <Button.Group>
-                <Button>Edit Interview</Button>
-                <Button.Or />
-                <Button negative>Exit Interview</Button>
-            </Button.Group>
+
+                <Header sub>
+                Interview Controls:
+                </Header>
+                {interviewControls}
             </div>
         );
     }
@@ -105,7 +125,6 @@ class InterviewPage extends Component {
         }
 
         let isHost = (this.state.user.email === this.state.interview.host)
-        
         return (
             <div className="InterviewPage">
                 <PresenceVRNavBar/>
@@ -141,7 +160,7 @@ class InterviewPage extends Component {
 
                         <Divider />
                         <Grid.Row>
-                            {this.configuration()}
+                            {this.configuration(isHost)}
                         </Grid.Row>
                     </Grid.Column>
 
