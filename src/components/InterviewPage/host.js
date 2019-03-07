@@ -8,12 +8,12 @@ class Host extends Component {
         return (
             <div className="ParticipantsBox">
             <Header as='h3'>
-                <Icon name='user plus' />
+                <Icon name='chess queen' />
                 Host
             </Header>
             <List>
             <List.Item>
-                <Icon name='user plus' />
+                <Icon name='chess queen' />
                 <List.Content>
                     <List.Description>
                         {this.props.host}

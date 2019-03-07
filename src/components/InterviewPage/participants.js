@@ -32,7 +32,7 @@ class Participant extends Component {
 
     makeHostModal = () => {
         return (<Modal basic size='small' open={this.state.modalOpen} onClose={this.handleCancel} trigger={ 
-            <Icon corner color='green' onClick={this.handleOpen} name='user plus' link aria-hidden='Make host' />
+            <Icon corner color='green' onClick={this.handleOpen} name='chess queen' circular link aria-hidden='Make host' />
         }>
         <Header as='h1' icon='user plus' content={`Are you sure you want to make ${this.props.name} the host?`} />
         <Header as='h3'>This means they can change the environment, remove participants and update interview details.</Header>
