@@ -10,6 +10,7 @@ import ChatPane from "./chat";
 import Environments from "./environments";
 import './InterviewPage.css';
 import Participants from "./participants";
+import Host from "./host"
 
 class InterviewPage extends Component {
     constructor(props) {
@@ -37,6 +38,20 @@ class InterviewPage extends Component {
                 });
             }
         });
+    }
+
+    updateHost = (newHost) => {
+        const newParticipants = (this.state.interview.participants).filter(participant => participant !== newHost)
+        newParticipants.push(this.state.interview.host)
+        let newParString = newParticipants.join()
+        return InterviewAPI.updateInterview( {participants: newParString}, this.state.interview._id)
+                .then((response) => {
+                    console.log(response)
+                    return InterviewAPI.updateInterview( {host: newHost}, this.state.interview._id)
+                })
+                .then((response) => {
+                    return this.updateInterview()
+                })
     }
 
     //This is a temp fix for losing state on refresh
@@ -110,9 +125,16 @@ class InterviewPage extends Component {
 
                     {/* Left column*/}
                     <Grid.Column width={4}>
-                        {/*Participants*/}
+
+                        {/* Host */}
                         <Grid.Row>
-                            <Participants participants={this.state.interview.participants}/>
+                            <Host  host={this.state.interview.host} />
+                        </Grid.Row>
+
+                        {/*Participants*/}
+                        <Divider />
+                        <Grid.Row>
+                            <Participants updateHost={this.updateHost} participants={this.state.interview.participants}/>
                         </Grid.Row>
 
                         <Divider />
