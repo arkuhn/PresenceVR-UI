@@ -40,6 +40,31 @@ class AframeInterview extends Component {
         return [varheight, varwidth]
     }
 
+    getControllers = () => {
+        let collision;
+        if (this.props.controllerMode === 'grab') {
+            collision = {colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}
+        } else {
+            collision = {colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}
+        }
+        return <div>
+                <Entity id='right-hand' 
+                    laser-controls 
+                    raycaster={{objects: ".assets"}}
+                    super-hands={collision}
+                    hand-controls='right'
+                    teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20, landingNormal:"0 1 0" }} 
+                />         
+                <Entity id='left-hand' 
+                    laser-controls
+                    raycaster={{objects: ".assets"}}
+                    super-hands={collision}
+                    hand-controls='left' 
+                    teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20, landingNormal:"0 1 0" }} 
+                />         
+                </div> 
+    }
+
     getLoadedAssetPromises = (loadedAssetIds) => {
         return loadedAssetIds.map((loadedAssetId, index) => {
             return Promise.all([UploadAPI.getUpload(loadedAssetId), UploadAPI.getUploadFile(loadedAssetId)])
@@ -159,20 +184,7 @@ class AframeInterview extends Component {
                         look-controls 
                         position={{x: 0, y: 2, z:0}} 
                     />
-                    <Entity id='right-hand' 
-                        laser-controls 
-                        raycaster={{objects: ".assets"}}
-                        super-hands={{colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}}
-                        hand-controls='right'
-                        teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20, landingNormal:"0 1 0" }} 
-                    />         
-                    <Entity id='left-hand' 
-                        laser-controls
-                        raycaster={{objects: ".assets"}}
-                        super-hands={{colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}}
-                        hand-controls='left' 
-                        teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20, landingNormal:"0 1 0" }} 
-                    />                
+                    {this.getControllers()}
                 </Entity>
                 {this.state.entities}
                 {this.state.lights}
