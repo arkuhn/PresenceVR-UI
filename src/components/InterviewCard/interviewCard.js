@@ -77,11 +77,13 @@ class InterviewCard extends Component {
                     <Divider />
                     <Card.Content extra>
                         <div className='ui three buttons'>
-                            <Button as={Link} to={"/interview/" + this.state.id} basic color='green'>
-                                Join
-                            </Button>
+                            <Button.Group fluid>
+                                <Button as={Link} to={"/interview/" + this.state.id} basic color='green'>
+                                    Join
+                                </Button>
 
-                            <LeaveInterview id={this.props.id} />
+                                <LeaveInterview id={this.props.id} />
+                            </Button.Group>
                         </div>
                     </Card.Content>
                 </Card.Content>

@@ -18,7 +18,7 @@ class AframeInterview extends Component {
         this.state = ({
             lights: [],
             entities: [],
-            loadedAssets: [],
+            loadedAssets: []
         })
     }
 
