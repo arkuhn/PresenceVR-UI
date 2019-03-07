@@ -132,7 +132,6 @@ class AframeInterview extends Component {
     }
 
     componentWillReceiveProps(data) {
-        console.log(data)
         //data.loadedAssets is named poorly, its really just a list of ids
         if (data.loadedAssets) {
             // If the list is empty reset all of our rendered data
