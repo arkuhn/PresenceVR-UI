@@ -37,7 +37,7 @@ class Asset extends Component {
                 <List.Content floated='left'>
                     <Icon name={this.props.icon} />
                     <b>{this.props.name}</b> <br />
-                    {this.props.owner}
+          
                 </List.Content>
 
                 <List.Content floated='right'>
