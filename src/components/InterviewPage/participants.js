@@ -60,7 +60,7 @@ class Participant extends Component {
                             </List.Content>
         }
         return (
-            <List.Item as='a' active={false}>
+            <List.Item >
             <List.Content floated='left'>
             <Icon name='user circle' />
             </List.Content>
@@ -119,7 +119,7 @@ class Participants extends Component {
             }
             content={this.getPopUp()} />
             
-            <List selection={true} className="ParticipantsList">
+            <List divided className="ParticipantsList">
 
                 {this.generateParticipants()}
             </List>

@@ -180,7 +180,7 @@ class Assets extends Component {
                         Assets
                     </Header>
                 } content={popupContent} />
-                <List  className="AssetsList">
+                <List divided className="AssetsList">
                     {this.renderAssets()}
                 </List>
                 {this.uploadBox()}
