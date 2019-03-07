@@ -14,13 +14,13 @@ class Environments extends Component {
 
     getPopUp = () => {
         if (this.props.isHost) {
-            return 'You, the host, may change the environment of the interview to one of these presets'
+            return 'As the host you may change the environment of the interview to one of these presets'
         }
         else if (!this.props.isHost) {
             return 'As a participant you cannot change the environment of the interview'
         }
         else {
-            return ' You should not be here'
+            return 'You should not be here'
         }
     }
 
@@ -38,7 +38,7 @@ class Environments extends Component {
             <div>
                 <Popup trigger={
                     <Header as='h3'>
-                        <Icon name='image outline' />
+                        <Icon circular name='image outline' />
                         Environments
                         
                     </Header>

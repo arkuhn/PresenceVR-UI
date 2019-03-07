@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Checkbox, Dimmer, Header, Icon, List, Loader, Segment } from 'semantic-ui-react';
+import { Button, Checkbox, Dimmer, Header, Icon, List, Loader, Segment, Popup } from 'semantic-ui-react';
 import InterviewAPI from '../../utils/InterviewAPI';
 import UploadAPI from '../../utils/UploadAPI';
 
@@ -30,7 +30,7 @@ class Asset extends Component {
 
     render() {
         return (
-            <List.Item active={false} >
+            <List.Item >
                 <List.Content floated='right'>
                     <Icon corner color='red' name='trash alternate outline' link onClick={this.deleteAsset} aria-hidden='Delete' />
                 </List.Content>
@@ -169,14 +169,18 @@ class Assets extends Component {
             overflow-x: hidden;
         }
         ` 
+
+        let popupContent = 'Upload an asset below. Supported filetypes are JPG, OBJ, and PNG. You can render or delete your asset with the controls.';
         
         return (
             <div>
-                <Header as='h3'>
-                    <Icon name='boxes' />
-                    Assets
-                </Header>
-                <List selection={true} className="AssetsList">
+                <Popup trigger = {
+                    <Header as='h3'>
+                        <Icon circular name='boxes' />
+                        Assets
+                    </Header>
+                } content={popupContent} />
+                <List  className="AssetsList">
                     {this.renderAssets()}
                 </List>
                 {this.uploadBox()}

@@ -113,7 +113,7 @@ class Participants extends Component {
             <div className="ParticipantsBox">
             <Popup trigger= {
                 <Header as='h3'>
-                <Icon name='users' />
+                <Icon bordered circular name='users' />
                 Participants
                 </Header>
             }

@@ -8,7 +8,7 @@ class Host extends Component {
         return (
             <div className="ParticipantsBox">
             <Header as='h3'>
-                <Icon name='chess queen' />
+                <Icon circular name='chess queen' />
                 Host
             </Header>
             <List>

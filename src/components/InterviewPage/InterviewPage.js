@@ -107,7 +107,7 @@ class InterviewPage extends Component {
                 <div>
                 <Popup trigger = {
                 <Header as='h3'>
-                    <Icon name='settings' />
+                    <Icon bordered circular name='settings' />
                     Configuration
                 </Header>
                 } content={popupContent} />
@@ -207,7 +207,7 @@ class InterviewPage extends Component {
                         <Divider/>
                         {/* Assets */}
                         <Grid.Row>
-                            <Assets type="web" loadedAssets={this.state.interview.loadedAssets} interview={this.id} updateInterviewCallback={this.updateInterview}/>
+                            <Assets type="web" isHost={isHost} loadedAssets={this.state.interview.loadedAssets} interview={this.id} updateInterviewCallback={this.updateInterview}/>
                         </Grid.Row>
                     </Grid.Column>
 
