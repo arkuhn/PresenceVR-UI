@@ -163,9 +163,9 @@ class Assets extends Component {
     render() {
         const css = ` 
         .AssetsList {
-            height:250px;
-            overflow:scroll;
+            overflow-y:auto;
             max-width: 100%;
+            max-height: 250px;
             overflow-x: hidden;
         }
         ` 
