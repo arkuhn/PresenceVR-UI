@@ -119,7 +119,20 @@ class AframeInterview extends Component {
         })
     }
 
+    componentDidMount() {
+        if (this.props.loadedAssets) {
+            if (this.props.loadedAssets.length === 0) { return this.setState({loadedAssets: [], entities: [], lights: [], assets: []})}
+
+            //We must first get all the Asset data using the id (name, type, the file, size, etc)
+            var loadedAssetPromises = this.getLoadedAssetPromises(this.props.loadedAssets)
+
+            // Then we can render by adding entities and a light per loaded Asset
+            this.renderLoadedAssets(loadedAssetPromises)
+        }
+    }
+
     componentWillReceiveProps(data) {
+        console.log(data)
         //data.loadedAssets is named poorly, its really just a list of ids
         if (data.loadedAssets) {
             // If the list is empty reset all of our rendered data
