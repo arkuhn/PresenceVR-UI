@@ -53,20 +53,24 @@ class Participant extends Component {
     }
 
     render() {
+        let hostFunctions;
+        if (this.props.isHost) {
+            hostFunctions = <List.Content floated='right'>
+                                {this.makeHostModal()}
+                            </List.Content>
+        }
         return (
             <List.Item as='a' active={false}>
-            <List.Content>
+            <List.Content floated='left'>
             <Icon name='user circle' />
             </List.Content>
-                <List.Content>
+                <List.Content floated='left'>
                     <List.Header>{this.props.name}</List.Header>
                     <List.Description>
                     Status: {this.props.status}
                     </List.Description>
                 </List.Content>
-                <List.Content floated='right'>
-                    {this.makeHostModal()}
-                </List.Content>
+                {hostFunctions}
             </List.Item>
         )
     }
@@ -80,7 +84,7 @@ class Participants extends Component {
             return <p> No particpants added!</p>
         }
         return this.props.participants.map((participant, index) => {
-            return <Participant key={index} updateHost={this.props.updateHost} name={participant} status={statuses[Math.floor(Math.random() * 2)]}/>
+            return <Participant key={index} isHost={this.props.isHost} updateHost={this.props.updateHost} name={participant} status={statuses[Math.floor(Math.random() * 2)]}/>
         })
     }
 

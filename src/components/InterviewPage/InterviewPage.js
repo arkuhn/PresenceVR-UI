@@ -136,7 +136,7 @@ class InterviewPage extends Component {
                         {/*Participants*/}
                         <Divider />
                         <Grid.Row>
-                            <Participants updateHost={this.updateHost} participants={this.state.interview.participants}/>
+                            <Participants updateHost={this.updateHost} isHost={isHost} participants={this.state.interview.participants}/>
                         </Grid.Row>
 
                         <Divider />

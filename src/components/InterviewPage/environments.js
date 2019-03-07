@@ -36,10 +36,13 @@ class Environments extends Component {
 
         return (
             <div>
-                <Header as='h3'>
-                    <Popup trigger={<Icon name='image outline' />} content={this.getPopUp()}/>
-                    Environments
-                </Header>
+                <Popup trigger={
+                    <Header as='h3'>
+                        <Icon name='image outline' />
+                        Environments
+                        
+                    </Header>
+                } content={this.getPopUp()}/>
                 <Form>
                     <Form.Field>
                     Selected environment: <b>{this.props.environment}</b>
@@ -69,6 +72,7 @@ class Environments extends Component {
                     <Form.Field>
                     <Checkbox
                         toggle
+                        disabled={!this.props.isHost}
                         label='Japan'
                         name='checkboxRadioGroup'
                         value='japan'
