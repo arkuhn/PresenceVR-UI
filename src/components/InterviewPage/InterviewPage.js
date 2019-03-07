@@ -49,7 +49,7 @@ class InterviewPage extends Component {
     componentWillMount() {
         this.setState({loading: true})
         // Bind the variable to the instance of the class.
-        this.authFirebaseListener = firebaseAuth.onAuthStateChanged((user) => {
+        this.authFirebaseListener = firebaseAuth.onAuthStateChanged((user) => { 
           this.setState({
             loading: false,  // For the loader maybe
             user // User Details
@@ -88,6 +88,8 @@ class InterviewPage extends Component {
         if (!this.state.loading && !this.state.user) {
             return <Redirect to='/'/>
         }
+
+        let isHost = (this.state.user.email === this.state.interview.host)
         
         return (
             <div className="InterviewPage">
@@ -143,7 +145,7 @@ class InterviewPage extends Component {
                     <Grid.Column width={4}>
                         {/* Environments */}
                         <Grid.Row>
-                            <Environments environment={this.state.interview.loadedEnvironment} interviewId={this.id} updateInterviewCallback={this.updateInterview}/>
+                            <Environments isHost={isHost} environment={this.state.interview.loadedEnvironment} interviewId={this.id} updateInterviewCallback={this.updateInterview}/>
                         </Grid.Row>
                         <Divider/>
                         {/* Assets */}
