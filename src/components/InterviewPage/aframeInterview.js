@@ -45,7 +45,7 @@ class AframeInterview extends Component {
             return Promise.all([UploadAPI.getUpload(loadedAssetId), UploadAPI.getUploadFile(loadedAssetId)])
             .then(([loadedAsset, file]) => {
                 if (file && loadedAsset) {
-                    if(loadedAsset.data.name.includes(".png") || loadedAsset.data.name.includes(".jpg")){
+                    if(loadedAsset.data.name.toLowerCase().includes(".png") || loadedAsset.data.name.toLowerCase().includes(".jpg")){
                         var [varheight, varwidth] = this.getDimensions(loadedAsset)
                         
                         return {
@@ -60,7 +60,7 @@ class AframeInterview extends Component {
                             z: -3
                         }
                     }
-                    else if (loadedAsset.data.name.includes(".obj")){
+                    else if (loadedAsset.data.name.toLowerCase().includes(".obj")){
                        
                         return {
                             file: file.data,
@@ -86,7 +86,7 @@ class AframeInterview extends Component {
                 loadedAssets.forEach((loadedAsset) => {
                     if (loadedAsset) {
                         //Entities
-                        if (loadedAsset.name.includes(".jpg") || loadedAsset.name.includes(".png")){
+                        if (loadedAsset.name.toLowerCase().includes(".jpg") || loadedAsset.name.toLowerCase().includes(".png")){
                             entities.push(
                             <Entity key={loadedAsset.id}
                                     class="assets"
@@ -98,7 +98,7 @@ class AframeInterview extends Component {
                             /> )
                             lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${loadedAsset.height * 1.5} ${loadedAsset.z * -6}`}/>)
                         }
-                        else if (loadedAsset.name.includes(".obj")){
+                        else if (loadedAsset.name.toLowerCase().includes(".obj")){
                             entities.push(
                                 <Entity key={loadedAsset.id}
                                         class="assets"
