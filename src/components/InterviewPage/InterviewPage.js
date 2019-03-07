@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Button, Divider, Grid, Header, Icon, Dimmer, Loader } from 'semantic-ui-react';
+import { Button, Divider, Grid, Header, Icon, Dimmer, Loader, Popup, PopupContent } from 'semantic-ui-react';
 import { firebaseAuth } from '../../utils/firebase';
 import InterviewAPI from "../../utils/InterviewAPI";
 import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar";
@@ -26,7 +26,8 @@ class InterviewPage extends Component {
             details: '',
             host: ''
         },
-        upToDate: false}
+        upToDate: false,
+        }
 
         this.updateInterview = this.updateInterview.bind(this);
     }
@@ -84,7 +85,9 @@ class InterviewPage extends Component {
 
     configuration(isHost) {
         let interviewControls;
+        let popupContent;
         if (isHost) {
+            popupContent = 'As the host you can edit or delete the interview.'
             interviewControls = 
             <Button.Group>
                 <InterviewForm updateInterviewListCallback={this.updateInterview} type='edit' id={this.state.interview._id} 
@@ -97,14 +100,17 @@ class InterviewPage extends Component {
             </Button.Group>
                 
         } else {
+            popupContent = 'As a particpant you may leave the interview.'
             interviewControls = <LeaveInterview id={this.state.interview._id} />
         }
         return (
                 <div>
+                <Popup trigger = {
                 <Header as='h3'>
                     <Icon name='settings' />
                     Configuration
                 </Header>
+                } content={popupContent} />
 
                 <Header sub>
                 Interview Controls:
@@ -124,13 +130,24 @@ class InterviewPage extends Component {
             return <Redirect to='/'/>
         }
 
+        if (!this.state.upToDate) {
+            return <Dimmer active>
+                        <Loader />
+                    </Dimmer>
+        }
+
         let isHost = (this.state.user.email === this.state.interview.host)
+        let isParticipant = this.state.interview.participants.includes(this.state.user.email)
+
+        if (this.state.upToDate && !isHost && !isParticipant) {
+            return <Redirect to='/'/>
+        }
+
         return (
             <div className="InterviewPage">
                 <PresenceVRNavBar/>
                 <br/>
-                <Grid centered divided>
-
+                <Grid centered padded divided>
                     {/* Header */}
                     <Grid.Row>
                         <Grid.Column  width={4}>
@@ -142,7 +159,6 @@ class InterviewPage extends Component {
                         </Header>
                         </Grid.Column>
                     </Grid.Row>
-                    
 
                     {/* Left column*/}
                     <Grid.Column width={4}>
@@ -183,7 +199,7 @@ class InterviewPage extends Component {
 
 
                     {/* Right column*/}
-                    <Grid.Column width={4}>
+                    <Grid.Column  width={4}>
                         {/* Environments */}
                         <Grid.Row>
                             <Environments isHost={isHost} environment={this.state.interview.loadedEnvironment} interviewId={this.id} updateInterviewCallback={this.updateInterview}/>
@@ -194,6 +210,7 @@ class InterviewPage extends Component {
                             <Assets type="web" loadedAssets={this.state.interview.loadedAssets} interview={this.id} updateInterviewCallback={this.updateInterview}/>
                         </Grid.Row>
                     </Grid.Column>
+
                 </Grid>
             </div>
         );
