@@ -184,7 +184,7 @@ class Assets extends Component {
                     </List.Content>
                 </List.Item>)
         }
-        let popupContent = 'Upload an asset below. Supported filetypes are JPG, OBJ, and PNG. You can render or delete your asset with the controls.';
+        let popupContent = 'Upload an asset below. Clicking the slider will render the asset. Rendered assets are visible to the host and all participants.';
         
         return (
             <div>
@@ -195,20 +195,29 @@ class Assets extends Component {
                     </Header>
                 } content={popupContent} />
                 <List divided className="AssetsList">
+                    <Popup trigger={
                     <List.Header as='h4'>
                         <Icon  name='image outline' />
                         Images
                     </List.Header>
+                    } content="Supported image formats are png and jpg." />
                     {this.renderAssets('image')}
+
+                    <Popup trigger={
                     <List.Header as='h4'>
                         <Icon  name='box' />
                         Objects
                     </List.Header>
+                    } content="The only supported mesh format is obj." />
                     {this.renderAssets('obj')}
+
+
+                    <Popup trigger= {
                     <List.Header as='h4'>
                         <Icon  name='file video outline' />
                         Videos
                     </List.Header>
+                    } content = "Supported video formats are MP4."/>
                     {this.renderAssets('video')}
                 </List>
                 {this.uploadBox()}
