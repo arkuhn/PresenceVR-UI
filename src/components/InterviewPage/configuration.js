@@ -26,7 +26,7 @@ class Configuation extends Component {
                     time={this.props.interview.occursAtTime} 
                     details={this.props.interview.details} />
 
-                <CancelInterview updateInterviewListCallback={this.props.updateInterviewListCallback} id={this.props.interview._id} />
+                <CancelInterview updateInterviewListCallback={this.props.updateInterviewCallback} id={this.props.interview._id} />
             </Button.Group>
                 
         } else {
