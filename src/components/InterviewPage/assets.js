@@ -138,7 +138,6 @@ class Assets extends Component {
             if (this.props.loadedAssets.indexOf(asset._id) >= 0) {
                 loaded = true
             }
-            console.log(this.props)
             return (
                 <Asset 
                     key={asset._id}
