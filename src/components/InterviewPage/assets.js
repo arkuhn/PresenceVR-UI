@@ -5,24 +5,20 @@ import UploadAPI from '../../utils/UploadAPI';
 
 
 class Asset extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            isRendered: this.props.loaded
-        };
-    }
-
-    renderAsset = (event) => {
-        this.setState(state => ({isRendered: !state.isRendered}));
-        InterviewAPI.updateAssetList(this.props.id, this.props.interview).then((response) => {
+    renderAsset = () => {
+        var op;
+        if (this.props.loaded) {
+            op = 'remove'
+        } else {
+            op = 'add'
+        }
+        
+        InterviewAPI.patchInterview(this.props.interviewId, 'loadedAssets', this.props.id, op).then((response) => {
             this.props.updateInterviewCallback();
         });
     }
 
     deleteAsset = () => {
-        if(this.state.isRendered){
-            this.renderAsset();
-        }
         UploadAPI.deleteUpload(this.props.id).then((response) => {
             this.props.updateAssetsCallback()
         });
@@ -142,13 +138,14 @@ class Assets extends Component {
             if (this.props.loadedAssets.indexOf(asset._id) >= 0) {
                 loaded = true
             }
+            console.log(this.props)
             return (
                 <Asset 
                     key={asset._id}
                     name={asset.name} 
                     id={asset._id} 
                     loaded={loaded}
-                    interview={this.props.interview}
+                    interviewId={this.props.interview}
                     icon={getIcon[type]}
                     updateInterviewCallback={this.props.updateInterviewCallback}
                     updateAssetsCallback={this.updateList}
