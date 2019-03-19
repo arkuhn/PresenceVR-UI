@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Button, Divider, Grid, Header, Icon, Dimmer, Loader, Popup, PopupContent } from 'semantic-ui-react';
+import { Button, Divider, Grid, Header, Icon, Dimmer, Loader, Popup, Radio } from 'semantic-ui-react';
 import { firebaseAuth } from '../../utils/firebase';
 import InterviewAPI from "../../utils/InterviewAPI";
 import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar";
@@ -14,7 +14,7 @@ import Host from "./host"
 import InterviewForm from "../InterviewCard/InterviewForm"
 import CancelInterview from "../InterviewCard/cancelInterview"
 import LeaveInterview from "../InterviewCard/leaveInterview"
-
+import Configuration from "./configuration"
 
 class InterviewPage extends Component {
     constructor(props) {
@@ -27,6 +27,7 @@ class InterviewPage extends Component {
             host: ''
         },
         upToDate: false,
+        controllerMode: 'raycaster'
         }
 
         this.updateInterview = this.updateInterview.bind(this);
@@ -43,6 +44,11 @@ class InterviewPage extends Component {
                 });
             }
         });
+    }
+
+    updateControllerMode = (type) => {
+        console.log(type)
+        this.setState({controllerMode: type})
     }
 
     updateHost = (newHost) => {
@@ -81,43 +87,6 @@ class InterviewPage extends Component {
 
     componentWillUnmount() {
         this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
-    }
-
-    configuration(isHost) {
-        let interviewControls;
-        let popupContent;
-        if (isHost) {
-            popupContent = 'As the host you can edit or delete the interview.'
-            interviewControls = 
-            <Button.Group>
-                <InterviewForm updateInterviewListCallback={this.updateInterview} type='edit' id={this.state.interview._id} 
-                    participants={this.state.interview.participants} 
-                    date={this.state.interview.occursOnDate} 
-                    time={this.state.interview.occursAtTime} 
-                    details={this.state.interview.details} />
-
-                <CancelInterview updateInterviewListCallback={this.updateInterview} id={this.state.interview._id} />
-            </Button.Group>
-                
-        } else {
-            popupContent = 'As a particpant you may leave the interview.'
-            interviewControls = <LeaveInterview id={this.state.interview._id} />
-        }
-        return (
-                <div>
-                <Popup trigger = {
-                <Header as='h3'>
-                    <Icon bordered circular name='settings' />
-                    Configuration
-                </Header>
-                } content={popupContent} />
-
-                <Header sub>
-                Interview Controls:
-                </Header>
-                {interviewControls}
-            </div>
-        );
     }
 
     render() {
@@ -176,7 +145,10 @@ class InterviewPage extends Component {
 
                         <Divider />
                         <Grid.Row>
-                            {this.configuration(isHost)}
+                            <Configuration isHost={isHost} 
+                                    interview={this.state.interview} 
+                                    updateInterviewCallback={this.updateInterview} 
+                                    updateControllerMode={this.updateControllerMode}/>
                         </Grid.Row>
                     </Grid.Column>
 
@@ -185,9 +157,20 @@ class InterviewPage extends Component {
                     <Grid.Column width={8}>
                         {/* Browser mode */}
                         <Grid.Row>
-                            <AframeInterview loadedAssets={this.state.interview.loadedAssets} updateInterviewCallback={this.updateInterview} environment={this.state.interview.loadedEnvironment} interviewId={this.id}/>
-                            <br/>
-                            <br/>
+                            <AframeInterview loadedAssets={this.state.interview.loadedAssets}
+                                             updateInterviewCallback={this.updateInterview}
+                                              environment={this.state.interview.loadedEnvironment}
+                                               interviewId={this.id}
+                                               controllerMode={this.state.controllerMode}/>
+                            <Popup trigger={
+                                <Header floated="right" as="h4">
+                                <Icon name="keyboard" />
+                                    CONTROLS
+                                </Header>
+                            }  position="bottom right" content =" Use WASD to move directions while using the webpage. Click the goggles button to enter VR mode. 
+                                                            While in VR, you can interact with assets using the two grab modes described in the configuration box." />
+                                                            <br/>
+
                         </Grid.Row>
                         
                         <Divider/>

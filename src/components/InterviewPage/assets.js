@@ -5,24 +5,20 @@ import UploadAPI from '../../utils/UploadAPI';
 
 
 class Asset extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            isRendered: this.props.loaded
-        };
-    }
-
-    renderAsset = (event) => {
-        this.setState(state => ({isRendered: !state.isRendered}));
-        InterviewAPI.updateAssetList(this.props.id, this.props.interview).then((response) => {
+    renderAsset = () => {
+        var op;
+        if (this.props.loaded) {
+            op = 'remove'
+        } else {
+            op = 'add'
+        }
+        
+        InterviewAPI.patchInterview(this.props.interviewId, 'loadedAssets', this.props.id, op).then((response) => {
             this.props.updateInterviewCallback();
         });
     }
 
     deleteAsset = () => {
-        if(this.state.isRendered){
-            this.renderAsset();
-        }
         UploadAPI.deleteUpload(this.props.id).then((response) => {
             this.props.updateAssetsCallback()
         });
@@ -103,7 +99,6 @@ class Assets extends Component {
     uploadBox = () => {
         return (
             <form onSubmit={this.onSubmit}>
-
                 <Segment>
                     <Button secondary content='Upload' onClick={this.onSubmit} />
                     <input
@@ -112,11 +107,62 @@ class Assets extends Component {
                         onChange={this.onChange}
                     />
                 </Segment>
-
             </form>
         )
     }
-    renderAssets = () => {
+
+    /* Type corresponds to filetype
+    image, obj, or 
+    */
+    renderAssets = (type) => {
+        var getIcon = {
+            'image': 'image outline',
+            'obj': 'box'
+        }
+
+        var getFilter = {
+            'image': 'image',
+            'obj': 'application/octet-stream'
+        }
+
+        var filtertedAssets = this.state.assets.filter(asset => asset.filetype.includes(getFilter[type]))
+        if (filtertedAssets.length === 0) {
+            return (<List.Item>
+                        <List.Content>
+                            <List.Header>No {type} assets to show!</List.Header>
+                        </List.Content>
+                    </List.Item>)
+        }
+        return filtertedAssets.map((asset) => {
+            var loaded = false
+            if (this.props.loadedAssets.indexOf(asset._id) >= 0) {
+                loaded = true
+            }
+            return (
+                <Asset 
+                    key={asset._id}
+                    name={asset.name} 
+                    id={asset._id} 
+                    loaded={loaded}
+                    interviewId={this.props.interview}
+                    icon={getIcon[type]}
+                    updateInterviewCallback={this.props.updateInterviewCallback}
+                    updateAssetsCallback={this.updateList}
+                    assetList={this.props.assets}
+                ></Asset>
+            )
+        })
+    }
+
+    render() {
+        const css = ` 
+        .AssetsList {
+            overflow-y:auto;
+            max-width: 100%;
+            max-height: 250px;
+            overflow-x: hidden;
+        }
+        ` 
         if (this.state.loading) {
             return (<div>
                 <br />
@@ -134,43 +180,7 @@ class Assets extends Component {
                     </List.Content>
                 </List.Item>)
         }
-
-        var interview = this.props.interview;
-
-        return this.state.assets.map((asset) => {
-            var loaded = false
-            if (this.props.loadedAssets.indexOf(asset._id) >= 0) {
-                loaded = true
-            }
-            return (
-                <Asset 
-                    key={asset._id}
-                    name={asset.name} 
-                    owner={asset.owner}
-                    id={asset._id} 
-                    loaded={loaded}
-                    interview={interview}
-                    icon='boxes'
-                    updateInterviewCallback={this.props.updateInterviewCallback}
-                    updateAssetsCallback={this.updateList}
-                    assetList={this.props.assets}
-                ></Asset>
-            )
-
-        })
-    }
-
-    render() {
-        const css = ` 
-        .AssetsList {
-            overflow-y:auto;
-            max-width: 100%;
-            max-height: 250px;
-            overflow-x: hidden;
-        }
-        ` 
-
-        let popupContent = 'Upload an asset below. Supported filetypes are JPG, OBJ, and PNG. You can render or delete your asset with the controls.';
+        let popupContent = 'Upload an asset below. Clicking the slider will render the asset. Rendered assets are visible to the host and all participants.';
         
         return (
             <div>
@@ -181,7 +191,30 @@ class Assets extends Component {
                     </Header>
                 } content={popupContent} />
                 <List divided className="AssetsList">
-                    {this.renderAssets()}
+                    <Popup trigger={
+                    <List.Header as='h4'>
+                        <Icon  name='image outline' />
+                        Images
+                    </List.Header>
+                    } content="Supported image formats are png and jpg." />
+                    {this.renderAssets('image')}
+
+                    <Popup trigger={
+                    <List.Header as='h4'>
+                        <Icon  name='box' />
+                        Objects
+                    </List.Header>
+                    } content="The only supported mesh format is obj." />
+                    {this.renderAssets('obj')}
+
+
+                    <Popup trigger= {
+                    <List.Header as='h4'>
+                        <Icon  name='file video outline' />
+                        Videos
+                    </List.Header>
+                    } content = "Supported video formats are MP4."/>
+                    {this.renderAssets('video')}
                 </List>
                 {this.uploadBox()}
                 <style>{css}</style>
