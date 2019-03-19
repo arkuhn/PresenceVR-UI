@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Checkbox, Form, Header, Icon } from 'semantic-ui-react';
+import { Checkbox, Form, Header, Popup, Icon } from 'semantic-ui-react';
 import InterviewAPI from '../../utils/InterviewAPI';
 
 class Environments extends Component {
@@ -10,6 +10,18 @@ class Environments extends Component {
         InterviewAPI.updateInterview({loadedEnvironment: value}, this.props.interviewId).then ((response) =>{
             this.props.updateInterviewCallback();
         })
+    }
+
+    getPopUp = () => {
+        if (this.props.isHost) {
+            return 'As the host you may change the environment of the interview to one of these presets'
+        }
+        else if (!this.props.isHost) {
+            return 'As a participant you cannot change the environment of the interview'
+        }
+        else {
+            return 'You should not be here'
+        }
     }
 
     render() {
@@ -24,10 +36,13 @@ class Environments extends Component {
 
         return (
             <div>
-                <Header as='h3'>
-                    <Icon name='image outline' />
-                    Environments
-                </Header>
+                <Popup trigger={
+                    <Header as='h3'>
+                        <Icon circular name='image outline' />
+                        Environments
+                        
+                    </Header>
+                } content={this.getPopUp()}/>
                 <Form>
                     <Form.Field>
                     Selected environment: <b>{this.props.environment}</b>
@@ -35,6 +50,7 @@ class Environments extends Component {
                     <Form.Field>
                     <Checkbox
                         toggle
+                        disabled={!this.props.isHost}
                         label='Default'
                         name='checkboxRadioGroup'
                         value='default'
@@ -45,6 +61,7 @@ class Environments extends Component {
                     <Form.Field>
                     <Checkbox
                         toggle
+                        disabled={!this.props.isHost}
                         label='Starry'
                         name='checkboxRadioGroup'
                         value='starry'
@@ -55,6 +72,7 @@ class Environments extends Component {
                     <Form.Field>
                     <Checkbox
                         toggle
+                        disabled={!this.props.isHost}
                         label='Japan'
                         name='checkboxRadioGroup'
                         value='japan'
@@ -65,6 +83,7 @@ class Environments extends Component {
                     <Form.Field>
                     <Checkbox
                         toggle
+                        disabled={!this.props.isHost}
                         label='Tron'
                         name='checkboxRadioGroup'
                         value='tron'

@@ -5,6 +5,7 @@ import InterviewAPI from '../../utils/InterviewAPI';
 class InterviewForm extends React.Component {
     constructor(props) {
         super(props)
+        console.log(props)
         if (this.props.type === 'create') {
             this.icon = 'alternate calendar outline'
             this.positiveButtonName = 'Create Interview'
