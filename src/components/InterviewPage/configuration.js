@@ -20,7 +20,7 @@ class Configuation extends Component {
         if (this.props.isHost) {
             interviewControls = 
             <Button.Group>
-                <InterviewForm updateInterviewListCallback={this.updateInterview} type='edit' id={this.props.interview._id} 
+                <InterviewForm updateInterviewListCallback={this.props.updateInterviewCallback} type='edit' id={this.props.interview._id} 
                     participants={this.props.interview.participants} 
                     date={this.props.interview.occursOnDate} 
                     time={this.props.interview.occursAtTime} 
