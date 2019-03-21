@@ -105,6 +105,23 @@ class AframeInterview extends Component {
     }
 
 
+    componentDidMount() {
+        window.NAF.schemas.add({
+          template: '#avatar-template',
+          components: [
+            'position',
+            'rotation',
+            'scale',
+            {
+              selector: '.head',
+              component: 'material',
+              property: 'color'
+            }
+          ]
+        });
+    }
+
+
     render() {
         return (
             <Scene className="aframeContainer" embedded networked-scene={{serverURL: "http://localhost:8080", app: "PresenceVR", room: "123", debug: true, adapter: 'easyrtc'}} > 
