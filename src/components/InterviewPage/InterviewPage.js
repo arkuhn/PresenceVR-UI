@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Button, Divider, Grid, Header, Icon, Dimmer, Loader, Popup, Radio } from 'semantic-ui-react';
+import { Dimmer, Divider, Grid, Header, Icon, Loader, Popup } from 'semantic-ui-react';
 import { firebaseAuth } from '../../utils/firebase';
 import InterviewAPI from "../../utils/InterviewAPI";
 import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar";
 import AframeInterview from "./aframeInterview";
 import Assets from "./assets";
 import ChatPane from "./chat";
+import Configuration from "./configuration";
 import Environments from "./environments";
+import Host from "./host";
 import './InterviewPage.css';
 import Participants from "./participants";
-import Host from "./host"
-import InterviewForm from "../InterviewCard/InterviewForm"
-import CancelInterview from "../InterviewCard/cancelInterview"
-import LeaveInterview from "../InterviewCard/leaveInterview"
-import Configuration from "./configuration"
+import openSocket from 'socket.io-client';
+
 
 class InterviewPage extends Component {
     constructor(props) {
@@ -87,6 +86,12 @@ class InterviewPage extends Component {
 
     componentWillUnmount() {
         this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
+    }
+
+    componentDidMount() {
+        const socket = openSocket('http://localhost:8080');
+        socket.emit('join', this.id)
+
     }
 
     render() {
