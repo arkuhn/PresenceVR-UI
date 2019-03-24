@@ -30,7 +30,8 @@ export default class VideoComponent extends Component {
 
     componentDidMount() {
         return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
-            axios.get(API_URL + '/api/token').then(results => {
+            let config = {headers: {Authorization: `${token}`}}
+            axios.get(API_URL + '/api/token', config).then(results => {
 
                 const { identity, token } = results.data;
                 this.setState({ identity, token });

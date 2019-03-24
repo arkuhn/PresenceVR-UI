@@ -158,7 +158,7 @@ class InterviewPage extends Component {
                     <Grid.Column width={8}>
                         {/* Browser mode */}
                         <Grid.Row>
-                            <VideoComponent />
+                            <VideoComponent interviewId={this.id}/>
 
                         </Grid.Row>
                         
