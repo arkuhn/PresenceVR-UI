@@ -1,7 +1,7 @@
 import 'aframe';
 import 'aframe-environment-component';
 import 'aframe-teleport-controls'
-import 'networked-aframe'
+import NAF from 'networked-aframe';
 import 'aframe-physics-system'
 import 'super-hands'
 import 'aframe-extras'
@@ -9,6 +9,9 @@ import { Entity, Scene } from 'aframe-react';
 import React, { Component } from 'react';
 import UploadAPI from '../../utils/UploadAPI';
 import './aframeInterview.css';
+
+import aframe_string from "../../js/aframe.js";
+var aframe_html = { __html: aframe_string };
 
 class AframeInterview extends Component {
 
@@ -18,7 +21,8 @@ class AframeInterview extends Component {
             lights: [],
             entities: [],
             loadedAssets: [],
-        })
+        });
+
     }
 
     getDimensions = (loadedAsset) => {
@@ -124,29 +128,48 @@ class AframeInterview extends Component {
 
     render() {
         return (
-            <Scene className="aframeContainer" embedded networked-scene={{serverURL: "http://localhost:8080", app: "PresenceVR", room: "123", debug: true, adapter: 'easyrtc'}} > 
+            <Scene className="aframeContainer" embedded networked-scene={{serverURL: "http://localhost:8080", app: "PresenceVR", room: "123", debug: true, adapter: 'easyrtc'}} >
+
+                <a-assets>
+                    <template id="avatar-template">
+                        <a-entity class="avatar">
+                            <a-sphere class="head" color="#5985ff" scale="0.45 0.5 0.4" random-color>
+                            </a-sphere>
+                            <a-entity class="face" position="0 0.05 0">
+                                <a-sphere class="eye" color="#efefef" position="0.16 0.1 -0.35" scale="0.12 0.12 0.12">
+                                    <a-sphere class="pupil" color="#000" position="0 0 -1" scale="0.2 0.2 0.2">
+                                    </a-sphere>
+                                </a-sphere>
+                                <a-sphere class="eye" color="#efefef" position="-0.16 0.1 -0.35" scale="0.12 0.12 0.12">
+                                    <a-sphere class="pupil" color="#000" position="0 0 -1" scale="0.2 0.2 0.2">
+                                    </a-sphere>
+                                </a-sphere>
+                            </a-entity>
+                        </a-entity>
+                    </template>
+                </a-assets>
+
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
-                <Entity id="cameraRig">
-                    <Entity id="head" 
-                        camera 
-                        wasd-controls 
-                        look-controls 
-                        position={{x: 0, y: 2, z:0}} 
-                    />
-                    <Entity id='right-hand' 
-                        laser-controls 
-                        raycaster={{objects: ".assets"}}
-                        super-hands={{colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}}
-                        hand-controls='right'
-                        teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20, landingNormal:"0 1 0" }} 
-                    />         
-                    <Entity id='left-hand' 
-                        laser-controls
-                        raycaster={{objects: ".assets"}}
-                        super-hands={{colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}}
-                        hand-controls='left' 
-                        teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20, landingNormal:"0 1 0" }} 
-                    />                
+                
+
+                <Entity id="player" networked={{template: "#avatar-template", showLocalTemplate: false}} camera={{userheight: "1.6"}} 
+                        wasd-controls="" look-controls="" position="" rotation="" scale="" visible="">
+                    <Entity template="" visible="" position="" rotation="" scale="">
+                        <Entity class="avatar" position="" rotation="" scale="" visible="">
+                            <a-sphere class="head" color="#5985ff" scale="0.45 0.5 0.4" random-color="" position="" rotation="" visible="" material="" geometry="">
+                            </a-sphere>
+                            <Entity class="face" position="0 0.05 0" rotation="" scale="" visible="">
+                                <a-sphere class="eye" color="#efefef" position="0.16 0.1 -0.35" scale="0.12 0.12 0.12" rotation="" visible="" material="" geometry="">
+                                    <a-sphere class="pupil" color="#000" position="0 0 -1" scale="0.2 0.2 0.2" rotation="" visible="" material="" geometry="">
+                                    </a-sphere>
+                                </a-sphere>
+                                <a-sphere class="eye" color="#efefef" position="-0.16 0.1 -0.35" scale="0.12 0.12 0.12" rotation="" visible="" material="" geometry="">
+                                    <a-sphere class="pupil" color="#000" position="0 0 -1" scale="0.2 0.2 0.2" rotation="" visible="" material="" geometry="">
+                                    </a-sphere>
+                                </a-sphere>
+                            </Entity>
+                        </Entity>
+                    </Entity>
                 </Entity>
                 {this.state.entities}
                 {this.state.lights}
