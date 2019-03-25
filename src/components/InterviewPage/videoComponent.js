@@ -13,7 +13,6 @@ export default class VideoComponent extends Component {
         super();
         this.state = {
             identity: null,
-            roomName: '',
             roomNameErr: false,
             previewTracks: null,
             localMediaAvailable: false,
@@ -21,7 +20,6 @@ export default class VideoComponent extends Component {
             activateRoom: null
         };
         this.joinRoom = this.joinRoom.bind(this);
-        this.handleRoomNameChange = this.handleRoomNameChange.bind(this);
         this.roomJoined = this.roomJoined.bind(this);
         this.leaveRoom = this.leaveRoom.bind(this);
         this.detachTracks = this.detachTracks.bind(this);
@@ -42,20 +40,15 @@ export default class VideoComponent extends Component {
 
     }
 
-    handleRoomNameChange(e) {
-        let roomName = e.target.value;
-        this.setState({ roomName });
-    }
-
     joinRoom() {
-        if (!this.state.roomName.trim()) {
+        /* if (!this.props.id.trim()) {
             this.setState({ roomaNameErr: true });
             return;
-        }
+        } */
 
-        console.log("Joining room '" + this.state.roomName + "'...");
+        console.log("Joining room '" + this.props.interviewId + "'...");
         let connectOptions = {
-            name: this.state.roomName
+            name: this.props.interviewId
         };
 
         if (this.state.prviewTracks) {
@@ -101,13 +94,13 @@ export default class VideoComponent extends Component {
             console.log("Joining '" + participant.identity + "'");
         });
 
-        room.on('trackAdded', (track, participant) => {
+        room.on('trackSubscribed', (track, participant) => {
             console.log(participant.identity + ' added track: ' + track.kind);
             var previewContainer = this.refs.remoteMedia;
             this.attachTracks([track], previewContainer);
         });
 
-        room.on('trackRemoved', (track, participant) => {
+        room.on('trackUnsubscribed', (track, participant) => {
             console.log(participant.identity + ' removed track: ' + track.kind);
             this.detachTracks([track]);
         });
@@ -150,7 +143,7 @@ export default class VideoComponent extends Component {
 
     render() {
         let showLocalTrack = this.state.localMediaAvailable ? (
-            <div className="flex-item"><div ref="localMedia" /></div>
+            <div className="flex-item"><div ref="localMedia" max-width="100px" max-height="100px"/></div>
         ) : '';
         let joinOrLeaveRoomButton = this.state.hasJoinedRoom ? (
             <Button label="Leave Room" secondary={true} onClick={this.leaveRoom} />) : (
@@ -160,12 +153,10 @@ export default class VideoComponent extends Component {
                 <Card.Content textAlign="center">
                     <div className="flex-container">
                         {showLocalTrack}
+                        <div className="flex-item" ref="remoteMedia" id="remote-media" />
                         <div className="flex-item">
-                            <TextArea placeholder="Room Name" onChange={this.handleRoomNameChange} />
-                            <br />
                             {joinOrLeaveRoomButton}
                         </div>
-                        <div className="flex-item" ref="remoteMedia" id="remote-media" />
                     </div>
                 </Card.Content>
             </Card>
