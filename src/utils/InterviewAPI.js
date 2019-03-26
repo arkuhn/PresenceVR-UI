@@ -4,7 +4,8 @@ import { safeGetUser } from './firebase';
 
 function getInterview(id){
         return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
-            let config = {headers: {Authorization: `${token}`}};
+            let config = {headers: {Authorization: `${token}`,
+                                    "Access-Control-Allow-Origin": "*"}};
             return axios.get(API_URL + `/api/interviews/${id}`, config).then((response) => {
                 console.log('got a result');
                 console.log(response);

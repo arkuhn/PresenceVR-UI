@@ -5,21 +5,39 @@ import Homepage from "./components/Homepage/Homepage";
 import InterviewPage from "./components/InterviewPage/InterviewPage";
 import LoginPage from "./components/LoginPage/LoginPage";
 import UploadPage from "./components/UploadPage/Upload";
+import aframe_string from "./js/aframe.js";
+var aframe_html = { __html: aframe_string };
+
 
 class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      networkedEntities: []
+    };
+  }
+
+  componentDidMount() {
+    window.NAF.schemas.add({
+      template: '#avatar-template',
+      components: [
+        'position',
+        'rotation',
+        'scale',
+        {
+          selector: '.head',
+          component: 'material',
+          property: 'color'
+        }
+      ]
+    });
+  }
+
+  
   render() {
     return (
-      <div>
-      <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css"></link>
-      <BrowserRouter>
-      <Switch>
-        <Route exact path='/' component = {LoginPage} />
-        <Route exact path='/home' component = {Homepage} />
-        <Route exact path='/interview/:id' component = {InterviewPage}/>
-        <Route exact path='/uploads' component = {UploadPage} />
-      </Switch>
-    </BrowserRouter>
-    </div>
+      <div dangerouslySetInnerHTML={aframe_html} />
     );
   }
 }

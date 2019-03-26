@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "aframe": "^0.8.2",
+    "aframe": "^0.7.0",
     "aframe-click-drag-component": "^3.0.1",
     "aframe-environment-component": "^1.1.0",
     "aframe-extras": "^5.0.1",
@@ -13,7 +13,10 @@
     "aframe-react": "^4.4.0",
     "aframe-teleport-controls": "^0.3.1",
     "axios": "^0.18.0",
+    "easyrtc": "^1.1.0",
     "firebase": "^5.8.3",
+    "naf-firebase-adapter": "^0.1.0",
+    "networked-aframe": "^0.6.1",
     "probe-image-size": "^4.0.0",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
@@ -22,6 +25,7 @@
     "react-scripts": "2.1.1",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.84.0",
+    "socket.io": "^2.2.0",
     "super-hands": "^3.0.0"
   },
   "scripts": {
