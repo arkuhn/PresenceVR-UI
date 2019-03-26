@@ -28,7 +28,7 @@ export default class VideoComponent extends Component {
 
     componentDidMount() {
         return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
-            let config = {headers: {Authorization: `${token}`}}
+            let config = { headers: { Authorization: `${token}` } }
             axios.get(API_URL + '/api/token', config).then(results => {
 
                 const { identity, token } = results.data;
@@ -143,23 +143,21 @@ export default class VideoComponent extends Component {
 
     render() {
         let showLocalTrack = this.state.localMediaAvailable ? (
-            <div className="flex-item"><div ref="localMedia"/></div>
+            <div className="flex-item"><div ref="localMedia" /></div>
         ) : '';
         let joinOrLeaveRoomButton = this.state.hasJoinedRoom ? (
-            <Button label="Leave Room" secondary={true} onClick={this.leaveRoom} />) : (
-                <Button label="Join Room" primary={true} onClick={this.joinRoom} />);
+            <Button label="Leave Video Conference" secondary={true} onClick={this.leaveRoom} />) : (
+                <Button label="Join Video Conference" primary={true} onClick={this.joinRoom} />);
         return (
-            <Card>
-                <Card.Content textAlign="center">
-                    <div className="flex-container">
-                        {showLocalTrack}
-                        <div className="flex-item" ref="remoteMedia" id="remote-media" />
-                        <div className="flex-item">
-                            {joinOrLeaveRoomButton}
-                        </div>
+            <div>
+                <div className="flex-container">
+                    {showLocalTrack}
+                    <div className="flex-item" ref="remoteMedia" id="remote-media" />
+                    <div className="flex-item">
+                        {joinOrLeaveRoomButton}
                     </div>
-                </Card.Content>
-            </Card>
+                </div>
+            </div>
         );
         //errorText={this.state.roomNameErr ? 'Room Name is required' : undefined}
     }
