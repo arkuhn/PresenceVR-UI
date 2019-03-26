@@ -118,6 +118,8 @@ class InterviewPage extends Component {
 
         let isHost = (this.state.user.email === this.state.interview.host)
         let isParticipant = this.state.interview.participants.includes(this.state.user.email)
+        
+        
         let videoToggle = this.state.vidChat ? (<VideoComponent interviewId={this.id}/>) :
             (<div><AframeInterview loadedAssets={this.state.interview.loadedAssets}
                 updateInterviewCallback={this.updateInterview}
