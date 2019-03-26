@@ -143,7 +143,7 @@ export default class VideoComponent extends Component {
 
     render() {
         let showLocalTrack = this.state.localMediaAvailable ? (
-            <div className="flex-item"><div ref="localMedia" max-width="100px" max-height="100px"/></div>
+            <div className="flex-item"><div ref="localMedia"/></div>
         ) : '';
         let joinOrLeaveRoomButton = this.state.hasJoinedRoom ? (
             <Button label="Leave Room" secondary={true} onClick={this.leaveRoom} />) : (
