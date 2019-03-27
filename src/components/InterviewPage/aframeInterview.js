@@ -9,6 +9,7 @@ import { Entity, Scene } from 'aframe-react';
 import React, { Component } from 'react';
 import UploadAPI from '../../utils/UploadAPI';
 import './aframeInterview.css';
+import { API_URL } from '../../config/api.config';
 
 
 class AframeInterview extends Component {
@@ -40,12 +41,37 @@ class AframeInterview extends Component {
         return [varheight, varwidth]
     }
 
+    getControllers = () => {
+        let collision;
+        if (this.props.controllerMode === 'grab') {
+            collision = {colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}
+        } else {
+            collision = {colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}
+        }
+        return <div>
+                <Entity id='right-hand' 
+                    laser-controls 
+                    raycaster={{objects: ".assets"}}
+                    super-hands={collision}
+                    hand-controls='right'
+                    teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20, landingNormal:"0 1 0" }} 
+                />         
+                <Entity id='left-hand' 
+                    laser-controls
+                    raycaster={{objects: ".assets"}}
+                    super-hands={collision}
+                    hand-controls='left' 
+                    teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20, landingNormal:"0 1 0" }} 
+                />         
+                </div> 
+    }
+
     getLoadedAssetPromises = (loadedAssetIds) => {
         return loadedAssetIds.map((loadedAssetId, index) => {
             return Promise.all([UploadAPI.getUpload(loadedAssetId), UploadAPI.getUploadFile(loadedAssetId)])
             .then(([loadedAsset, file]) => {
                 if (file && loadedAsset) {
-                    if(loadedAsset.data.name.includes(".png") || loadedAsset.data.name.includes(".jpg")){
+                    if(loadedAsset.data.name.toLowerCase().includes(".png") || loadedAsset.data.name.toLowerCase().includes(".jpg")){
                         var [varheight, varwidth] = this.getDimensions(loadedAsset)
                         
                         return {
@@ -60,7 +86,7 @@ class AframeInterview extends Component {
                             z: -3
                         }
                     }
-                    else if (loadedAsset.data.name.includes(".obj")){
+                    else if (loadedAsset.data.name.toLowerCase().includes(".obj")){
                        
                         return {
                             file: file.data,
@@ -86,7 +112,7 @@ class AframeInterview extends Component {
                 loadedAssets.forEach((loadedAsset) => {
                     if (loadedAsset) {
                         //Entities
-                        if (loadedAsset.name.includes(".jpg") || loadedAsset.name.includes(".png")){
+                        if (loadedAsset.name.toLowerCase().includes(".jpg") || loadedAsset.name.toLowerCase().includes(".png")){
                             entities.push(
                             <Entity key={loadedAsset.id}
                                     class="assets"
@@ -98,7 +124,7 @@ class AframeInterview extends Component {
                             /> )
                             lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${loadedAsset.height * 1.5} ${loadedAsset.z * -6}`}/>)
                         }
-                        else if (loadedAsset.name.includes(".obj")){
+                        else if (loadedAsset.name.toLowerCase().includes(".obj")){
                             entities.push(
                                 <Entity key={loadedAsset.id}
                                         class="assets"
@@ -149,10 +175,10 @@ class AframeInterview extends Component {
     }
 
     render() { 
+        let aframeOptions = `serverURL: ${API_URL};app: PresenceVR; room: ${this.props.interviewId}; debug: true`
         return (
             <div className="aframeContainer">
-            //TODO Change to API URL and add ROOM ID
-                <a-scene embedded networked-scene="serverURL:http://localhost:8080;app:PresenceVR;room:123;debug:true">
+                <a-scene embedded networked-scene={aframeOptions}>
                     <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
                     <a-assets>
                         <div dangerouslySetInnerHTML={{__html: '<template id="avatar-template"><a-entity class="avatar"><a-sphere class="head"color="#5985ff"scale="0.45 0.5 0.4"random-color></a-sphere><a-entity class="face"position="0 0.05 0"><a-sphere class="eye"color="#efefef"position="0.16 0.1 -0.35"scale="0.12 0.12 0.12"><a-sphere class="pupil"color="#000"position="0 0 -1"scale="0.2 0.2 0.2"></a-sphere></a-sphere><a-sphere class="eye"color="#efefef"position="-0.16 0.1 -0.35"scale="0.12 0.12 0.12"><a-sphere class="pupil"color="#000"position="0 0 -1"scale="0.2 0.2 0.2"></a-sphere></a-sphere></a-entity></a-entity></template> '}}/>
@@ -165,6 +191,7 @@ class AframeInterview extends Component {
                             look-controls 
                             position={{x: 0, y: 2, z:0}} 
                         />
+                        {this.getControllers()}
                     </Entity>
                         {this.state.entities}
                         {this.state.lights}

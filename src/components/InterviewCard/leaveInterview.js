@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 import InterviewAPI from '../../utils/InterviewAPI';
+import { firebaseAuth } from '../../utils/firebase';
 
 class LeaveInterview extends React.Component {
     constructor(props) {
@@ -14,17 +15,18 @@ class LeaveInterview extends React.Component {
         this.handleOpen = this.handleOpen.bind(this);
     }
 
-    handleSubmit(event) {
-        InterviewAPI.leaveInterview(this.props.id).then(() => window.location.reload());
-        this.setState({ modalOpen: false });
-        event.preventDefault();
+    handleSubmit() {
+        InterviewAPI.patchInterview(this.props.id, 'participants', firebaseAuth.currentUser.email, 'remove').then(() => {
+            this.setState({ modalOpen: false });
+            window.location.reload()
+        })
     }
 
-    handleOpen(event) {
+    handleOpen() {
         this.setState({ modalOpen: true })
     }
 
-    handleCancel(event) {
+    handleCancel() {
         this.setState({ modalOpen: false })
     }
 

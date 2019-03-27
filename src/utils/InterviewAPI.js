@@ -74,25 +74,11 @@ function deleteInterview(id){
     })
 }
 
-//remove the current participant from the interview
-function leaveInterview(id){
+function patchInterview(id, field, value, operation) {
     return  safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`}};
-        return axios.patch(API_URL + `/api/interviews/${id}`, {}, config).then((response) => {
-            console.log('Removing participant from interview');
-            console.log(response);
-            return response;
-        }).catch((error) => {
-            console.log(error);
-        });
-    });
-}
-
-function updateAssetList(assetId, id){
-    return  safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
-        let config = {headers: {Authorization: `${token}`}};
-        return axios.patch(API_URL + `/api/interviews/${id}/${assetId}`, {}, config).then((response) => {
-            console.log('Updating Loaded Asset List');
+        return axios.patch(API_URL + `/api/interviews/${id}`, {field, value, op: operation}, config).then((response) => {
+            console.log('Patched interview');
             console.log(response);
             return response;
         }).catch((error) => {
@@ -102,5 +88,5 @@ function updateAssetList(assetId, id){
 }
 
 export default {
-    getInterview, createInterview, getAllInterviews, updateInterview, deleteInterview, leaveInterview, updateAssetList
+    getInterview, createInterview, getAllInterviews, updateInterview, deleteInterview, patchInterview
 }
