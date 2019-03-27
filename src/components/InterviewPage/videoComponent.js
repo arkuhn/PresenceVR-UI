@@ -4,7 +4,7 @@ import axios from 'axios';
 //import RaisedButton from 'material-ui/RaisedButton';
 //import TextField from 'material-ui/TextField';
 //import { Card, CardHeader, CardText } from 'material-ui/Card';
-import { Button, Divider, Grid, Header, Icon, Dimmer, Loader, Popup, Radio, Checkbox } from 'semantic-ui-react';
+import { Button, Divider, Grid, Card, Segment, Dimmer, Loader, Popup, Radio, Checkbox } from 'semantic-ui-react';
 import './videoInterview.css';
 
 import { API_URL } from "../../config/api.config";
@@ -30,21 +30,21 @@ export default class VideoComponent extends Component {
     }
 
     componentDidMount() {
-
-        setTimeout(() => {
-            this.props.joined ? this.joinRoom() : this.leaveRoom()
-        }, 500)
         return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
             let config = { headers: { Authorization: `${token}` } }
             axios.get(API_URL + '/api/token', config).then(results => {
 
                 const { identity, token } = results.data;
                 this.setState({ identity, token });
+                this.joinRoom()
             });
         }).catch((error) => {
             console.log(error);
         });
+    }
 
+    componentWillUnmount() {
+        this.leaveRoom()
     }
 
     joinRoom() {
@@ -152,9 +152,16 @@ export default class VideoComponent extends Component {
     render() {
 
         if (this.state.loading) {
-            return <Dimmer active>
+            var style = {
+                height: 480,
+                width: 690
+            }
+            return (
+                <Segment style={style}>
+                    <Dimmer active >
                         <Loader />
                     </Dimmer>
+                </Segment>)
         }
 
         let showLocalTrack = this.state.localMediaAvailable ? (
