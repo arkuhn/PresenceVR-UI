@@ -5,10 +5,11 @@ import openSocket from 'socket.io-client';
 import { API_URL } from '../../config/api.config';
 import { firebaseAuth } from '../../utils/firebase';
 import InterviewAPI from "../../utils/InterviewAPI";
+import socketEvents from '../../utils/socketEvents';
 import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar";
 import AframeInterview from "./aframeInterview";
 import Assets from "./assets";
-import Chat2 from "./chat2";
+import Chat from "./chat";
 import Configuration from "./configuration";
 import Environments from "./environments";
 import Host from "./host";
@@ -28,10 +29,13 @@ class InterviewPage extends Component {
             host: '',
             vidChat: false
         },
+        messages: [],
         upToDate: false,
+        socket: openSocket(API_URL),
         controllerMode: 'raycaster'
         }
 
+        socketEvents.registerEventHandlers(this.state.socket, this.addMessage)
         this.updateInterview = this.updateInterview.bind(this);
         this.videoToggled = this.videoToggled.bind(this);
     }
@@ -91,21 +95,20 @@ class InterviewPage extends Component {
             loading: false,  // For the loader maybe
             user // User Details
           });
+          this.state.socket.emit('join', {id: this.id + this.id, user: firebaseAuth.currentUser.email })
         });
         this.updateInterview()
         
+    }
+    
+    addMessage = (message) => {
+        this.setState({messages: this.state.messages.concat([message])})
     }
 
     componentWillUnmount() {
         this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
     }
 
-    componentDidMount() {
-        const socket = openSocket(API_URL);
-        this.setState({socket})
-        socket.emit('join', {id: this.id})
-
-    }
 
     render() {
         if (this.state.loading) {
@@ -133,14 +136,14 @@ class InterviewPage extends Component {
                  environment={this.state.interview.loadedEnvironment}
                   interviewId={this.id}
                   controllerMode={this.state.controllerMode}/>
-<Popup trigger={
-   <Header floated="right" as="h4">
-   <Icon name="keyboard" />
-       CONTROLS
-   </Header>
-}  position="bottom right" content =" Use WASD to move directions while using the webpage. Click the goggles button to enter VR mode. 
-                               While in VR, you can interact with assets using the two grab modes described in the configuration box." />
-                               <br/></div>);
+                <Popup trigger={
+                <Header floated="right" as="h4">
+                <Icon name="keyboard" />
+                    CONTROLS
+                </Header>
+                }  position="bottom right" content =" Use WASD to move directions while using the webpage. Click the goggles button to enter VR mode. 
+                                            While in VR, you can interact with assets using the two grab modes described in the configuration box." />
+                                            <br/></div>);
 
         if (this.state.upToDate && !isHost && !isParticipant) {
             return <Redirect to='/'/>
@@ -203,7 +206,7 @@ class InterviewPage extends Component {
                         <Divider/>
                         {/* Chat */}
                         <Grid.Row>
-                            <Chat2 />
+                            <Chat id={this.id + this.id} socket={this.state.socket} user={this.state.user.email} messages={this.state.messages}/>
                         </Grid.Row>
                     </Grid.Column>
 
