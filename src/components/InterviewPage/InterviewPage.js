@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Button, Divider, Grid, Header, Icon, Dimmer, Loader, Popup, Radio, Checkbox } from 'semantic-ui-react';
+import { Checkbox, Dimmer, Divider, Grid, Header, Icon, Loader, Popup } from 'semantic-ui-react';
+import openSocket from 'socket.io-client';
+import { API_URL } from '../../config/api.config';
 import { firebaseAuth } from '../../utils/firebase';
 import InterviewAPI from "../../utils/InterviewAPI";
 import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar";
 import AframeInterview from "./aframeInterview";
 import Assets from "./assets";
-import ChatPane from "./chat";
+import Chat2 from "./chat2";
+import Configuration from "./configuration";
 import Environments from "./environments";
+import Host from "./host";
 import './InterviewPage.css';
 import Participants from "./participants";
-import Host from "./host";
-import InterviewForm from "../InterviewCard/InterviewForm";
-import CancelInterview from "../InterviewCard/cancelInterview";
-import LeaveInterview from "../InterviewCard/leaveInterview";
-import Configuration from "./configuration";
 import VideoComponent from "./videoComponent";
+
 
 class InterviewPage extends Component {
     constructor(props) {
@@ -98,6 +98,13 @@ class InterviewPage extends Component {
 
     componentWillUnmount() {
         this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
+    }
+
+    componentDidMount() {
+        const socket = openSocket(API_URL);
+        this.setState({socket})
+        //socket.join(this.id)
+
     }
 
     render() {
@@ -196,7 +203,7 @@ class InterviewPage extends Component {
                         <Divider/>
                         {/* Chat */}
                         <Grid.Row>
-                            <ChatPane />
+                            <Chat2 />
                         </Grid.Row>
                     </Grid.Column>
 
