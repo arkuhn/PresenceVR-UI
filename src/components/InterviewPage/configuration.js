@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Header, Icon, Button, Popup, Form, Radio} from 'semantic-ui-react';
+import { Header, Icon, Button, Popup, Form, Radio, Divider} from 'semantic-ui-react';
 import InterviewForm from "../InterviewCard/InterviewForm"
 import CancelInterview from "../InterviewCard/cancelInterview"
 import LeaveInterview from "../InterviewCard/leaveInterview"
@@ -84,17 +84,25 @@ class Configuation extends Component {
                 </Header>
                 } content={this.getPopOutContent()} />
 
+
                 <Header sub>
-                Interview Controls:
+                Interview Options:
                 </Header>
                 {this.getInterviewControls()}
 
+                <Divider />
                 <Header sub>
-                Grab Controls:
+                Grab Options:
                 </Header>
                 {this.getPhysicsControls()}
 
-
+                <Divider />
+                
+                
+                
+                <Popup trigger={<Header icon='keyboard' content='CONTROLS' as="h4"/>}  position="right" content =" Use WASD to move directions while using the webpage. Click the goggles button to enter VR mode. 
+                                            While in VR, you can interact with assets using the two grab modes described in the configuration box." />
+                
             </div>
         );
     }

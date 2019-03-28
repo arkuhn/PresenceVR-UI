@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Icon, Input, Message, List, Container, Segment, Button} from 'semantic-ui-react'
+import { Icon, Input, Message, List, Label, Segment, Button} from 'semantic-ui-react'
 
 class Chat extends Component {
     constructor(props) {
@@ -51,7 +51,7 @@ class Chat extends Component {
             if (message.type === 'system') {
                 return (
                  <List.Item >
-                    <Message info header={message.content}  />
+                    <Message info size='tiny' header={message.content}  />
                 </List.Item>)
                      
             }
@@ -65,10 +65,7 @@ class Chat extends Component {
                     </List.Content>
                     <List.Content floated={floated}>
                     <div style={{'word-wrap': 'break-word'}}>
-                    <Container fluid text>
-                    {message.content}
-
-                    </Container> 
+                    <Label size='large' style={{'word-wrap': 'break-word'}} pointing={floated}>{message.content}</Label>
                     </div>
                     </List.Content>
                     </List.Item>)

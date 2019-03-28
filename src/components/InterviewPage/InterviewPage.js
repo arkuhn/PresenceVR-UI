@@ -135,15 +135,7 @@ class InterviewPage extends Component {
                 updateInterviewCallback={this.updateInterview}
                  environment={this.state.interview.loadedEnvironment}
                   interviewId={this.id}
-                  controllerMode={this.state.controllerMode}/>
-                <Popup trigger={
-                <Header floated="right" as="h4">
-                <Icon name="keyboard" />
-                    CONTROLS
-                </Header>
-                }  position="bottom right" content =" Use WASD to move directions while using the webpage. Click the goggles button to enter VR mode. 
-                                            While in VR, you can interact with assets using the two grab modes described in the configuration box." />
-                                            <br/></div>);
+                  controllerMode={this.state.controllerMode}/></div>);
 
         if (this.state.upToDate && !isHost && !isParticipant) {
             return <Redirect to='/'/>
