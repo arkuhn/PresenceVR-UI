@@ -19,7 +19,8 @@ class AframeInterview extends Component {
         this.state = ({
             lights: [],
             entities: [],
-            loadedAssets: []
+            loadedAssets: [],
+            position: {x: 0, y: 2, z: 0}
         })
     }
 
@@ -148,6 +149,12 @@ class AframeInterview extends Component {
     }
 
     componentDidMount() {
+        let entity = document.querySelector('#head');
+        entity.addEventListener('componentchanged', function (evt) {
+            if (evt.detail.name === 'position') {
+              this.setState({position: evt.target.getAttribute('position') })
+            }
+          }.bind(this));
         
         if (this.props.loadedAssets) {
             if (this.props.loadedAssets.length === 0) { return this.setState({loadedAssets: [], entities: [], lights: [], assets: []})}
@@ -188,7 +195,7 @@ class AframeInterview extends Component {
                         camera 
                         wasd-controls 
                         look-controls 
-                        position={{x: 0, y: 2, z:0}} 
+                        position={this.state.position} 
                     />
                     {this.getControllers()}
                 </Entity>

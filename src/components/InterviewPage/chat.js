@@ -92,7 +92,7 @@ class Chat extends Component {
             name ='message' 
             value={this.state.message}
             onChange={this.handleFieldUpdate}
-            placeholder='Wrtie a message...'
+            placeholder='Write a message...'
             labelPosition='right'
             label={<Button id='sendButton' icon='send' onClick={this.handleSend}/>}
         />
