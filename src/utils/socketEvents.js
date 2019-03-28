@@ -18,11 +18,7 @@ const registerEventHandlers = (socket, addMessage) => {
     })
 
     socket.on('message', (data) =>{
-        addMessage({
-            type: 'user',
-            content: data.content,
-            author: data.author
-        })
+        addMessage(data)
         console.log(data)
     })
 }

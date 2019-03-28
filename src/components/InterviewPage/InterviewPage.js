@@ -40,18 +40,19 @@ class InterviewPage extends Component {
         this.videoToggled = this.videoToggled.bind(this);
     }
 
-    videoToggled() {
+    videoToggled = () => {
         var message = {
             color: 'yellow',
-            type: 'system'
+            type: 'system',
+            id: this.id + this.id
         }
         if(!this.state.vidChat){
             message.content = this.state.user.email + ' has entered video chat mode'
-            this.addMessage(message)
+            this.state.socket.emit('message', message)
             this.setState({vidChat: true});
         } else {
             message.content = this.state.user.email + ' has left video chat mode'
-            this.addMessage(message)
+            this.state.socket.emit('message', message)
             this.setState({vidChat: false});
         }
     }
