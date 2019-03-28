@@ -175,28 +175,26 @@ class AframeInterview extends Component {
     }
 
     render() { 
-        let aframeOptions = `serverURL: ${API_URL};app: PresenceVR; room: ${this.props.interviewId}; debug: true`
+        let aframeOptions = `serverURL: ${API_URL};app: PresenceVR; room: ${this.props.interviewId};`
         return (
-            <div className="aframeContainer">
-                <a-scene embedded networked-scene={aframeOptions}>
-                    <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
-                    <a-assets>
-                        <div dangerouslySetInnerHTML={{__html: '<template id="avatar-template"><a-entity class="avatar"><a-sphere class="head"color="#5985ff"scale="0.45 0.5 0.4"random-color></a-sphere><a-entity class="face"position="0 0.05 0"><a-sphere class="eye"color="#efefef"position="0.16 0.1 -0.35"scale="0.12 0.12 0.12"><a-sphere class="pupil"color="#000"position="0 0 -1"scale="0.2 0.2 0.2"></a-sphere></a-sphere><a-sphere class="eye"color="#efefef"position="-0.16 0.1 -0.35"scale="0.12 0.12 0.12"><a-sphere class="pupil"color="#000"position="0 0 -1"scale="0.2 0.2 0.2"></a-sphere></a-sphere></a-entity></a-entity></template> '}}/>
-                    </a-assets>
+            <Scene className='aframeContainer' embedded networked-scene={aframeOptions}>
+                <a-assets>
+                    <div dangerouslySetInnerHTML={{__html: '<template id="avatar-template"><a-entity class="avatar"><a-sphere class="head"color="#5985ff"scale="0.45 0.5 0.4"random-color></a-sphere><a-entity class="face"position="0 0.05 0"><a-sphere class="eye"color="#efefef"position="0.16 0.1 -0.35"scale="0.12 0.12 0.12"><a-sphere class="pupil"color="#000"position="0 0 -1"scale="0.2 0.2 0.2"></a-sphere></a-sphere><a-sphere class="eye"color="#efefef"position="-0.16 0.1 -0.35"scale="0.12 0.12 0.12"><a-sphere class="pupil"color="#000"position="0 0 -1"scale="0.2 0.2 0.2"></a-sphere></a-sphere></a-entity></a-entity></template> '}}/>
+                </a-assets>
+                <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
 
-                    <Entity id="cameraRig">
-                        <Entity id="head" networked="template:#avatar-template;attachTemplateToLocal:false;" 
-                            camera 
-                            wasd-controls 
-                            look-controls 
-                            position={{x: 0, y: 2, z:0}} 
-                        />
-                        {this.getControllers()}
-                    </Entity>
-                        {this.state.entities}
-                        {this.state.lights}
-                    </a-scene>
-            </div>
+                <Entity id="cameraRig">
+                    <Entity id="head" networked="template:#avatar-template;attachTemplateToLocal:false;" 
+                        camera 
+                        wasd-controls 
+                        look-controls 
+                        position={{x: 0, y: 2, z:0}} 
+                    />
+                    {this.getControllers()}
+                </Entity>
+                    {this.state.entities}
+                    {this.state.lights}
+            </Scene>
         )
     }
 }
