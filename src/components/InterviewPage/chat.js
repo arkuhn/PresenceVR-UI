@@ -51,7 +51,7 @@ class Chat extends Component {
             if (message.type === 'system') {
                 return (
                  <List.Item >
-                    <Message info size='tiny' header={message.content}  />
+                    <Message info color={message.color} size='tiny' header={message.content}  />
                 </List.Item>)
                      
             }

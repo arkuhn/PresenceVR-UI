@@ -2,7 +2,8 @@ const registerEventHandlers = (socket, addMessage) => {
     socket.on('join', (data) =>{
         addMessage({
             type: 'system',
-            content: 'User ' + data.user + ' has joined the room.'
+            content: 'User ' + data.user + ' has joined the room.',
+            color: 'green'
         })
         console.log(data)
     })
@@ -10,7 +11,8 @@ const registerEventHandlers = (socket, addMessage) => {
     socket.on('leave', (data) =>{
         addMessage({
             type: 'system',
-            content: 'User ' + data.user + ' has left the room.'
+            content: 'User ' + data.user + ' has left the room.',
+            color: 'teal'
         })
         console.log(data)
     })
