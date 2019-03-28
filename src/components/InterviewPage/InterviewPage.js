@@ -103,7 +103,7 @@ class InterviewPage extends Component {
     componentDidMount() {
         const socket = openSocket(API_URL);
         this.setState({socket})
-        //socket.join(this.id)
+        socket.emit('join', {id: this.id})
 
     }
 
