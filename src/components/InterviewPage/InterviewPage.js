@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Button, Divider, Grid, Header, Icon, Dimmer, Loader, Popup, Radio } from 'semantic-ui-react';
+import { Button, Divider, Grid, Header, Icon, Dimmer, Loader, Popup, Radio, Checkbox } from 'semantic-ui-react';
 import { firebaseAuth } from '../../utils/firebase';
 import InterviewAPI from "../../utils/InterviewAPI";
 import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar";
@@ -10,11 +10,12 @@ import ChatPane from "./chat";
 import Environments from "./environments";
 import './InterviewPage.css';
 import Participants from "./participants";
-import Host from "./host"
-import InterviewForm from "../InterviewCard/InterviewForm"
-import CancelInterview from "../InterviewCard/cancelInterview"
-import LeaveInterview from "../InterviewCard/leaveInterview"
-import Configuration from "./configuration"
+import Host from "./host";
+import InterviewForm from "../InterviewCard/InterviewForm";
+import CancelInterview from "../InterviewCard/cancelInterview";
+import LeaveInterview from "../InterviewCard/leaveInterview";
+import Configuration from "./configuration";
+import VideoComponent from "./videoComponent";
 
 class InterviewPage extends Component {
     constructor(props) {
@@ -24,15 +25,25 @@ class InterviewPage extends Component {
             participants: [],
             loadedAssets: [],
             details: '',
-            host: ''
+            host: '',
+            vidChat: false
         },
         upToDate: false,
         controllerMode: 'raycaster'
         }
 
         this.updateInterview = this.updateInterview.bind(this);
+        this.videoToggled = this.videoToggled.bind(this);
     }
 
+    videoToggled() {
+        if(!this.state.vidChat){
+            this.setState({vidChat: true});
+        } else {
+            this.setState({vidChat: false});
+        }
+    }
+    
     updateInterview() {
         return InterviewAPI.getInterview(this.id).then((data) => {
             if(data){
@@ -107,6 +118,22 @@ class InterviewPage extends Component {
 
         let isHost = (this.state.user.email === this.state.interview.host)
         let isParticipant = this.state.interview.participants.includes(this.state.user.email)
+        
+        
+        let videoToggle = this.state.vidChat ? (<VideoComponent interviewId={this.id} joined={true}/>) :
+            (<div><AframeInterview loadedAssets={this.state.interview.loadedAssets}
+                updateInterviewCallback={this.updateInterview}
+                 environment={this.state.interview.loadedEnvironment}
+                  interviewId={this.id}
+                  controllerMode={this.state.controllerMode}/>
+<Popup trigger={
+   <Header floated="right" as="h4">
+   <Icon name="keyboard" />
+       CONTROLS
+   </Header>
+}  position="bottom right" content =" Use WASD to move directions while using the webpage. Click the goggles button to enter VR mode. 
+                               While in VR, you can interact with assets using the two grab modes described in the configuration box." />
+                               <br/></div>);
 
         if (this.state.upToDate && !isHost && !isParticipant) {
             return <Redirect to='/'/>
@@ -150,6 +177,11 @@ class InterviewPage extends Component {
                                     updateInterviewCallback={this.updateInterview} 
                                     updateControllerMode={this.updateControllerMode}/>
                         </Grid.Row>
+                        
+                        <Divider />
+                        <Grid.Row>
+                            <Checkbox toggle label="Enable Video Chat" value="default" onChange={this.videoToggled}/>
+                        </Grid.Row>
                     </Grid.Column>
 
 
@@ -157,19 +189,7 @@ class InterviewPage extends Component {
                     <Grid.Column width={8}>
                         {/* Browser mode */}
                         <Grid.Row>
-                            <AframeInterview loadedAssets={this.state.interview.loadedAssets}
-                                             updateInterviewCallback={this.updateInterview}
-                                              environment={this.state.interview.loadedEnvironment}
-                                               interviewId={this.id}
-                                               controllerMode={this.state.controllerMode}/>
-                            <Popup trigger={
-                                <Header floated="right" as="h4">
-                                <Icon name="keyboard" />
-                                    CONTROLS
-                                </Header>
-                            }  position="bottom right" content =" Use WASD to move directions while using the webpage. Click the goggles button to enter VR mode. 
-                                                            While in VR, you can interact with assets using the two grab modes described in the configuration box." />
-                                                            <br/>
+                            {videoToggle}
 
                         </Grid.Row>
                         
@@ -201,3 +221,17 @@ class InterviewPage extends Component {
 }
 
 export default InterviewPage;
+
+{/* <AframeInterview loadedAssets={this.state.interview.loadedAssets}
+                                             updateInterviewCallback={this.updateInterview}
+                                              environment={this.state.interview.loadedEnvironment}
+                                               interviewId={this.id}
+                                               controllerMode={this.state.controllerMode}/>
+                            <Popup trigger={
+                                <Header floated="right" as="h4">
+                                <Icon name="keyboard" />
+                                    CONTROLS
+                                </Header>
+                            }  position="bottom right" content =" Use WASD to move directions while using the webpage. Click the goggles button to enter VR mode. 
+                                                            While in VR, you can interact with assets using the two grab modes described in the configuration box." />
+                                                            <br/> */}

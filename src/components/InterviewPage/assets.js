@@ -172,14 +172,6 @@ class Assets extends Component {
                 </Dimmer>
             </div>)
         }
-        if (this.state.assets.length === 0) {
-            return (
-                <List.Item>
-                    <List.Content>
-                        <List.Header>No assets to show!</List.Header>
-                    </List.Content>
-                </List.Item>)
-        }
         let popupContent = 'Upload an asset below. Clicking the slider will render the asset. Rendered assets are visible to the host and all participants.';
         
         return (
