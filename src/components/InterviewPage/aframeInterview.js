@@ -7,6 +7,8 @@ import 'super-hands'
 import 'aframe-extras'
 import { Entity, Scene } from 'aframe-react';
 import React, { Component } from 'react';
+import ReactDOMServer from 'react-dom/server';
+
 import UploadAPI from '../../utils/UploadAPI';
 import './aframeInterview.css';
 import { API_URL } from '../../config/api.config';
@@ -20,6 +22,7 @@ class AframeInterview extends Component {
             lights: [],
             entities: [],
             loadedAssets: [],
+            templates: [],
             position: {x: 0, y: 2, z: 0}
         })
     }
@@ -106,23 +109,35 @@ class AframeInterview extends Component {
     }
 
     renderLoadedAssets = (loadedAssetPromises) => {
+        const NAF = window.NAF
         Promise.all(loadedAssetPromises).then((loadedAssets)=> {
             this.setState({loadedAssets}, () => {
                 var entities = []
                 var lights = []
+                var templates = []
                 loadedAssets.forEach((loadedAsset) => {
                     if (loadedAsset) {
                         //Entities
                         if (loadedAsset.name.toLowerCase().includes(".jpg") || loadedAsset.name.toLowerCase().includes(".png")){
-                            entities.push(
-                            <Entity key={loadedAsset.id}
-                                    class="assets"
-                                    static-body={{shape: "box"}}
-                                    geometry={{primitive: 'box', width:loadedAsset.width, height:loadedAsset.height, depth: 0.1}}
-                                    material={{src: 'data:' + loadedAsset.type + ';base64,' + loadedAsset.file}}
-                                    position={{x: loadedAsset.x, y: loadedAsset.y, z: loadedAsset.z}} 
-                                    hoverable grabbable stretchable draggable
-                            /> )
+                            var material = `data:${loadedAsset.type};base64,${loadedAsset.file};`
+                            var geometry = `primitive: box; width: ${loadedAsset.width}; height: ${loadedAsset.height}; depth: 0.1`
+                            var position = `x: ${loadedAsset.x}; y: ${loadedAsset.y}; z: ${loadedAsset.z}`
+                            templates.push(
+                                    `<template id="a${loadedAsset.id}">
+                                        <a-entity key="${loadedAsset.id}"
+                                            class="assets"
+                                            static-body="shape: box"
+                                            geometry="${geometry}"
+                                            material="${"src: " + material }"
+                                            position="${position}" 
+                                            hoverable grabbable stretchable draggable
+                                        >
+                                        </a-entity> 
+                                    </template>`)
+                                
+
+                            entities.push(<Entity networked={{template: `#a${loadedAsset.id}`, attachTemplateToLocal: true}}/>)
+                                
                             lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${loadedAsset.height * 1.5} ${loadedAsset.z * -6}`}/>)
                         }
                         else if (loadedAsset.name.toLowerCase().includes(".obj")){
@@ -142,7 +157,21 @@ class AframeInterview extends Component {
                         
                     }
                 })
-                this.setState({entities, lights})
+                this.setState({ lights, templates}, () => {
+                    loadedAssets.forEach((loadedAsset) => {
+                        NAF.schemas.add({
+                            template: `#a${loadedAsset.id}`,
+                            components: [
+                              'position',
+                              'rotation',
+                              'scale',
+                              'material',
+                              'geometry'
+                            ]
+                        })
+                        this.setState({entities})
+                    })
+                })
             })
 
         })
@@ -182,11 +211,25 @@ class AframeInterview extends Component {
     }
 
     render() { 
-        let aframeOptions = `serverURL: ${API_URL};app: PresenceVR; room: ${this.props.interviewId};`
+        console.log(this.state.templates.join(' '))
+        let aframeOptions = `serverURL: ${API_URL};app: PresenceVR; room: ${this.props.interviewId}; debug: true;`
         return (
             <Scene className='aframeContainer' embedded networked-scene={aframeOptions}>
                 <a-assets>
-                    <div dangerouslySetInnerHTML={{__html: '<template id="avatar-template"><a-entity class="avatar"><a-sphere class="head"color="#5985ff"scale="0.45 0.5 0.4"random-color></a-sphere><a-entity class="face"position="0 0.05 0"><a-sphere class="eye"color="#efefef"position="0.16 0.1 -0.35"scale="0.12 0.12 0.12"><a-sphere class="pupil"color="#000"position="0 0 -1"scale="0.2 0.2 0.2"></a-sphere></a-sphere><a-sphere class="eye"color="#efefef"position="-0.16 0.1 -0.35"scale="0.12 0.12 0.12"><a-sphere class="pupil"color="#000"position="0 0 -1"scale="0.2 0.2 0.2"></a-sphere></a-sphere></a-entity></a-entity></template> '}}/>
+                    <div dangerouslySetInnerHTML={{__html: `<template id="avatar-template"> \
+                                                            <a-entity class="avatar"> \
+                                                                <a-sphere class="head"color="#5985ff"scale="0.45 0.5 0.4"random-color></a-sphere> \
+                                                                <a-entity class="face"position="0 0.05 0"> \
+                                                                    <a-sphere class="eye"color="#efefef"position="0.16 0.1 -0.35"scale="0.12 0.12 0.12"> \
+                                                                        <a-sphere class="pupil"color="#000"position="0 0 -1"scale="0.2 0.2 0.2"></a-sphere> \
+                                                                    </a-sphere> \
+                                                                    <a-sphere class="eye"color="#efefef"position="-0.16 0.1 -0.35"scale="0.12 0.12 0.12"> \
+                                                                        <a-sphere class="pupil"color="#000"position="0 0 -1"scale="0.2 0.2 0.2"></a-sphere> \
+                                                                    </a-sphere> \
+                                                                </a-entity> \
+                                                            </a-entity> \
+                                                            </template> \
+                                                            ${this.state.templates.join(' ')}`}}/>
                 </a-assets>
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
 
@@ -197,7 +240,20 @@ class AframeInterview extends Component {
                         look-controls 
                         position={this.state.position} 
                     />
-                    {this.getControllers()}
+                    <Entity id='right-hand' 
+                        laser-controls 
+                        raycaster={{objects: ".assets"}}
+                        super-hands={{colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}}
+                        hand-controls='right'
+                        teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20, landingNormal:"0 1 0" }} 
+                    />         
+                    <Entity id='left-hand' 
+                        laser-controls
+                        raycaster={{objects: ".assets"}}
+                        super-hands={{colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}}
+                        hand-controls='left' 
+                        teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20, landingNormal:"0 1 0" }} 
+                    />        
                 </Entity>
                     {this.state.entities}
                     {this.state.lights}
