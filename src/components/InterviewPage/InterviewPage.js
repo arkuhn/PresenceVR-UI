@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Button, Divider, Grid, Header, Icon, Dimmer, Loader, Popup, Radio, Checkbox } from 'semantic-ui-react';
+import { Checkbox, Dimmer, Divider, Grid, Header, Icon, Loader, Popup } from 'semantic-ui-react';
+import openSocket from 'socket.io-client';
+import { API_URL } from '../../config/api.config';
 import { firebaseAuth } from '../../utils/firebase';
 import InterviewAPI from "../../utils/InterviewAPI";
+import socketEvents from '../../utils/socketEvents';
 import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar";
 import AframeInterview from "./aframeInterview";
 import Assets from "./assets";
-import ChatPane from "./chat";
+import Chat from "./chat";
+import Configuration from "./configuration";
 import Environments from "./environments";
+import Host from "./host";
 import './InterviewPage.css';
 import Participants from "./participants";
-import Host from "./host";
-import InterviewForm from "../InterviewCard/InterviewForm";
-import CancelInterview from "../InterviewCard/cancelInterview";
-import LeaveInterview from "../InterviewCard/leaveInterview";
-import Configuration from "./configuration";
 import VideoComponent from "./videoComponent";
+
 
 class InterviewPage extends Component {
     constructor(props) {
@@ -28,18 +29,30 @@ class InterviewPage extends Component {
             host: '',
             vidChat: false
         },
+        messages: [],
         upToDate: false,
+        socket: openSocket(API_URL),
         controllerMode: 'raycaster'
         }
 
+        socketEvents.registerEventHandlers(this.state.socket, this.addMessage)
         this.updateInterview = this.updateInterview.bind(this);
         this.videoToggled = this.videoToggled.bind(this);
     }
 
-    videoToggled() {
+    videoToggled = () => {
+        var message = {
+            color: 'yellow',
+            type: 'system',
+            id: this.id + this.id
+        }
         if(!this.state.vidChat){
+            message.content = this.state.user.email + ' has entered video chat mode'
+            this.state.socket.emit('message', message)
             this.setState({vidChat: true});
         } else {
+            message.content = this.state.user.email + ' has left video chat mode'
+            this.state.socket.emit('message', message)
             this.setState({vidChat: false});
         }
     }
@@ -91,14 +104,20 @@ class InterviewPage extends Component {
             loading: false,  // For the loader maybe
             user // User Details
           });
+          this.state.socket.emit('join', {id: this.id + this.id, user: firebaseAuth.currentUser.email })
         });
         this.updateInterview()
         
+    }
+    
+    addMessage = (message) => {
+        this.setState({messages: this.state.messages.concat([message])})
     }
 
     componentWillUnmount() {
         this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
     }
+
 
     render() {
         if (this.state.loading) {
@@ -125,15 +144,7 @@ class InterviewPage extends Component {
                 updateInterviewCallback={this.updateInterview}
                  environment={this.state.interview.loadedEnvironment}
                   interviewId={this.id}
-                  controllerMode={this.state.controllerMode}/>
-<Popup trigger={
-   <Header floated="right" as="h4">
-   <Icon name="keyboard" />
-       CONTROLS
-   </Header>
-}  position="bottom right" content =" Use WASD to move directions while using the webpage. Click the goggles button to enter VR mode. 
-                               While in VR, you can interact with assets using the two grab modes described in the configuration box." />
-                               <br/></div>);
+                  controllerMode={this.state.controllerMode}/></div>);
 
         if (this.state.upToDate && !isHost && !isParticipant) {
             return <Redirect to='/'/>
@@ -196,7 +207,7 @@ class InterviewPage extends Component {
                         <Divider/>
                         {/* Chat */}
                         <Grid.Row>
-                            <ChatPane />
+                            <Chat id={this.id + this.id} socket={this.state.socket} user={this.state.user.email} messages={this.state.messages}/>
                         </Grid.Row>
                     </Grid.Column>
 
