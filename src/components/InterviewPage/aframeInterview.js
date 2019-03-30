@@ -21,6 +21,7 @@ class AframeInterview extends Component {
         this.state = ({
             lights: [],
             entities: [],
+            sources: [],
             loadedAssets: [],
             templates: [],
             position: {x: 0, y: 2, z: 0}
@@ -115,39 +116,43 @@ class AframeInterview extends Component {
                 var entities = []
                 var lights = []
                 var templates = []
+                var sources= []
                 loadedAssets.forEach((loadedAsset) => {
                     if (loadedAsset) {
                         //Entities
                         if (loadedAsset.name.toLowerCase().includes(".jpg") || loadedAsset.name.toLowerCase().includes(".png")){
-                            var material = `data:${loadedAsset.type};base64,${loadedAsset.file};`
-                            var geometry = `primitive: box; width: ${loadedAsset.width}; height: ${loadedAsset.height}; depth: 0.1`
-                            var position = `x: ${loadedAsset.x}; y: ${loadedAsset.y}; z: ${loadedAsset.z}`
-                            templates.push(
-                                    `<template id="a${loadedAsset.id}">
-                                        <a-entity key="${loadedAsset.id}"
-                                            class="assets"
-                                            static-body="shape: box"
-                                            geometry="${geometry}"
-                                            material="${"src: " + material }"
-                                            position="${position}" 
-                                            hoverable grabbable stretchable draggable
-                                        >
-                                        </a-entity> 
-                                    </template>`)
-                                
+                            
+                            var material = `data:${loadedAsset.type};base64,${loadedAsset.file}`
+                            sources.push(
+                                <a-asset-item id={`img${loadedAsset.id}`} src={material } autoplay></a-asset-item>
+                            )
 
-                            entities.push(<Entity networked={{template: `#a${loadedAsset.id}`, attachTemplateToLocal: true}}/>)
+                            templates.push(`<template id="t${loadedAsset.id}">
+                                                <a-entity>
+                                                <a-box  class="assets" 
+                                                        static-body="shape: box"
+                                                        position="${loadedAsset.x} ${loadedAsset.y} ${loadedAsset.z}" 
+                                                        hoverable grabbable stretchable draggable 
+                                                        material="src: #img${loadedAsset.id}" 
+                                                        geometry="primitive: box; width: ${loadedAsset.width}; height: ${loadedAsset.height}; depth: 0.1"> 
+                                                </a-box>
+                                                <a-entity>
+                                            </template>`)
+
+                            var networked = `template: #t${loadedAsset.id}; attachTemplateToLocal: true`
+                            entities.push(<a-entity networked={networked } hoverable grabbable stretchable draggable/>)
                                 
                             lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${loadedAsset.height * 1.5} ${loadedAsset.z * -6}`}/>)
                         }
                         else if (loadedAsset.name.toLowerCase().includes(".obj")){
                             entities.push(
                                 <Entity key={loadedAsset.id}
+                                        id={`e${loadedAsset.id}`}
                                         class="assets"
                                         static-body={{shape: "box"}}
                                         obj-model={{obj: 'data:' + loadedAsset.type + ';base64,' + loadedAsset.file}}
                                         position={{x: loadedAsset.x, y: loadedAsset.y, z: loadedAsset.z}} 
-                                        hoverable grabbable stretchable draggable
+                                        hoverable grabbable stretchable draggabless
                                 />
                                 
                                 )
@@ -157,27 +162,15 @@ class AframeInterview extends Component {
                         
                     }
                 })
-                this.setState({ lights, templates}, () => {
-                    loadedAssets.forEach((loadedAsset) => {
-                        NAF.schemas.add({
-                            template: `#a${loadedAsset.id}`,
-                            components: [
-                              'position',
-                              'rotation',
-                              'scale',
-                              'material',
-                              'geometry'
-                            ]
-                        })
-                        this.setState({entities})
-                    })
-                })
+                this.setState({ lights, sources, templates}, () => this.setState({entities}))
             })
 
         })
     }
 
     componentDidMount() {
+        this.addTemplateSchema()
+
         let entity = document.querySelector('#head');
         entity.addEventListener('componentchanged', function (evt) {
             if (evt.detail.name === 'position') {
@@ -210,27 +203,47 @@ class AframeInterview extends Component {
         }
     }
 
+    addTemplateSchema = () => {
+        var NAF = window.NAF
+
+        this.state.loadedAssets.forEach((loadedAsset) => {
+            console.log(loadedAsset)
+            NAF.schemas.add({
+                template: `#t${loadedAsset.id}`,
+                components: [
+                    'position',
+                    'rotation',
+                    'material',
+                    'scale'
+                ] 
+            })
+        })
+    }
+
     render() { 
-        console.log(this.state.templates.join(' '))
-        let aframeOptions = `serverURL: ${API_URL};app: PresenceVR; room: ${this.props.interviewId}; debug: true;`
+
+        let aframeOptions = `serverURL: ${API_URL};app: PresenceVR; room: ${this.props.interviewId}; debug: true; adapter: easyRTC`
+        
         return (
             <Scene className='aframeContainer' embedded networked-scene={aframeOptions}>
                 <a-assets>
-                    <div dangerouslySetInnerHTML={{__html: `<template id="avatar-template"> \
-                                                            <a-entity class="avatar"> \
-                                                                <a-sphere class="head"color="#5985ff"scale="0.45 0.5 0.4"random-color></a-sphere> \
-                                                                <a-entity class="face"position="0 0.05 0"> \
-                                                                    <a-sphere class="eye"color="#efefef"position="0.16 0.1 -0.35"scale="0.12 0.12 0.12"> \
-                                                                        <a-sphere class="pupil"color="#000"position="0 0 -1"scale="0.2 0.2 0.2"></a-sphere> \
-                                                                    </a-sphere> \
-                                                                    <a-sphere class="eye"color="#efefef"position="-0.16 0.1 -0.35"scale="0.12 0.12 0.12"> \
-                                                                        <a-sphere class="pupil"color="#000"position="0 0 -1"scale="0.2 0.2 0.2"></a-sphere> \
-                                                                    </a-sphere> \
-                                                                </a-entity> \
-                                                            </a-entity> \
-                                                            </template> \
-                                                            ${this.state.templates.join(' ')}`}}/>
+                    {this.state.sources}
+                    <div dangerouslySetInnerHTML={{__html: `<div> <template id="avatar-template"> 
+                                                            <a-entity class="avatar"> 
+                                                                <a-sphere class="head"color="#5985ff"scale="0.45 0.5 0.4"random-color></a-sphere> 
+                                                                <a-entity class="face"position="0 0.05 0"> 
+                                                                    <a-sphere class="eye"color="#efefef"position="0.16 0.1 -0.35"scale="0.12 0.12 0.12"> 
+                                                                        <a-sphere class="pupil"color="#000"position="0 0 -1"scale="0.2 0.2 0.2"></a-sphere> 
+                                                                    </a-sphere> 
+                                                                    <a-sphere class="eye"color="#efefef"position="-0.16 0.1 -0.35"scale="0.12 0.12 0.12"> 
+                                                                        <a-sphere class="pupil"color="#000"position="0 0 -1"scale="0.2 0.2 0.2"></a-sphere> 
+                                                                    </a-sphere> 
+                                                                </a-entity> 
+                                                            </a-entity> 
+                                                            </template> ${this.state.templates.join('')} </div>`}}/ >
+      
                 </a-assets>
+
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
 
                 <Entity id="cameraRig">
