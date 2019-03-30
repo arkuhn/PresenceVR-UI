@@ -25,10 +25,10 @@
     "react-scripts": "2.1.1",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.84.0",
+    "socket.io-client": "^2.2.0",
     "super-hands": "^3.0.0",
     "twilio": "^3.29.2",
-    "twilio-video": "^1.16.0",
-    "socket.io-client": "^2.2.0"
+    "twilio-video": "^1.16.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -37,6 +37,7 @@
     "eject": "react-scripts eject",
     "deploy": "firebase use default && firebase deploy"
   },
+  "proxy": "http://localhost:8080",
   "eslintConfig": {
     "extends": "react-app"
   },

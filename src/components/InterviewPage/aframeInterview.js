@@ -117,6 +117,7 @@ class AframeInterview extends Component {
                 var lights = []
                 var templates = []
                 var sources= []
+                
                 loadedAssets.forEach((loadedAsset) => {
                     if (loadedAsset) {
                         //Entities
@@ -127,20 +128,13 @@ class AframeInterview extends Component {
                                 <a-asset-item id={`img${loadedAsset.id}`} src={material } autoplay></a-asset-item>
                             )
 
-                            templates.push(`<template id="t${loadedAsset.id}">
-                                                <a-entity>
-                                                <a-box  class="assets" 
-                                                        static-body="shape: box"
-                                                        position="${loadedAsset.x} ${loadedAsset.y} ${loadedAsset.z}" 
-                                                        hoverable grabbable stretchable draggable 
-                                                        material="src: #img${loadedAsset.id}" 
-                                                        geometry="primitive: box; width: ${loadedAsset.width}; height: ${loadedAsset.height}; depth: 0.1"> 
-                                                </a-box>
-                                                <a-entity>
-                                            </template>`)
+                            templates.push(`<template id="t${loadedAsset.id}"><a-entity><a-box  class="assets" static-body="shape: box" position="${loadedAsset.x} ${loadedAsset.y} ${loadedAsset.z}" hoverable grabbable stretchable draggable material="src: #img${loadedAsset.id}" geometry="primitive: box; width: ${loadedAsset.width}; height: ${loadedAsset.height}; depth: 0.1"> </a-box> <a-entity> </template>`)
+                            
+                            //WILL: if you copy and paste the output of this into the template section it will work (except the texture)
+                            console.log(templates[0])
 
                             var networked = `template: #t${loadedAsset.id}; attachTemplateToLocal: true`
-                            entities.push(<a-entity networked={networked } hoverable grabbable stretchable draggable/>)
+                            entities.push(<a-entity networked={networked }/>)
                                 
                             lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${loadedAsset.height * 1.5} ${loadedAsset.z * -6}`}/>)
                         }
@@ -153,15 +147,15 @@ class AframeInterview extends Component {
                                         obj-model={{obj: 'data:' + loadedAsset.type + ';base64,' + loadedAsset.file}}
                                         position={{x: loadedAsset.x, y: loadedAsset.y, z: loadedAsset.z}} 
                                         hoverable grabbable stretchable draggabless
-                                />
+                                /> 
                                 
                                 )
                                 lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${10} ${loadedAsset.z * -6}`}/>)
-                        }
-                        //lights
-                        
+                        }                        
                     }
                 })
+
+                // Templates must be in the page before we can do entities maybe?
                 this.setState({ lights, sources, templates}, () => this.setState({entities}))
             })
 
@@ -169,7 +163,7 @@ class AframeInterview extends Component {
     }
 
     componentDidMount() {
-        this.addTemplateSchema()
+        
 
         let entity = document.querySelector('#head');
         entity.addEventListener('componentchanged', function (evt) {
@@ -203,6 +197,10 @@ class AframeInterview extends Component {
         }
     }
 
+    componentWillMount = () => {
+        this.addTemplateSchema()
+    }
+
     addTemplateSchema = () => {
         var NAF = window.NAF
 
@@ -220,15 +218,22 @@ class AframeInterview extends Component {
         })
     }
 
+    getTemplates = () => {
+        return this.state.templates.forEach((template) => {
+            return <div dangerouslySetInnerHTML={{__html: '<div>' + template + '</div>'}} />
+        })
+      
+    }
+
     render() { 
 
-        let aframeOptions = `serverURL: ${API_URL};app: PresenceVR; room: ${this.props.interviewId}; debug: true; adapter: easyRTC`
+        let aframeOptions = `serverURL: localhost:8080;app: PresenceVR; room: ${this.props.interviewId}; debug: true; adapter: easyRTC`
         
         return (
             <Scene className='aframeContainer' embedded networked-scene={aframeOptions}>
                 <a-assets>
                     {this.state.sources}
-                    <div dangerouslySetInnerHTML={{__html: `<div> <template id="avatar-template"> 
+                    <div dangerouslySetInnerHTML={{__html: `<template id="avatar-template"> 
                                                             <a-entity class="avatar"> 
                                                                 <a-sphere class="head"color="#5985ff"scale="0.45 0.5 0.4"random-color></a-sphere> 
                                                                 <a-entity class="face"position="0 0.05 0"> 
@@ -240,7 +245,9 @@ class AframeInterview extends Component {
                                                                     </a-sphere> 
                                                                 </a-entity> 
                                                             </a-entity> 
-                                                            </template> ${this.state.templates.join('')} </div>`}}/ >
+                                                            </template> 
+                                                            ` + this.state.templates.join('')}}/ >
+                                                            {/* If you hard code the templates above they will work */}
       
                 </a-assets>
 
