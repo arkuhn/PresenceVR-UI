@@ -79,7 +79,7 @@ class Participant extends Component {
 
 class Participants extends Component {
     generateParticipants() {
-        const statuses = ["Online", "Offline"]
+        const statuses = ["Online \u{1F7E2}", "Offline \u{1F534}"];
         if (this.props.participants.length === 0) {
             return <p> No particpants added!</p>
         }
