@@ -32,7 +32,8 @@ class InterviewPage extends Component {
         messages: [],
         upToDate: false,
         socket: openSocket(API_URL),
-        controllerMode: 'raycaster'
+        controllerMode: 'raycaster',
+        participantStatuses: {}
         }
 
         socketEvents.registerEventHandlers(this.state.socket, this.addMessage)
