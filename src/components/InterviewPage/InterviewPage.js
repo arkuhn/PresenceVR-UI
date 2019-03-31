@@ -107,6 +107,7 @@ class InterviewPage extends Component {
           });
           this.state.socket.emit('join', {id: this.id + this.id, user: firebaseAuth.currentUser.email })
           this.state.socket.emit('Marco', {id: this.id + this.id, caller: firebaseAuth.currentUser.email});
+          // Could add Marco to join functionality, but it may be best to keep the Marco call general so it can be called at any time
         });
         this.updateInterview()
         
