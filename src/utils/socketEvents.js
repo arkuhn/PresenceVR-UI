@@ -21,6 +21,10 @@ const registerEventHandlers = (socket, addMessage) => {
         addMessage(data)
         console.log(data)
     })
+
+    socket.on('Marco', (data) =>{
+        socket.emit('Polo', {user: 'TESTING'})
+    })
 }
 
 module.exports = {registerEventHandlers}
