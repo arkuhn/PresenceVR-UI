@@ -106,6 +106,7 @@ class InterviewPage extends Component {
             user // User Details
           });
           this.state.socket.emit('join', {id: this.id + this.id, user: firebaseAuth.currentUser.email })
+          this.state.socket.emit('Marco', {id: this.id + this.id, caller: firebaseAuth.currentUser.email});
         });
         this.updateInterview()
         
