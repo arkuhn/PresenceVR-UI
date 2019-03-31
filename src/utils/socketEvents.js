@@ -14,6 +14,10 @@ const registerEventHandlers = (socket, addMessage, handleParticipantStatusChange
             content: 'User ' + data.user + ' has left the room.',
             color: 'teal'
         })
+        handleParticipantStatusChange({
+            caller: data.user,
+            status: 0  // TODO: Standardize this to mean offline
+        });
         console.log(data)
     })
 
