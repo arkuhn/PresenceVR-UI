@@ -24,10 +24,12 @@ const registerEventHandlers = (socket, addMessage, handlePolos) => {
 
     socket.on('Marco', (data) =>{
         socket.emit('Polo', {user: 'TESTING'})
+        console.log(data)
     })
 
     socket.on('Polo', (data) =>{
         handlePolos(data.user)
+        console.log(data)
     })
 }
 
