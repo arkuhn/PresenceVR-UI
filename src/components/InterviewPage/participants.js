@@ -79,7 +79,11 @@ class Participant extends Component {
 
 class Participants extends Component {
     generateParticipants() {
-        const statuses = ["Online \u{1F7E2}", "Offline \u{1F534}"];
+        const statuses = [
+            <div>Offline <Icon color='red' size='small' name='circle thin' /></div>,
+            <div>Online <Icon color='green' size='small' name='circle thin' /></div>
+            ];
+
         if (this.props.participants.length === 0) {
             return <p> No particpants added!</p>
         }
