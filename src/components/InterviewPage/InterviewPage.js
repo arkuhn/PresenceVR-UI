@@ -127,6 +127,12 @@ class InterviewPage extends Component {
         });
     }
 
+    getUserStatus = () => {
+        // TODO: standardize what each status value means
+        // TODO: check for VR/Video chat mode
+        return 1
+    }
+
     componentWillUnmount() {
         this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
     }
