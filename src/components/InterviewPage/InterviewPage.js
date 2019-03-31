@@ -36,7 +36,7 @@ class InterviewPage extends Component {
         participantStatuses: {}
         }
 
-        socketEvents.registerEventHandlers(this.state.socket, this.addMessage, this.handlePolos)
+        socketEvents.registerEventHandlers(this.state.socket, this.addMessage, this.handlePolos, this.getUserStatus)
         this.updateInterview = this.updateInterview.bind(this);
         this.videoToggled = this.videoToggled.bind(this);
     }

@@ -1,4 +1,4 @@
-const registerEventHandlers = (socket, addMessage, handlePolos) => {
+const registerEventHandlers = (socket, addMessage, handlePolos, getUserStatus) => {
     socket.on('join', (data) =>{
         addMessage({
             type: 'system',
@@ -23,6 +23,7 @@ const registerEventHandlers = (socket, addMessage, handlePolos) => {
     })
 
     socket.on('Marco', (data) =>{
+        data.status = getUserStatus();
         socket.emit('Polo', data)
         console.log(data)
     })
