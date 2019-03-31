@@ -133,6 +133,10 @@ class InterviewPage extends Component {
         return 1
     }
 
+    getCurrentUser = () => {
+        return firebaseAuth.currentUser.email;
+    }
+
     componentWillUnmount() {
         this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
     }
