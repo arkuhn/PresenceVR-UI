@@ -6,7 +6,7 @@ const registerEventHandlers = (socket, addMessage, handleParticipantStatusChange
             color: 'green'
         });
         handleParticipantStatusChange({
-            caller: data.user,
+            user: data.user,
             status: 1  // TODO: Standardize this to mean offline
         });
         console.log(data);
@@ -19,7 +19,7 @@ const registerEventHandlers = (socket, addMessage, handleParticipantStatusChange
             color: 'teal'
         });
         handleParticipantStatusChange({
-            caller: data.user,
+            user: data.user,
             status: 0  // TODO: Standardize this to mean offline
         });
         console.log(data);
@@ -32,7 +32,7 @@ const registerEventHandlers = (socket, addMessage, handleParticipantStatusChange
 
     socket.on('Marco', (data) =>{
         data.status = getUserStatus();
-        data.responder = getCurrentUser();
+        data.user = getCurrentUser();
         socket.emit('Polo', data);
         console.log(data);
     });

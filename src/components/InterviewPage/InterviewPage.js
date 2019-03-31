@@ -120,7 +120,7 @@ class InterviewPage extends Component {
     handleParticipantStatusChange = (data) => {
         this.setState(state => {
             let statuses = state.participantStatuses;
-            statuses[data.responder] = data.status;
+            statuses[data.user] = data.status;
             return {
                 participantStatuses: statuses,
             }
