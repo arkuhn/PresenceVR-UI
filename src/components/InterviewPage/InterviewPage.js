@@ -36,7 +36,7 @@ class InterviewPage extends Component {
         participantStatuses: {}
         }
 
-        socketEvents.registerEventHandlers(this.state.socket, this.addMessage, this.handlePolos, this.getUserStatus)
+        socketEvents.registerEventHandlers(this.state.socket, this.addMessage, this.handleParticipantStatusChange, this.getUserStatus)
         this.updateInterview = this.updateInterview.bind(this);
         this.videoToggled = this.videoToggled.bind(this);
     }
@@ -117,17 +117,7 @@ class InterviewPage extends Component {
         this.setState({messages: this.state.messages.concat([message])})
     }
 
-    handlePolos = (data) => {
-        this.setState(state => {
-            let statuses = state.participantStatuses;
-            statuses[data.caller] = data.status;
-            return {
-                participantStatuses: statuses,
-            }
-        });
-    }
-
-    handleParticipantLeave = (data) => {
+    handleParticipantStatusChange = (data) => {
         this.setState(state => {
             let statuses = state.participantStatuses;
             statuses[data.caller] = data.status;
