@@ -117,10 +117,10 @@ class InterviewPage extends Component {
         this.setState({messages: this.state.messages.concat([message])})
     }
 
-    handlePolos = (user) => {
+    handlePolos = (data) => {
         this.setState(state => {
             let statuses = state.participantStatuses;
-            statuses[user] = 'Online';
+            statuses[data.user] = data.status;
             return {
                 participantStatuses: statuses,
             }

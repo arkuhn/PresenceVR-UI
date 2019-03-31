@@ -28,7 +28,7 @@ const registerEventHandlers = (socket, addMessage, handlePolos) => {
     })
 
     socket.on('Polo', (data) =>{
-        handlePolos(data.caller)
+        handlePolos(data)
         console.log(data)
     })
 }
