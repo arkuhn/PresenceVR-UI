@@ -127,6 +127,16 @@ class InterviewPage extends Component {
         });
     }
 
+    handleParticipantLeave = (data) => {
+        this.setState(state => {
+            let statuses = state.participantStatuses;
+            statuses[data.caller] = data.status;
+            return {
+                participantStatuses: statuses,
+            }
+        });
+    }
+
     getUserStatus = () => {
         // TODO: standardize what each status value means
         // TODO: check for VR/Video chat mode
