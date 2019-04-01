@@ -27,8 +27,9 @@ class Host extends Component {
             <List.Item>
                 <Icon name='chess queen' />
                 <List.Content>
+                    <List.Header>{this.props.host}</List.Header>
                     <List.Description>
-                        {this.props.host}
+                    Status: {this.getStatus()}
                     </List.Description>
                 </List.Content>
             </List.Item>
