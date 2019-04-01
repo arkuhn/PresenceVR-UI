@@ -69,10 +69,10 @@ function renderData(assets, user)  {
            sources.push(<img id={`img${asset.id}`} src={`data:${asset.type};base64,${asset.file}`}/>)
            //Create a template in <a-assets> system
            templates.push( `<template id="t${asset.id}">
-                           <a-entity class="assets" static-body="shape: box"
-                           hoverable grabbable stretchable draggable >
-                           <a-box  position="${asset.x} ${asset.y} ${asset.z}" 
-                           
+                           <a-entity >
+                           <a-box class="assets" static-body="shape: box"
+                           hoverable grabbable stretchable draggable 
+                           position="${asset.x} ${asset.y} ${asset.z}" 
                            material="src: #img${asset.id}" 
                            geometry="primitive: box; width: ${asset.width}; height: ${asset.height}; depth: 0.1"></a-box> 
                            </a-entity> 
@@ -81,9 +81,7 @@ function renderData(assets, user)  {
            if (asset.owner === user){
                //Create entity that links to template and source
                let options = `template: #t${asset.id}; attachTemplateToLocal: true`
-               entities.push(<a-entity 
-                                         position rotation lerp id={`naf-${asset.id}`} networked={options}> 
-                                         </a-entity>)
+               entities.push(<a-entity position rotation networked={options}> </a-entity>)
            }
            
        }
