@@ -35,10 +35,11 @@ class InterviewPage extends Component {
         templates: [],
         upToDate: false,
         socket: openSocket(API_URL),
-        controllerMode: 'raycaster'
+        controllerMode: 'raycaster',
+        participantStatuses: {}
         }
 
-        socketEvents.registerEventHandlers(this.state.socket, this.addMessage)
+        socketEvents.registerEventHandlers(this.state.socket, this.addMessage, this.handleParticipantStatusChange, this.getCurrentUser, this.getUserStatus)
         this.updateInterview = this.updateInterview.bind(this);
         this.videoToggled = this.videoToggled.bind(this);
     }
@@ -113,6 +114,8 @@ class InterviewPage extends Component {
             user // User Details
           });
           this.state.socket.emit('join', {id: this.id + this.id, user: firebaseAuth.currentUser.email })
+          this.state.socket.emit('Marco', {id: this.id + this.id, caller: firebaseAuth.currentUser.email});
+          // Could add Marco to join functionality, but it may be best to keep the Marco call general so it can be called at any time
         });
         this.updateInterview()
         
@@ -120,6 +123,26 @@ class InterviewPage extends Component {
     
     addMessage = (message) => {
         this.setState({messages: this.state.messages.concat([message])})
+    }
+
+    handleParticipantStatusChange = (data) => {
+        this.setState(state => {
+            let statuses = state.participantStatuses;
+            statuses[data.user] = data.status;
+            return {
+                participantStatuses: statuses,
+            }
+        });
+    }
+
+    getUserStatus = () => {
+        // TODO: standardize what each status value means
+        // TODO: check for VR/Video chat mode
+        return 1
+    }
+
+    getCurrentUser = () => {
+        return firebaseAuth.currentUser.email;
     }
 
     componentWillUnmount() {
@@ -186,13 +209,16 @@ class InterviewPage extends Component {
 
                         {/* Host */}
                         <Grid.Row>
-                            <Host  host={this.state.interview.host} />
+                            <Host  host={this.state.interview.host} participantStatuses={this.state.participantStatuses}/>
                         </Grid.Row>
 
                         {/*Participants*/}
                         <Divider />
                         <Grid.Row>
-                            <Participants updateHost={this.updateHost} isHost={isHost} participants={this.state.interview.participants}/>
+                            <Participants   updateHost={this.updateHost} 
+                                            isHost={isHost} 
+                                            participants={this.state.interview.participants} 
+                                            participantStatuses={this.state.participantStatuses}/>
                         </Grid.Row>
 
                         <Divider />
