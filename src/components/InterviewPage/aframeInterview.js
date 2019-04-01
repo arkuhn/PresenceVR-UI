@@ -181,6 +181,15 @@ class AframeInterview extends Component {
             // Then we can render by adding entities and a light per loaded Asset
             this.renderLoadedAssets(loadedAssetPromises)
         }
+
+        navigator.mediaDevices.getUserMedia({ audio: false, video: true })
+            .then(stream => {
+                let $video = document.querySelector('video')
+                $video.srcObject = stream
+                $video.onloadedmetadata = () => {
+                    $video.play()
+                }
+            });
     }
 
     componentWillReceiveProps(data) {
@@ -232,6 +241,7 @@ class AframeInterview extends Component {
         return (
             <Scene className='aframeContainer' embedded networked-scene={aframeOptions}>
                 <a-assets>
+                    <video id="webcam" playsInline></video>
                     {this.state.sources}
                     <div dangerouslySetInnerHTML={{__html: `<template id="avatar-template"> 
                                                             <a-entity class="avatar"> 
@@ -252,6 +262,8 @@ class AframeInterview extends Component {
                 </a-assets>
 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
+
+                <a-box position="-1 0.5 -3" rotation="0 45 0" shadow material="src: #webcam"></a-box>
 
                 <Entity id="cameraRig">
                     <Entity id="head" networked="template:#avatar-template;attachTemplateToLocal:false;" 
