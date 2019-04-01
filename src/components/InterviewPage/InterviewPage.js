@@ -178,6 +178,17 @@ class InterviewPage extends Component {
                 <PresenceVRNavBar/>
                 <br/>
                 <Grid centered padded divided>
+                    {/* Header */}
+                    <Grid.Row>
+                        <Grid.Column  width={4}>
+                        <Header as='h1' textAlign='center'>
+                            <Header.Content>
+                            {this.state.interview.details}
+                            <Header.Subheader>Hosted by {this.state.interview.host}</Header.Subheader>
+                            </Header.Content>
+                        </Header>
+                        </Grid.Column>
+                    </Grid.Row>
 
                     {/* Left column*/}
                     <Grid.Column width={4}>
