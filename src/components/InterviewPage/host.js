@@ -4,6 +4,18 @@ import { Header, Icon, List } from 'semantic-ui-react';
 
 class Host extends Component {
 
+    getStatus = () => {
+
+        // TODO: Standardize statuses into a central util
+        const statuses = [
+            <span>&#160;Offline <Icon color='red' size='small' name='circle thin' /></span>,
+            <span>&#160;Online <Icon color='green' size='small' name='circle thin' /></span>
+            ];
+
+        let status = this.props.participantStatuses[this.props.host] ? this.props.participantStatuses[this.props.host] : 0;
+        return statuses[status];
+    }
+
     render() {
         return (
             <div className="ParticipantsBox">
