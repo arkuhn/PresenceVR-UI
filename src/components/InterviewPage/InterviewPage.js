@@ -16,7 +16,7 @@ import Host from "./host";
 import './InterviewPage.css';
 import Participants from "./participants";
 import VideoComponent from "./videoComponent";
-
+import aframeUtils from "./aframeUtils"
 
 class InterviewPage extends Component {
     constructor(props) {
@@ -30,6 +30,9 @@ class InterviewPage extends Component {
             vidChat: false
         },
         messages: [],
+        sources: [],
+        entities: [],
+        templates: [],
         upToDate: false,
         socket: openSocket(API_URL),
         controllerMode: 'raycaster'
@@ -57,11 +60,16 @@ class InterviewPage extends Component {
         }
     }
     
+    
     updateInterview() {
         return InterviewAPI.getInterview(this.id).then((data) => {
             if(data){
                 console.log('got data');
                 console.log(data.data);
+                Promise.all(aframeUtils.getData(this.state.interview.loadedAssets)).then((data) => {
+                    var {sources, entities, templates} = aframeUtils.renderData(data, this.state.user.email)
+                    this.setState({sources, entities, templates})
+                })
                 this.setState({
                     interview: data.data,
                     upToDate: true
@@ -138,13 +146,19 @@ class InterviewPage extends Component {
         let isHost = (this.state.user.email === this.state.interview.host)
         let isParticipant = this.state.interview.participants.includes(this.state.user.email)
         
+
         
-        let videoToggle = this.state.vidChat ? (<VideoComponent interviewId={this.id} joined={true}/>) :
-            (<div><AframeInterview loadedAssets={this.state.interview.loadedAssets}
-                updateInterviewCallback={this.updateInterview}
-                 environment={this.state.interview.loadedEnvironment}
-                  interviewId={this.id}
-                  controllerMode={this.state.controllerMode}/></div>);
+        let videoToggle = this.state.vidChat ? (
+            <VideoComponent interviewId={this.id} joined={true}/>) :
+            (<AframeInterview loadedAssets={this.state.interview.loadedAssets}
+                                updateInterviewCallback={this.updateInterview}
+                                environment={this.state.interview.loadedEnvironment}
+                                interviewId={this.id}
+                                controllerMode={this.state.controllerMode}
+                                user={this.state.user.email}
+                                entities={this.state.entities}
+                                templates={this.state.templates}
+                                sources={this.state.sources}/>);
 
         if (this.state.upToDate && !isHost && !isParticipant) {
             return <Redirect to='/'/>
@@ -232,17 +246,3 @@ class InterviewPage extends Component {
 }
 
 export default InterviewPage;
-
-{/* <AframeInterview loadedAssets={this.state.interview.loadedAssets}
-                                             updateInterviewCallback={this.updateInterview}
-                                              environment={this.state.interview.loadedEnvironment}
-                                               interviewId={this.id}
-                                               controllerMode={this.state.controllerMode}/>
-                            <Popup trigger={
-                                <Header floated="right" as="h4">
-                                <Icon name="keyboard" />
-                                    CONTROLS
-                                </Header>
-                            }  position="bottom right" content =" Use WASD to move directions while using the webpage. Click the goggles button to enter VR mode. 
-                                                            While in VR, you can interact with assets using the two grab modes described in the configuration box." />
-                                                            <br/> */}
