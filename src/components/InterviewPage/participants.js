@@ -79,12 +79,20 @@ class Participant extends Component {
 
 class Participants extends Component {
     generateParticipants() {
-        const statuses = ["Online", "Offline"]
+        const statuses = [
+            <span>&#160;Offline <Icon color='red' size='small' name='circle thin' /></span>,
+            <span>&#160;Online <Icon color='green' size='small' name='circle thin' /></span>
+            ];
+
         if (this.props.participants.length === 0) {
             return <p> No particpants added!</p>
         }
         return this.props.participants.map((participant, index) => {
-            return <Participant key={index} isHost={this.props.isHost} updateHost={this.props.updateHost} name={participant} status={statuses[Math.floor(Math.random() * 2)]}/>
+
+            console.log(this.props.participantStatuses);
+            let status = this.props.participantStatuses[participant] ? this.props.participantStatuses[participant] : 0;
+
+            return <Participant key={index} isHost={this.props.isHost} updateHost={this.props.updateHost} name={participant} status={statuses[status]}/>
         })
     }
 

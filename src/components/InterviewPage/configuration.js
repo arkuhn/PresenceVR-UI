@@ -100,7 +100,7 @@ class Configuation extends Component {
                 
                 
                 
-                <Popup trigger={<Header icon='keyboard' content='CONTROLS' as="h4"/>}  position="right" content =" Use WASD to move directions while using the webpage. Click the goggles button to enter VR mode. 
+                <Popup trigger={<Header icon='keyboard' content='CONTROLS' as="h4"/>}  position="right center" content =" Use WASD to move directions while using the webpage. Click the goggles button to enter VR mode. 
                                             While in VR, you can interact with assets using the two grab modes described in the configuration box." />
                 
             </div>
