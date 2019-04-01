@@ -184,7 +184,7 @@ class InterviewPage extends Component {
 
                         {/* Host */}
                         <Grid.Row>
-                            <Host  host={this.state.interview.host} />
+                            <Host  host={this.state.interview.host} participantStatuses={this.state.participantStatuses}/>
                         </Grid.Row>
 
                         {/*Participants*/}
