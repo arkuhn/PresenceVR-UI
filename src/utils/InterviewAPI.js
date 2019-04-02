@@ -10,8 +10,6 @@ function getInterview(id){
                 console.log('got a result');
                 console.log(response);
                 return response;
-            }).catch((error) => {
-                console.log(error);
             })
         })
 

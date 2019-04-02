@@ -69,6 +69,9 @@ class InterviewPage extends Component {
                     upToDate: true
                 });
             }
+        })
+        .catch((err) => {
+            this.setState({error: true})
         });
     }
 
@@ -156,7 +159,7 @@ class InterviewPage extends Component {
                         <Loader />
                     </Dimmer>
         }
-        if (!this.state.loading && !this.state.user) {
+        if (!this.state.loading && !this.state.user || this.state.error) {
             return <Redirect to='/'/>
         }
 
@@ -222,7 +225,8 @@ class InterviewPage extends Component {
                         <Grid.Row>
                             <Configuration isHost={isHost} 
                                     interview={this.state.interview} 
-                                    updateInterviewCallback={this.updateInterview} 
+                                    updateInterviewCallback={this.updateInterview}
+                                    socket={this.state.socket} 
                                     updateControllerMode={this.updateControllerMode}/>
                         </Grid.Row>
                         
