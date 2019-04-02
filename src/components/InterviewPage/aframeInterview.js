@@ -79,7 +79,7 @@ class AframeInterview extends Component {
                     if(loadedAsset.data.name.toLowerCase().includes(".png") || loadedAsset.data.name.toLowerCase().includes(".jpg")){
                         var [varheight, varwidth] = this.getDimensions(loadedAsset)
                         
-                        return {
+                        return {    
                             file: file.data,
                             type: loadedAsset.data.filetype,
                             height: varheight,
@@ -99,7 +99,20 @@ class AframeInterview extends Component {
                             name: loadedAsset.data.name,
                             id: loadedAsset.data._id,
                             x: index * 8,
-                            y: 1,
+                            y: 0,
+                            z: -3
+                        }
+                    }
+                    else if (loadedAsset.name.toLowerCase().includes(".mp4")){
+                        return {
+                            file: file.data,
+                            type: loadedAsset.data.filetype,
+                            height: 4,
+                            width: 6,
+                            name: loadedAsset.data.name,
+                            id: loadedAsset.data._id,
+                            x: index * 8,
+                            y: 5,
                             z: -3
                         }
                     }
@@ -146,12 +159,35 @@ class AframeInterview extends Component {
                                         static-body={{shape: "box"}}
                                         obj-model={{obj: 'data:' + loadedAsset.type + ';base64,' + loadedAsset.file}}
                                         position={{x: loadedAsset.x, y: loadedAsset.y, z: loadedAsset.z}} 
-                                        hoverable grabbable stretchable draggabless
+                                        hoverable grabbable stretchable draggable
                                 /> 
                                 
                                 )
                                 lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${10} ${loadedAsset.z * -6}`}/>)
-                        }                        
+                        }
+                        else if (loadedAsset.name.toLowerCase().includes(".mp4")){
+                            console.log(`data:${loadedAsset.type};base64,${loadedAsset.file}`)
+                            entities.push(
+                                //<Entity key={loadedAsset.id}
+                                  //      class="assets"
+                                    //    static-body={{shape: "box"}}
+                                      //  video={{src: 'data:' + loadedAsset.type + ';base64,' + loadedAsset.file}}
+                                      //  position={{x: loadedAsset.x, y: loadedAsset.y, z: loadedAsset.z}} 
+                                      //  hoverable grabbable stretchable draggable
+                                ///>
+                                 <a-video key={loadedAsset.id}
+                                          class="assets" 
+                                          position={`${loadedAsset.x} ${loadedAsset.y} ${loadedAsset.z}`}
+                                          src={`data:${loadedAsset.type};base64,${loadedAsset.file}`}
+                                ></a-video>
+                                )
+                                console.log("video added")
+                                //lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${10} ${loadedAsset.z * -6}`}/>)
+                                lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${loadedAsset.height * 1.5} ${loadedAsset.z * -6}`}/>)
+
+                        }
+                        //lights
+                        
                     }
                 })
 

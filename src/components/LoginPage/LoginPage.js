@@ -68,13 +68,6 @@ class LoginPage extends Component {
                                 <Icon name='google' />
                                 Login with Google
                             </Button>
-
-                            <Divider />
-
-                            <Button as={Link} to="/home" fluid size='medium' basic color='blue'>
-                                <Icon name='facebook' />
-                                Login with Facebook
-                            </Button>
                             </Segment>
                         </Card>
                         </Grid.Column>
