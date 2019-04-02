@@ -1,4 +1,4 @@
-const registerEventHandlers = (socket, addMessage, handleParticipantStatusChange, getCurrentUser, getUserStatus) => {
+const registerEventHandlers = (socket, addMessage, handleParticipantStatusChange, getCurrentUser, getUserStatus, updateInterview) => {
     socket.on('join', (data) =>{
         addMessage({
             type: 'system',
@@ -29,6 +29,10 @@ const registerEventHandlers = (socket, addMessage, handleParticipantStatusChange
         addMessage(data);
         console.log(data);
     });
+
+    socket.on('updateInterview', () => {
+        updateInterview()
+    })
 
     socket.on('Marco', (data) =>{
         data.status = getUserStatus();

@@ -36,7 +36,7 @@ class InterviewPage extends Component {
         participantStatuses: {}
         }
 
-        socketEvents.registerEventHandlers(this.state.socket, this.addMessage, this.handleParticipantStatusChange, this.getCurrentUser, this.getUserStatus)
+        socketEvents.registerEventHandlers(this.state.socket, this.addMessage, this.handleParticipantStatusChange, this.getCurrentUser, this.getUserStatus, this.updateInterview)
         this.updateInterview = this.updateInterview.bind(this);
         this.videoToggled = this.videoToggled.bind(this);
     }
@@ -59,7 +59,7 @@ class InterviewPage extends Component {
     }
     
     
-    updateInterview() {
+    updateInterview = () => {
         return InterviewAPI.getInterview(this.id).then((data) => {
             if(data){
                 console.log('got data');
@@ -86,8 +86,15 @@ class InterviewPage extends Component {
                     console.log(response)
                     return InterviewAPI.updateInterview( {host: newHost}, this.state.interview._id)
                 })
-                .then((response) => {
-                    return this.updateInterview()
+                .then(() => {
+                    var message = {
+                        color: 'yellow',
+                        type: 'system',
+                        content: newHost + ' has become the host.',
+                        id: this.id + this.id
+                    }
+                    this.state.socket.emit('message', message)
+                    return this.state.socket.emit('update')
                 })
     }
 
