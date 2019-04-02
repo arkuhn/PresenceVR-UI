@@ -45,14 +45,20 @@ class AframeInterview extends Component {
     }
 
     attachGeometryToAsset = (evt) => {
+        let el = evt.detail.el;
+        let id = el.getAttribute("id").substring(3);
+
         let box = document.createElement("A-BOX");
         let pos = document.createAttribute("position");
         let rot = document.createAttribute("rotation");
+        let mat = document.createAttribute("material");
         pos.value = "";
         rot.value = "";
+        mat.value = `src: #img${id}`;
         box.setAttributeNode(pos);
         box.setAttributeNode(rot);
-        evt.detail.el.appendChild(box);
+        box.setAttributeNode(mat);
+        el.appendChild(box);
     }
 
     renderAssets = (props) => {
