@@ -99,7 +99,7 @@ class AframeInterview extends Component {
                                         </a-entity> 
                                         </template>
                                         <template id="img-template">
-                                            <a-entity position="" rotation="" scale=""> 
+                                            <a-entity class="assets" static-body="shape: box" hoverable grabbable stretchable draggable position="" rotation="" scale=""> 
                                             </a-entity> 
                                         </template>
                                         ${this.state.templates.join('\n')}
