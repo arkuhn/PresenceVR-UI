@@ -39,6 +39,13 @@ class AframeInterview extends Component {
                 }
               }.bind(this));
         }
+
+        document.body.addEventListener('entityCreated', this.attachGeometryToAsset);
+
+    }
+
+    attachGeometryToAsset = (evt) => {
+        evt.detail.el.appendChild(document.createElement("A-BOX"));
     }
 
     renderAssets = (props) => {
