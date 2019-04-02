@@ -84,7 +84,7 @@ class AframeInterview extends Component {
   
                 </a-assets>
 
-                <Entity environment={{preset: this.state.environment, dressingAmount: 500}}></Entity>
+                <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
                 {this.state.entities}
                 <Entity id="cameraRig">
                     <Entity id="head" networked="template:#avatar-template;attachTemplateToLocal:false;" 

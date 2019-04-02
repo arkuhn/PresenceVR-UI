@@ -253,7 +253,7 @@ class InterviewPage extends Component {
                     <Grid.Column  width={4}>
                         {/* Environments */}
                         <Grid.Row>
-                            <Environments isHost={isHost} environment={this.state.interview.loadedEnvironment} interviewId={this.id} updateInterviewCallback={this.updateInterview}/>
+                            <Environments socket={this.state.socket} isHost={isHost} environment={this.state.interview.loadedEnvironment} interviewId={this.id}/>
                         </Grid.Row>
                         <Divider/>
                         {/* Assets */}

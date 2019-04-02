@@ -8,7 +8,7 @@ class Environments extends Component {
         this.setState({ value })
         console.log(this.state)
         InterviewAPI.updateInterview({loadedEnvironment: value}, this.props.interviewId).then ((response) =>{
-            this.props.updateInterviewCallback();
+            this.props.socket.emit('update')
         })
     }
 
