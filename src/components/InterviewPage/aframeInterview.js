@@ -92,6 +92,10 @@ class AframeInterview extends Component {
                                             </a-entity> 
                                         </a-entity> 
                                         </template>
+                                        <template id="img-template">
+                                            <a-entity position="" rotation="" scale=""> 
+                                            </a-entity> 
+                                        </template>
                                         ${this.state.templates.join('\n')}
                                         </div>`}} />
                                                             {/* Hard code templates in the string above */}

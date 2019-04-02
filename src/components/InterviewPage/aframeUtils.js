@@ -75,7 +75,7 @@ function renderData(assets, user)  {
 
            if (asset.owner === user){
                //Create entity that links to template and source
-               let options = `template: #t${asset.id}; attachTemplateToLocal: true`
+               let options = `template: #img-template; attachTemplateToLocal: true`
                entities.push(<a-entity id={`ent${asset.id}`} networked={options}> </a-entity>)
            }
            
