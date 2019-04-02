@@ -81,7 +81,7 @@ function renderData(assets, user)  {
            if (asset.owner === user){
                //Create entity that links to template and source
                let options = `template: #t${asset.id}; attachTemplateToLocal: true`
-               entities.push(<a-entity position rotation networked={options}> </a-entity>)
+               entities.push(<a-entity position rotation lerp networked={options}> </a-entity>)
            }
            
        }

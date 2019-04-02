@@ -13,7 +13,7 @@ import ReactDOM from "react-dom";
 import UploadAPI from '../../utils/UploadAPI';
 import './aframeInterview.css';
 import { API_URL } from '../../config/api.config';
-
+import aframeUtils from './aframeUtils'
 
 class AframeInterview extends Component {
 
@@ -41,6 +41,21 @@ class AframeInterview extends Component {
         }
     }
 
+    renderAssets = (props) => {
+        Promise.all(aframeUtils.getData(props.loadedAssets)).then((data) => {
+            var {sources, entities, templates} = aframeUtils.renderData(data, this.props.user)
+            this.setState({sources, entities, templates})
+        })
+    }
+
+    componentWillMount() {
+        this.renderAssets(this.props)
+    }
+
+    componentWillReceiveProps(props) {
+        this.renderAssets(props)
+    }
+
 
     render() { 
         let aframeOptions = `serverURL: ${API_URL};app: PresenceVR; room: ${this.props.interviewId}; debug: true; adapter: easyRTC`
@@ -48,7 +63,7 @@ class AframeInterview extends Component {
         return ( 
             <Scene className='aframeContainer' id="aframeContainer" embedded networked-scene={aframeOptions}>
                 <a-assets id="assetsSystem">
-                    {this.props.sources}
+                    {this.state.sources}
                     <div dangerouslySetInnerHTML={{__html: `<div>
                                         <template id="avatar-template"> 
                                         <a-entity class="avatar"> 
@@ -63,14 +78,14 @@ class AframeInterview extends Component {
                                             </a-entity> 
                                         </a-entity> 
                                         </template>
-                                        ${this.props.templates.join('\n')}
+                                        ${this.state.templates.join('\n')}
                                         </div>`}} />
                                                             {/* Hard code templates in the string above */}
   
                 </a-assets>
 
-                <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
-                {this.props.entities}
+                <Entity environment={{preset: this.state.environment, dressingAmount: 500}}></Entity>
+                {this.state.entities}
                 <Entity id="cameraRig">
                     <Entity id="head" networked="template:#avatar-template;attachTemplateToLocal:false;" 
                         camera 

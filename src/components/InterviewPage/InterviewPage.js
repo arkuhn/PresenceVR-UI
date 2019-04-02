@@ -30,9 +30,6 @@ class InterviewPage extends Component {
             vidChat: false
         },
         messages: [],
-        sources: [],
-        entities: [],
-        templates: [],
         upToDate: false,
         socket: openSocket(API_URL),
         controllerMode: 'raycaster',
@@ -67,10 +64,6 @@ class InterviewPage extends Component {
             if(data){
                 console.log('got data');
                 console.log(data.data);
-                Promise.all(aframeUtils.getData(this.state.interview.loadedAssets)).then((data) => {
-                    var {sources, entities, templates} = aframeUtils.renderData(data, this.state.user.email)
-                    this.setState({sources, entities, templates})
-                })
                 this.setState({
                     interview: data.data,
                     upToDate: true
@@ -178,10 +171,7 @@ class InterviewPage extends Component {
                                 environment={this.state.interview.loadedEnvironment}
                                 interviewId={this.id}
                                 controllerMode={this.state.controllerMode}
-                                user={this.state.user.email}
-                                entities={this.state.entities}
-                                templates={this.state.templates}
-                                sources={this.state.sources}/>);
+                                user={this.state.user.email}/>);
 
         if (this.state.upToDate && !isHost && !isParticipant) {
             return <Redirect to='/'/>
