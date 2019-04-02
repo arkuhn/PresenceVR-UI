@@ -167,7 +167,8 @@ class InterviewPage extends Component {
                 updateInterviewCallback={this.updateInterview}
                  environment={this.state.interview.loadedEnvironment}
                   interviewId={this.id}
-                  controllerMode={this.state.controllerMode}/></div>);
+                  controllerMode={this.state.controllerMode}
+                  host={(isHost) ? true : false }/></div>);
 
         if (this.state.upToDate && !isHost && !isParticipant) {
             return <Redirect to='/'/>

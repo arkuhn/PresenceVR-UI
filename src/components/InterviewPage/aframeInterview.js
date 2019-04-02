@@ -182,7 +182,7 @@ class AframeInterview extends Component {
             this.renderLoadedAssets(loadedAssetPromises)
         }
 
-        navigator.mediaDevices.getUserMedia({ audio: false, video: true })
+        navigator.mediaDevices.getUserMedia({ audio: true, video: true })
             .then(stream => {
                 let $video = document.querySelector('video')
                 $video.srcObject = stream
@@ -238,6 +238,10 @@ class AframeInterview extends Component {
 
         let aframeOptions = `serverURL: localhost:8080;app: PresenceVR; room: ${this.props.interviewId}; debug: true; adapter: easyRTC`
         
+        let isHost = this.props.host;
+
+        console.log("host: " + this.props.host);
+
         return (
             <Scene className='aframeContainer' embedded networked-scene={aframeOptions}>
                 <a-assets>
@@ -263,7 +267,7 @@ class AframeInterview extends Component {
 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
 
-                <a-box position="-1 0.5 -3" rotation="0 45 0" shadow material="src: #webcam"></a-box>
+                <a-box position="-5 2 -5" shadow depth="4" height="4" width="0.1" visible={isHost} material="src: #webcam"></a-box>
 
                 <Entity id="cameraRig">
                     <Entity id="head" networked="template:#avatar-template;attachTemplateToLocal:false;" 
