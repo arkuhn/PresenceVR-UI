@@ -48,7 +48,7 @@ class AframeInterview extends Component {
                 'scale',
                 {
                     selector: '.img-box',
-                    component: 'material'
+                    component: 'materialid'
                 },
                 {
                     selector: '.img-box',
