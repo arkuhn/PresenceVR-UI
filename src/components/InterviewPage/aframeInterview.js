@@ -42,6 +42,19 @@ class AframeInterview extends Component {
 
         document.body.addEventListener('entityCreated', this.attachGeometryToAsset);
 
+        window.NAF.schemas.add({
+            template: '#img-template',
+            components: [
+                'position',
+                'rotation',
+                'scale',
+                {
+                    selector: '.image-box',
+                    component: 'material'
+                }
+            ]
+        });
+
     }
 
     attachGeometryToAsset = (evt) => {
