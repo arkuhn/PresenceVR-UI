@@ -65,7 +65,7 @@ class AframeInterview extends Component {
 
             let box = el.querySelector('.image-box');
             if(box) { 
-                box.setAttribute('material', `src: #img${id.substring(3)}`);
+                box.setAttribute('material', "src: #img" + id.substring(3));
             }
         }
     }
