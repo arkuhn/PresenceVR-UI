@@ -40,7 +40,7 @@ class AframeInterview extends Component {
               }.bind(this));
         }
 
-        document.body.addEventListener('entityCreated', this.attachGeometryToAsset);
+        document.body.addEventListener('entityCreated', this.attachMaterialToAsset);
 
         window.NAF.schemas.add({
             template: '#img-template',
@@ -57,21 +57,12 @@ class AframeInterview extends Component {
 
     }
 
-    attachGeometryToAsset = (evt) => {
+    attachMaterialToAsset = (evt) => {
         let el = evt.detail.el;
-        let id = el.getAttribute("id").substring(3); 
-        
-        let box = document.createElement("A-BOX");
-        let pos = document.createAttribute("position");
-        let rot = document.createAttribute("rotation");
-        let mat = document.createAttribute("material");
-        pos.value = "";
-        rot.value = "";
-        mat.value = `src: #img${id}`;
-        box.setAttributeNode(pos);
-        box.setAttributeNode(rot);
-        box.setAttributeNode(mat);
-        el.appendChild(box);
+        let box = el.querySelector('.image-box');
+        if(box) { 
+            box.setAttribute('material', "src: #testing-out");
+        }
     }
 
     renderAssets = (props) => {
@@ -120,7 +111,9 @@ class AframeInterview extends Component {
                                         </a-entity> 
                                         </template>
                                         <template id="img-template">
-                                            <a-entity class="assets" static-body="shape: box" hoverable grabbable stretchable draggable position="" rotation="" scale=""> 
+                                            <a-entity class="assets" static-body="shape: box" hoverable grabbable stretchable draggable position="" rotation="" scale="">
+                                                <a-box class="image-box" position="0 0 0" rotation="0 0 0" scale="0 0 0" material="" >
+                                                </a-box>
                                             </a-entity> 
                                         </template>
                                         </div>`}} />
