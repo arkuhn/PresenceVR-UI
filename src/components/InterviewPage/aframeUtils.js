@@ -77,7 +77,7 @@ function renderData(assets, user)  {
                //Create entity that links to template and source
                let options = `template: #img-template; attachTemplateToLocal: false`
                entities.push( <a-entity key={index} id={`ent${asset.id}`} networked={options} position="0 0 0" rotation="0 0 0" scale="1 1 1"> 
-                                  <a-box class="img-box" position="0 0 0" rotation="0 0 0" scale="1 1 1" material="" >
+                                  <a-box class="img-box" position="0 0 0" rotation="0 0 0" scale="1 1 1" material={`src: #img${asset.id}`} >
                                   </a-box>
                               </a-entity>)
            }
