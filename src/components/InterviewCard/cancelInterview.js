@@ -16,7 +16,14 @@ class CancelInterview extends React.Component {
 
     handleSubmit(event) {
         InterviewAPI.deleteInterview(this.props.id)
-        .then(() => this.props.updateInterviewListCallback());
+        .then(() => {
+            if (this.props.updateInterviewCallback) {
+                this.props.updateInterviewCallback()
+            } else {
+                this.props.updateInterviewListCallback()
+            }
+            
+        });
         this.setState({ modalOpen: false })
         event.preventDefault();
     }

@@ -6,7 +6,6 @@ class Environments extends Component {
 
     handleChange = (e, { value }) => {
         this.setState({ value })
-        console.log(this.state)
         InterviewAPI.updateInterview({loadedEnvironment: value}, this.props.interviewId).then ((response) =>{
             this.props.socket.emit('update')
         })
@@ -44,9 +43,6 @@ class Environments extends Component {
                     </Header>
                 } content={this.getPopUp()}/>
                 <Form>
-                    <Form.Field>
-                    Selected environment: <b>{this.props.environment}</b>
-                    </Form.Field>
                     <Form.Field>
                     <Checkbox
                         toggle

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Checkbox, Dimmer, Divider, Grid, Header, Loader } from 'semantic-ui-react';
+import { Checkbox, Dimmer, Divider, Grid, Header, Loader, Segment } from 'semantic-ui-react';
 import openSocket from 'socket.io-client';
 import { API_URL } from '../../config/api.config';
 import { firebaseAuth } from '../../utils/firebase';
@@ -190,20 +190,22 @@ class InterviewPage extends Component {
                 <PresenceVRNavBar/>
                 <br/>
                 <Grid centered padded divided>
-                    {/* Header */}
-                    <Grid.Row>
-                        <Grid.Column  width={4}>
-                        <Header as='h1' textAlign='center'>
-                            <Header.Content>
-                            {this.state.interview.details}
-                            <Header.Subheader>Hosted by {this.state.interview.host}</Header.Subheader>
-                            </Header.Content>
-                        </Header>
-                        </Grid.Column>
-                    </Grid.Row>
 
                     {/* Left column*/}
                     <Grid.Column width={4}>
+                    <Grid.Row>
+                        <Segment>
+                            <Header as='h1' textAlign='center'>
+                                <Header.Content>
+                                Interview Details
+                                <Header.Subheader>Details: {this.state.interview.details} </Header.Subheader>
+                                <Header.Subheader>Scheduled for {this.state.interview.occursOnDate} at {this.state.interview.occursAtTime} </Header.Subheader>
+                                </Header.Content>
+                            </Header>
+                            
+                        </Segment>
+                        <br></br>
+                        </Grid.Row>
 
                         {/* Host */}
                         <Grid.Row>
@@ -225,13 +227,11 @@ class InterviewPage extends Component {
                                     interview={this.state.interview} 
                                     updateInterviewCallback={this.updateInterview}
                                     socket={this.state.socket} 
+                                    videoToggled={this.videoToggled}
                                     updateControllerMode={this.updateControllerMode}/>
                         </Grid.Row>
                         
-                        <Divider />
-                        <Grid.Row>
-                            <Checkbox toggle label="Enable Video Chat" value="default" onChange={this.videoToggled}/>
-                        </Grid.Row>
+                        
                     </Grid.Column>
 
 
@@ -265,6 +265,7 @@ class InterviewPage extends Component {
                     </Grid.Column>
 
                 </Grid>
+                <Divider />
             </div>
         );
     }

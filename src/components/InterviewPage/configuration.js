@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Header, Icon, Button, Popup, Form, Radio, Divider} from 'semantic-ui-react';
+import { Header, Icon, Checkbox, Button, Popup, Form, Radio, Divider} from 'semantic-ui-react';
 import InterviewForm from "../InterviewCard/InterviewForm"
 import CancelInterview from "../InterviewCard/cancelInterview"
 import LeaveInterview from "../InterviewCard/leaveInterview"
@@ -26,7 +26,7 @@ class Configuation extends Component {
                     time={this.props.interview.occursAtTime} 
                     details={this.props.interview.details} />
 
-                <CancelInterview id={this.props.interview._id} />
+                <CancelInterview updateInterviewCallback={this.props.updateInterviewCallback} id={this.props.interview._id} />
             </Button.Group>
                 
         } else {
@@ -90,16 +90,16 @@ class Configuation extends Component {
                 </Header>
                 {this.getInterviewControls()}
 
-                <Divider />
                 <Header sub>
                 Grab Options:
                 </Header>
                 {this.getPhysicsControls()}
 
-                <Divider />
-                
-                
-                
+                <Header sub>
+                Video conferencing:
+                </Header>
+                <Checkbox toggle label="Enable Video Chat" value="default" onChange={this.props.videoToggled}/>
+
                 <Popup trigger={<Header icon='keyboard' content='CONTROLS' as="h4"/>}  position="right center" content =" Use WASD to move directions while using the webpage. Click the goggles button to enter VR mode. 
                                             While in VR, you can interact with assets using the two grab modes described in the configuration box." />
                 
