@@ -28,6 +28,10 @@ class AframeInterview extends Component {
             loading: true,
             position: {x: 0, y: 2, z: 0}
         })
+
+        window.AFRAME.registerComponent('materialid', {
+            id: {type: 'string', default: ''}
+        });
     }
 
     componentDidMount() {
@@ -71,18 +75,14 @@ class AframeInterview extends Component {
 
     attachMaterialToAsset = (evt) => {
         let el = evt.detail.el;
-        let id = el.getAttribute('id');
 
-        if(id.startsWith('ent')) {
-
-            let box = el.querySelector('.img-box');
-            let src_id = box.getAttribute('materialid')
-            if(box) {
-                let mat = document.createAttribute("material");
-                mat.value = `src: #${src_id};`
-                box.setAttributeNode(mat);
-                console.log(box);
-            }
+        let box = el.querySelector('.img-box');
+        if(box) {
+            let src_id = box.getAttribute('materialid')['id']
+            let mat = document.createAttribute("material");
+            mat.value = `src: #${src_id};`
+            box.setAttributeNode(mat);
+            console.log(box);
         }
     }
 
