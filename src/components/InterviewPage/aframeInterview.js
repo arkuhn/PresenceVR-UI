@@ -49,7 +49,7 @@ class AframeInterview extends Component {
                 'rotation',
                 'scale',
                 {
-                    selector: '.image-box',
+                    selector: '.img-box',
                     component: 'material'
                 }
             ]
@@ -63,9 +63,12 @@ class AframeInterview extends Component {
 
         if(id.startsWith('ent')) {
 
-            let box = el.querySelector('.image-box');
+            let box = el.querySelector('.img-box');
             if(box) { 
-                box.setAttribute('material', "src: #img" + id.substring(3));
+                let mat = document.createAttribute("material");
+                mat.value = `src: #img${id.substring(3)};`
+                box.setAttributeNode(mat);
+                console.log(box)
             }
         }
     }
@@ -117,7 +120,7 @@ class AframeInterview extends Component {
                                         </template>
                                         <template id="img-template">
                                             <a-entity class="assets" static-body="shape: box" hoverable grabbable stretchable draggable position="" rotation="" scale="">
-                                                <a-box class="image-box" position="0 0 0" rotation="0 0 0" scale="0 0 0" material="" >
+                                                <a-box class="img-box" position="0 0 0" rotation="0 0 0" scale="0 0 0" material="" >
                                                 </a-box>
                                             </a-entity> 
                                         </template>
