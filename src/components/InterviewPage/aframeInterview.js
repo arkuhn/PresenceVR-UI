@@ -39,6 +39,26 @@ class AframeInterview extends Component {
                 }
               }.bind(this));
         }
+
+        document.body.addEventListener('entityCreated', this.attachGeometryToAsset);
+
+    }
+
+    attachGeometryToAsset = (evt) => {
+        let el = evt.detail.el;
+        let id = el.getAttribute("id").substring(3);
+
+        let box = document.createElement("A-BOX");
+        let pos = document.createAttribute("position");
+        let rot = document.createAttribute("rotation");
+        let mat = document.createAttribute("material");
+        pos.value = "";
+        rot.value = "";
+        mat.value = `src: #img${id}`;
+        box.setAttributeNode(pos);
+        box.setAttributeNode(rot);
+        box.setAttributeNode(mat);
+        el.appendChild(box);
     }
 
     renderAssets = (props) => {
@@ -77,6 +97,10 @@ class AframeInterview extends Component {
                                                 </a-sphere> 
                                             </a-entity> 
                                         </a-entity> 
+                                        </template>
+                                        <template id="img-template">
+                                            <a-entity class="assets" static-body="shape: box" hoverable grabbable stretchable draggable position="" rotation="" scale=""> 
+                                            </a-entity> 
                                         </template>
                                         ${this.state.templates.join('\n')}
                                         </div>`}} />
