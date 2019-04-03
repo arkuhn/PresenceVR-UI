@@ -75,14 +75,12 @@ class AframeInterview extends Component {
 
     attachMaterialToAsset = (evt) => {
         let el = evt.detail.el;
-
-        let box = el.querySelector('.img-box');
+        let box = el.querySelector('.img-box')
         if(box) {
-            let src_id = box.getAttribute('materialid')['id']
+            let id = box.getAttribute('materialid').id
             let mat = document.createAttribute("material");
-            mat.value = this.state.sources[src_id]
+            mat.value = this.state.sources[id]
             box.setAttributeNode(mat);
-            //console.log(box);
         }
     }
 

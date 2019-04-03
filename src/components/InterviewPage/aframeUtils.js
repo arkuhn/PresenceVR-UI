@@ -65,14 +65,14 @@ function renderData(assets, user)  {
        if (!asset) { return }
        if (asset.name.toLowerCase().includes(".jpg") || asset.name.toLowerCase().includes(".png")){
            //Create a 'source' (texture to be used) in the <a-assets> system
-           sources['img' + asset.id] = `src: url(data:${asset.type};base64,${asset.file});`
+           sources[asset.id] = `src: url(data:${asset.type};base64,${asset.file});`
            //sources.push(<img id={`img${asset.id}`} alt='' src={`data:${asset.type};base64,${asset.file}`}/>)
 
            if (asset.owner === user){
                //Create entity that links to template and source
                let options = `template: #img-template; attachTemplateToLocal: false`
                entities.push( <a-entity key={index} id={`ent${asset.id}`} networked={options} position="0 0 0" rotation="0 0 0" scale="1 1 1"> 
-                                  <a-box class="img-box" position="0 0 0" rotation="0 0 0" scale="1 1 1" materialid={`id: img${asset.id}`} >
+                                  <a-box class="img-box" position="0 0 0" rotation="0 0 0" scale="1 1 1" materialid={`id: ${asset.id}`} >
                                   </a-box>
                               </a-entity>)
            }
