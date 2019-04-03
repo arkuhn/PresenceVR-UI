@@ -75,7 +75,8 @@ function renderData(assets, user)  {
                                   <a-box class="img-box" position={`${asset.x} ${asset.y} ${asset.z}`}
                                                          rotation="0 0 0" 
                                                          scale="1 1 1" 
-                                                         materialid={`id: ${asset.id}`} >
+                                                         materialid={`id: ${asset.id}`} 
+                                                         geometry={`width: ${asset.width}; height: ${asset.height}; depth: 0.1`}>
                                   </a-box>
                               </a-entity>)
            }

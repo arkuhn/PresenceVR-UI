@@ -58,6 +58,10 @@ class AframeInterview extends Component {
                 },
                 {
                     selector: '.img-box',
+                    component: 'geometry'
+                },
+                {
+                    selector: '.img-box',
                     component: 'position'
                 },
                 {
@@ -130,7 +134,7 @@ class AframeInterview extends Component {
                                         </template>
                                         <template id="img-template">
                                             <a-entity class="assets" static-body="shape: box" hoverable grabbable stretchable draggable position="" rotation="" scale="">
-                                                <a-box class="img-box" position="" rotation="" scale="" materialid="" >
+                                                <a-box class="img-box" geometry="" position="" rotation="" scale="" materialid="" >
                                                 </a-box>
                                             </a-entity> 
                                         </template>
