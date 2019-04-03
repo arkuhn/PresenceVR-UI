@@ -18,7 +18,11 @@ class LeaveInterview extends React.Component {
     handleSubmit() {
         InterviewAPI.patchInterview(this.props.id, 'participants', firebaseAuth.currentUser.email, 'remove').then(() => {
             this.setState({ modalOpen: false });
-            window.location.reload()
+            if (this.props.socket) {
+                this.props.socket.emit('update')
+            } else {
+                window.location.reload()
+            }
         })
     }
 

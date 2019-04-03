@@ -72,6 +72,7 @@ class InterviewList extends Component {
                                     image={face} 
                                     icon='calendar alternate outline'
                                     id={interview._id}
+                                    updateInterviewListCallback={this.updateList}
                                     host={hosting} 
                                     key={index}/>
                 )

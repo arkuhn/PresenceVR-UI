@@ -20,17 +20,17 @@ class Configuation extends Component {
         if (this.props.isHost) {
             interviewControls = 
             <Button.Group>
-                <InterviewForm updateInterviewListCallback={this.props.updateInterviewCallback} type='edit' id={this.props.interview._id} 
+                <InterviewForm socket={this.props.socket} type='edit' id={this.props.interview._id} 
                     participants={this.props.interview.participants} 
                     date={this.props.interview.occursOnDate} 
                     time={this.props.interview.occursAtTime} 
                     details={this.props.interview.details} />
 
-                <CancelInterview updateInterviewListCallback={this.props.updateInterviewCallback} id={this.props.interview._id} />
+                <CancelInterview id={this.props.interview._id} />
             </Button.Group>
                 
         } else {
-            interviewControls = <LeaveInterview id={this.props.interview._id} />
+            interviewControls = <LeaveInterview socket={this.props.socket} id={this.props.interview._id} />
         }
         return interviewControls;
     }

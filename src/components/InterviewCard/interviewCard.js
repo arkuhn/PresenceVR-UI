@@ -82,7 +82,7 @@ class InterviewCard extends Component {
                                     Join
                                 </Button>
 
-                                <LeaveInterview id={this.props.id} />
+                                <LeaveInterview updateInterviewListCallback={this.props.updateInterviewListCallback} id={this.props.id} />
                             </Button.Group>
                         </div>
                     </Card.Content>
