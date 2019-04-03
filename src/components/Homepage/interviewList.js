@@ -50,7 +50,7 @@ class InterviewList extends Component {
         
     
         let interviewCards = [];
-        this.state.interviews.forEach((interview) => {
+        this.state.interviews.forEach((interview, index) => {
             let query = interview.host !== firebaseAuth.currentUser.email
             let hosting = false;
             let face = ''
@@ -72,7 +72,8 @@ class InterviewList extends Component {
                                     image={face} 
                                     icon='calendar alternate outline'
                                     id={interview._id}
-                                    host={hosting} />
+                                    host={hosting} 
+                                    key={index}/>
                 )
             }
         })

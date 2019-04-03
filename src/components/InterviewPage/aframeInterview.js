@@ -46,8 +46,10 @@ class AframeInterview extends Component {
 
     attachGeometryToAsset = (evt) => {
         let el = evt.detail.el;
-        let id = el.getAttribute("id").substring(3);
-
+        let id = el.getAttribute("id")
+        if (id === 'head') { return }
+        id = id.substring(3); 
+        
         let box = document.createElement("A-BOX");
         let pos = document.createAttribute("position");
         let rot = document.createAttribute("rotation");
@@ -62,22 +64,26 @@ class AframeInterview extends Component {
     }
 
     renderAssets = (props) => {
-        this.setState({fetching: true, loadedAssets: props.loadedAssets})
-        Promise.all(aframeUtils.getData(props.loadedAssets)).then((data) => {
-            var {sources, entities, templates} = aframeUtils.renderData(data, this.props.user)
-            this.setState({sources, entities, templates, fetching:false})
-        })
-    }
-
-
-    componentWillReceiveProps(props) {
         let equal = jsonEqual(props.loadedAssets, this.state.loadedAssets) 
         if ( this.state.fetching && equal  )  {
             return
         }
         if (!equal) {
-            this.renderAssets(props)
+            this.setState({fetching: true, loadedAssets: props.loadedAssets})
+            Promise.all(aframeUtils.getData(props.loadedAssets)).then((data) => {
+                var {sources, entities, templates} = aframeUtils.renderData(data, this.props.user)
+                this.setState({sources, entities, templates, fetching:false})
+            })
         }
+    }
+
+    componentWillMount() {
+        this.renderAssets(this.props)
+    }
+
+
+    componentWillReceiveProps(props) {
+        this.renderAssets(props)
     }
 
 
@@ -106,7 +112,6 @@ class AframeInterview extends Component {
                                             <a-entity class="assets" static-body="shape: box" hoverable grabbable stretchable draggable position="" rotation="" scale=""> 
                                             </a-entity> 
                                         </template>
-                                        ${this.state.templates.join('\n')}
                                         </div>`}} />
                                                             {/* Hard code templates in the string above */}
   

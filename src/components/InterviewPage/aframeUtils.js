@@ -62,7 +62,7 @@ function renderData(assets, user)  {
    var sources =[];
    var templates = [];
    var entities = [];
-   assets.forEach((asset) => {
+   assets.forEach((asset, index) => {
        if (!asset) { return }
        if (asset.name.toLowerCase().includes(".jpg") || asset.name.toLowerCase().includes(".png")){
            //Create a 'source' (texture to be used) in the <a-assets> system
@@ -76,7 +76,7 @@ function renderData(assets, user)  {
            if (asset.owner === user){
                //Create entity that links to template and source
                let options = `template: #img-template; attachTemplateToLocal: true`
-               entities.push(<a-entity id={`ent${asset.id}`} networked={options}> </a-entity>)
+               entities.push(<a-entity key={index} id={`ent${asset.id}`} networked={options}> </a-entity>)
            }
            
        }
