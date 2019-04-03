@@ -40,8 +40,6 @@ class AframeInterview extends Component {
               }.bind(this));
         }
 
-        document.body.addEventListener('entityCreated', this.attachMaterialToAsset);
-
         window.NAF.schemas.add({
             template: '#img-template',
             components: [
@@ -55,22 +53,6 @@ class AframeInterview extends Component {
             ]
         });
 
-    }
-
-    attachMaterialToAsset = (evt) => {
-        let el = evt.detail.el;
-        let id = el.getAttribute('id');
-
-        if(id.startsWith('ent')) {
-
-            let box = el.querySelector('.img-box');
-            if(box) { 
-                let mat = document.createAttribute("material");
-                mat.value = `src: #img${id.substring(3)};`
-                box.setAttributeNode(mat);
-                console.log(box)
-            }
-        }
     }
 
     renderAssets = (props) => {
