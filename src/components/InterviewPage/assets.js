@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Checkbox, Dimmer, Header, Icon, List, Loader, Segment, Popup } from 'semantic-ui-react';
+import { Button, Checkbox, Dimmer, Header, Icon, List, Loader, Popup, Segment } from 'semantic-ui-react';
 import InterviewAPI from '../../utils/InterviewAPI';
 import UploadAPI from '../../utils/UploadAPI';
 

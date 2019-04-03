@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Dimmer, Divider, Grid, Header, Icon, Loader, Segment } from 'semantic-ui-react';
+import { Dimmer, Divider, Grid, Header, Icon, Loader } from 'semantic-ui-react';
 import { firebaseAuth } from '../../utils/firebase';
-import InterviewForm from '../InterviewCard/InterviewForm';
 import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar";
 import './Homepage.css';
 import InterviewList from "./interviewList";

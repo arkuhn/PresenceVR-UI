@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
-import Video from 'twilio-video';
 import axios from 'axios';
-//import RaisedButton from 'material-ui/RaisedButton';
-//import TextField from 'material-ui/TextField';
-//import { Card, CardHeader, CardText } from 'material-ui/Card';
-import { Button, Divider, Grid, Card, Segment, Dimmer, Loader, Popup, Radio, Checkbox } from 'semantic-ui-react';
-import './videoInterview.css';
-
+import React, { Component } from 'react';
+import { Dimmer, Loader, Segment } from 'semantic-ui-react';
+import Video from 'twilio-video';
 import { API_URL } from "../../config/api.config";
 import { safeGetUser } from '../../utils/firebase';
+import './videoInterview.css';
+import { NationalList } from 'twilio/lib/rest/api/v2010/account/availablePhoneNumber/national';
+
 
 export default class VideoComponent extends Component {
     constructor(props) {
@@ -126,8 +124,7 @@ export default class VideoComponent extends Component {
             }
             this.detachParticipantTracks(room.localParticipant);
             room.participants.forEach(this.detachParticipantTracks);
-            this.state.activateRoom = null;
-            this.setState({ hasJoinedRoom: false, localMediaAvailable: false });
+            this.setState({ activateRoom: null, hasJoinedRoom: false, localMediaAvailable: false });
         });
     }
 
@@ -175,20 +172,6 @@ export default class VideoComponent extends Component {
 
                 </div>
         );
-        //errorText={this.state.roomNameErr ? 'Room Name is required' : undefined}
     }
 }
 
-{/* <Card>
-                <CardText>
-                    <div className="flex-container">
-                        {showLocalTrack}
-                        <div className="flex-item">
-                            <TextField hintText="Room Name" onChange={this.handleRoomNameChange} errorText = {this.state.roomNameErr ? 'Room Name is required' : undefined} />
-                            <br />
-                            {joinOrLeaveRoomButton}
-                        </div>
-                        <div className="flex-item" ref="remoteMedia" id="remote-media" />
-                    </div>
-                </CardText>
-            </Card> */}
