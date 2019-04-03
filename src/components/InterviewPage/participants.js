@@ -88,8 +88,6 @@ class Participants extends Component {
             return <p> No particpants added!</p>
         }
         return this.props.participants.map((participant, index) => {
-
-            console.log(this.props.participantStatuses);
             let status = this.props.participantStatuses[participant] ? this.props.participantStatuses[participant] : 0;
 
             return <Participant key={index} isHost={this.props.isHost} updateHost={this.props.updateHost} name={participant} status={statuses[status]}/>
