@@ -195,11 +195,11 @@ class InterviewPage extends Component {
                     <Grid.Column width={4}>
                     <Grid.Row>
                         <Segment>
-                            <Header as='h1' textAlign='center'>
+                            <Header as='h2' textAlign='center'>
                                 <Header.Content>
                                 Interview Details
-                                <Header.Subheader>Details: {this.state.interview.details} </Header.Subheader>
-                                <Header.Subheader>Scheduled for {this.state.interview.occursOnDate} at {this.state.interview.occursAtTime} </Header.Subheader>
+                                <Header.Subheader>Description: <b>{this.state.interview.details}</b> </Header.Subheader>
+                                <Header.Subheader>Scheduled for <b>{this.state.interview.occursOnDate}</b> at <b>{this.state.interview.occursAtTime}</b> </Header.Subheader>
                                 </Header.Content>
                             </Header>
                             
