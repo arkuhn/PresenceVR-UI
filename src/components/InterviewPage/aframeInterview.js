@@ -80,9 +80,9 @@ class AframeInterview extends Component {
         if(box) {
             let src_id = box.getAttribute('materialid')['id']
             let mat = document.createAttribute("material");
-            mat.value = `src: #${src_id};`
+            mat.value = this.state.sources[src_id]
             box.setAttributeNode(mat);
-            console.log(box);
+            //console.log(box);
         }
     }
 
@@ -94,8 +94,8 @@ class AframeInterview extends Component {
         if (!equal) {
             this.setState({fetching: true, loadedAssets: props.loadedAssets})
             Promise.all(aframeUtils.getData(props.loadedAssets)).then((data) => {
-                var {sources, entities, templates} = aframeUtils.renderData(data, this.props.user)
-                this.setState({sources, entities, templates, fetching:false})
+                var {sources, entities} = aframeUtils.renderData(data, this.props.user)
+                this.setState({sources, entities, fetching:false})
             })
         }
     }
@@ -116,7 +116,6 @@ class AframeInterview extends Component {
         return ( 
             <Scene className='aframeContainer' id="aframeContainer" embedded networked-scene={aframeOptions}>
                 <a-assets id="assetsSystem">
-                    {this.state.sources}
                     <div dangerouslySetInnerHTML={{__html: `<div>
                                         <template id="avatar-template"> 
                                         <a-entity class="avatar"> 

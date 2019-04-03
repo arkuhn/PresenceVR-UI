@@ -59,19 +59,14 @@ function getData(loadedAssetIds) {
 /* Turn each assets data into its respective JSX
 */
 function renderData(assets, user)  {
-   var sources =[];
-   var templates = [];
+   var sources = {};
    var entities = [];
    assets.forEach((asset, index) => {
        if (!asset) { return }
        if (asset.name.toLowerCase().includes(".jpg") || asset.name.toLowerCase().includes(".png")){
            //Create a 'source' (texture to be used) in the <a-assets> system
-           sources.push(<img id={`img${asset.id}`} alt='' src={`data:${asset.type};base64,${asset.file}`}/>)
-           //Create a template in <a-assets> system
-           templates.push( `<template id="t${asset.id}">
-                           <a-entity position="" rotation="" scale=""> 
-                           </a-entity> 
-                           </template>`)
+           sources['img' + asset.id] = `src: url(data:${asset.type};base64,${asset.file});`
+           //sources.push(<img id={`img${asset.id}`} alt='' src={`data:${asset.type};base64,${asset.file}`}/>)
 
            if (asset.owner === user){
                //Create entity that links to template and source
@@ -84,7 +79,7 @@ function renderData(assets, user)  {
            
        }
    })
-   return {templates, entities, sources}
+   return {entities, sources}
 }
 
 export default {renderData, getData}
