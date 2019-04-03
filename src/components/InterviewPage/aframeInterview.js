@@ -40,6 +40,8 @@ class AframeInterview extends Component {
               }.bind(this));
         }
 
+        document.body.addEventListener('entityCreated', this.attachMaterialToAsset);
+
         window.NAF.schemas.add({
             template: '#img-template',
             components: [
@@ -65,6 +67,23 @@ class AframeInterview extends Component {
             ]
         });
 
+    }
+
+    attachMaterialToAsset = (evt) => {
+        let el = evt.detail.el;
+        let id = el.getAttribute('id');
+
+        if(id.startsWith('ent')) {
+
+            let box = el.querySelector('.img-box');
+            let src_id = box.getAttribute('materialid')
+            if(box) {
+                let mat = document.createAttribute("material");
+                mat.value = `src: #${src_id};`
+                box.setAttributeNode(mat);
+                console.log(box);
+            }
+        }
     }
 
     renderAssets = (props) => {
@@ -114,7 +133,7 @@ class AframeInterview extends Component {
                                         </template>
                                         <template id="img-template">
                                             <a-entity class="assets" static-body="shape: box" hoverable grabbable stretchable draggable position="" rotation="" scale="">
-                                                <a-box class="img-box" position="" rotation="" scale="" material="" >
+                                                <a-box class="img-box" position="" rotation="" scale="" materialid="" >
                                                 </a-box>
                                             </a-entity> 
                                         </template>
