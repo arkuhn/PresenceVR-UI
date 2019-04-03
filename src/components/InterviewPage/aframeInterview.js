@@ -133,13 +133,11 @@ class AframeInterview extends Component {
                                         </a-entity> 
                                         </template>
                                         <template id="img-template">
-                                            <a-entity class="assets" static-body="shape: box" hoverable grabbable stretchable draggable position="" rotation="" scale="">
-                                                <a-box class="img-box" geometry="" position="" rotation="" scale="" materialid="" >
-                                                </a-box>
+                                            <a-entity class="assets" static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable="" position="" rotation="" scale="">
+                                                <a-box class="img-box" geometry="" position="" rotation="" scale="" materialid="" ></a-box>
                                             </a-entity> 
                                         </template>
                                         </div>`}} />
-                                                            {/* Hard code templates in the string above */}
   
                 </a-assets>
 
@@ -154,14 +152,14 @@ class AframeInterview extends Component {
                     />
                     <Entity id='right-hand' 
                         laser-controls 
-                        raycaster={{objects: ".assets"}}
+                        raycaster={{objects: ".imgbox"}}
                         super-hands={{colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}}
                         hand-controls='right'
                         teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20, landingNormal:"0 1 0" }} 
                     />         
                     <Entity id='left-hand' 
                         laser-controls
-                        raycaster={{objects: ".assets"}}
+                        raycaster={{objects: ".img-box"}}
                         super-hands={{colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}}
                         hand-controls='left' 
                         teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20, landingNormal:"0 1 0" }} 

@@ -71,14 +71,19 @@ function renderData(assets, user)  {
            if (asset.owner === user){
                //Create entity that links to template and source
                let options = `template: #img-template; attachTemplateToLocal: false`
-               entities.push( <a-entity key={index} id={`ent${asset.id}`} networked={options} position="0 0 0" rotation="0 0 0" scale="1 1 1"> 
-                                  <a-box class="img-box" position={`${asset.x} ${asset.y} ${asset.z}`}
-                                                         rotation="0 0 0" 
-                                                         scale="1 1 1" 
-                                                         materialid={`id: ${asset.id}`} 
-                                                         geometry={`width: ${asset.width}; height: ${asset.height}; depth: 0.1`}>
-                                  </a-box>
-                              </a-entity>)
+               entities.push( 
+                    <a-entity key={index} id={`ent${asset.id}`} 
+                            networked={options} static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable=""
+                            position="0 0 0" rotation="0 0 0" scale="1 1 1">
+                                <a-box class="img-box" position={`${asset.x} ${asset.y} ${asset.z}`}
+                                                        rotation="0 0 0" 
+                                                        scale="1 1 1" 
+                                                        materialid={`id: ${asset.id}`}
+                                                         
+                                                        geometry={`width: ${asset.width}; height: ${asset.height}; depth: 0.1`}>
+                                </a-box>
+                    </a-entity>
+                )
            }
            
        }
