@@ -46,9 +46,7 @@ class AframeInterview extends Component {
 
     attachGeometryToAsset = (evt) => {
         let el = evt.detail.el;
-        let id = el.getAttribute("id")
-        if (id === 'head') { return }
-        id = id.substring(3); 
+        let id = el.getAttribute("id").substring(3); 
         
         let box = document.createElement("A-BOX");
         let pos = document.createAttribute("position");
