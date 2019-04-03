@@ -15,6 +15,10 @@ import './aframeInterview.css';
 import { API_URL } from '../../config/api.config';
 import aframeUtils from './aframeUtils'
 
+function jsonEqual(a,b) {
+    return JSON.stringify(a) === JSON.stringify(b);
+}
+
 class AframeInterview extends Component {
 
    constructor(props) {
@@ -62,18 +66,22 @@ class AframeInterview extends Component {
     }
 
     renderAssets = (props) => {
+        this.setState({fetching: true, loadedAssets: props.loadedAssets})
         Promise.all(aframeUtils.getData(props.loadedAssets)).then((data) => {
             var {sources, entities, templates} = aframeUtils.renderData(data, this.props.user)
-            this.setState({sources, entities, templates})
+            this.setState({sources, entities, templates, fetching:false})
         })
     }
 
-    componentWillMount() {
-        this.renderAssets(this.props)
-    }
 
     componentWillReceiveProps(props) {
-        this.renderAssets(props)
+        let equal = jsonEqual(props.loadedAssets, this.state.loadedAssets) 
+        if ( this.state.fetching && equal  )  {
+            return
+        }
+        if (!equal) {
+            this.renderAssets(props)
+        }
     }
 
 
