@@ -28,7 +28,7 @@ class Asset extends Component {
         return (
             <List.Item >
                 <List.Content floated='right'>
-                    <Icon corner color='red' name='trash alternate outline' link onClick={this.deleteAsset} aria-hidden='Delete' />
+                    <Icon corner color='red' name='trash alternate outline' link onClick={this.deleteAsset} />
                 </List.Content>
                 <List.Content floated='left'>
                     <Icon name={this.props.icon} />

@@ -66,7 +66,7 @@ function renderData(assets, user)  {
        if (!asset) { return }
        if (asset.name.toLowerCase().includes(".jpg") || asset.name.toLowerCase().includes(".png")){
            //Create a 'source' (texture to be used) in the <a-assets> system
-           sources.push(<img id={`img${asset.id}`} src={`data:${asset.type};base64,${asset.file}`}/>)
+           sources.push(<img id={`img${asset.id}`} alt='' src={`data:${asset.type};base64,${asset.file}`}/>)
            //Create a template in <a-assets> system
            templates.push( `<template id="t${asset.id}">
                            <a-entity position="" rotation="" scale=""> 

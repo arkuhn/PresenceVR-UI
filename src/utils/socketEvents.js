@@ -27,7 +27,6 @@ const registerEventHandlers = (socket, addMessage, handleParticipantStatusChange
 
     socket.on('message', (data) =>{
         addMessage(data);
-        console.log(data);
     });
 
     socket.on('updateInterview', () => {
@@ -38,12 +37,10 @@ const registerEventHandlers = (socket, addMessage, handleParticipantStatusChange
         data.status = getUserStatus();
         data.user = getCurrentUser();
         socket.emit('Polo', data);
-        console.log(data);
     });
 
     socket.on('Polo', (data) =>{
         handleParticipantStatusChange(data);
-        console.log(data);
     });
 }
 

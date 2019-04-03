@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Header, Icon, List, Button, Modal, Popup } from 'semantic-ui-react';
-import InterviewAPI from '../../utils/InterviewAPI';
+import { Button, Header, Icon, List, Modal, Popup } from 'semantic-ui-react';
 
 
 class Participant extends Component {
@@ -32,7 +31,7 @@ class Participant extends Component {
 
     makeHostModal = () => {
         return (<Modal basic size='small' open={this.state.modalOpen} onClose={this.handleCancel} trigger={ 
-            <Icon corner color='green' onClick={this.handleOpen} name='chess queen' circular link aria-hidden='Make host' />
+            <Icon corner color='green' onClick={this.handleOpen} name='chess queen' circular link />
         }>
         <Header as='h1' icon='chess queen' content={`Are you sure you want to make ${this.props.name} the host?`} />
         <Header as='h3'>This means they can change the environment, remove participants and update interview details.</Header>

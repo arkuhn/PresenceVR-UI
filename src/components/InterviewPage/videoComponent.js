@@ -5,7 +5,6 @@ import Video from 'twilio-video';
 import { API_URL } from "../../config/api.config";
 import { safeGetUser } from '../../utils/firebase';
 import './videoInterview.css';
-import { NationalList } from 'twilio/lib/rest/api/v2010/account/availablePhoneNumber/national';
 
 
 export default class VideoComponent extends Component {

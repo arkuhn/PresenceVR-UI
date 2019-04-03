@@ -43,7 +43,7 @@ class UploadPage extends Component {
 						<h1>Enviroments</h1>
 					</Grid.Column>
 					<Grid.Column width={1}>
-						<button class='ui circular icon button' role='button'>
+						<button class='ui circular icon button'>
 							<i aria-hidden='true' class='add icon' />
 						</button>
 					</Grid.Column>
@@ -51,7 +51,7 @@ class UploadPage extends Component {
 						<h1>Assets</h1>
 					</Grid.Column>
 					<Grid.Column width={1}>
-						<button class='ui circular icon button' role='button'>
+						<button class='ui circular icon button'>
 							<i aria-hidden='true' class='add icon' />
 						</button>
 					</Grid.Column>

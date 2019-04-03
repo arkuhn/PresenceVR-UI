@@ -5,12 +5,6 @@ import { firebaseAuth, loginWithGoogle } from "../../utils/firebase";
 import './LoginPage.css';
 
 class LoginPage extends Component {
-
-    constructor(props) {
-        super(props);
-
-    }
-
     componentWillMount() {
         this.setState({loading: true})
         // Bind the variable to the instance of the class.
