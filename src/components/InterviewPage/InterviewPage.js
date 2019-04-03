@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Checkbox, Dimmer, Divider, Grid, Header, Icon, Loader, Popup } from 'semantic-ui-react';
+import { Checkbox, Dimmer, Divider, Grid, Header, Loader } from 'semantic-ui-react';
 import openSocket from 'socket.io-client';
 import { API_URL } from '../../config/api.config';
 import { firebaseAuth } from '../../utils/firebase';
@@ -16,7 +16,6 @@ import Host from "./host";
 import './InterviewPage.css';
 import Participants from "./participants";
 import VideoComponent from "./videoComponent";
-import aframeUtils from "./aframeUtils"
 
 class InterviewPage extends Component {
     constructor(props) {
@@ -29,6 +28,7 @@ class InterviewPage extends Component {
             host: '',
             vidChat: false
         },
+        fetching: false,
         messages: [],
         upToDate: false,
         socket: openSocket(API_URL),
@@ -37,8 +37,6 @@ class InterviewPage extends Component {
         }
 
         socketEvents.registerEventHandlers(this.state.socket, this.addMessage, this.handleParticipantStatusChange, this.getCurrentUser, this.getUserStatus, this.updateInterview)
-        this.updateInterview = this.updateInterview.bind(this);
-        this.videoToggled = this.videoToggled.bind(this);
     }
 
     videoToggled = () => {
@@ -60,19 +58,25 @@ class InterviewPage extends Component {
     
     
     updateInterview = () => {
-        return InterviewAPI.getInterview(this.id).then((data) => {
-            if(data){
-                console.log('got data');
-                console.log(data.data);
-                this.setState({
-                    interview: data.data,
-                    upToDate: true
-                });
-            }
-        })
-        .catch((err) => {
-            this.setState({error: true})
-        });
+        if(!this.state.fetching) {
+            this.setState({fetching: true})
+            return InterviewAPI.getInterview(this.id).then((data) => {
+                if(data){
+                    console.log('got data');
+                    console.log(data.data);
+                    this.setState({
+                        interview: data.data,
+                        upToDate: true,
+                        fetching: false
+                    });
+                }
+            })
+            .catch((err) => {
+                this.setState({error: true})
+            });
+        }
+          
+        
     }
 
     updateControllerMode = (type) => {
@@ -100,13 +104,6 @@ class InterviewPage extends Component {
                     return this.state.socket.emit('update')
                 })
     }
-
-    //This is a temp fix for losing state on refresh
-    componentDidUpdate() {
-        if (!this.state.upToDate) {
-            this.updateInterview()
-        }
-    }
     
     componentWillMount() {
         this.setState({loading: true})
@@ -116,11 +113,12 @@ class InterviewPage extends Component {
             loading: false,  // For the loader maybe
             user // User Details
           });
+          this.updateInterview()
+
           this.state.socket.emit('join', {id: this.id + this.id, user: firebaseAuth.currentUser.email })
           this.state.socket.emit('Marco', {id: this.id + this.id, caller: firebaseAuth.currentUser.email});
           // Could add Marco to join functionality, but it may be best to keep the Marco call general so it can be called at any time
         });
-        this.updateInterview()
         
     }
     
@@ -159,7 +157,7 @@ class InterviewPage extends Component {
                         <Loader />
                     </Dimmer>
         }
-        if (!this.state.loading && !this.state.user || this.state.error) {
+        if ((!this.state.loading && !this.state.user) || this.state.error) {
             return <Redirect to='/'/>
         }
 

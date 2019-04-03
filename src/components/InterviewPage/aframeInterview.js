@@ -1,19 +1,15 @@
 import 'aframe';
 import 'aframe-environment-component';
-import 'aframe-teleport-controls'
-import 'networked-aframe';
-import 'aframe-physics-system'
-import 'super-hands'
-import 'aframe-extras'
+import 'aframe-extras';
+import 'aframe-physics-system';
 import { Entity, Scene } from 'aframe-react';
+import 'aframe-teleport-controls';
+import 'networked-aframe';
 import React, { Component } from 'react';
-import ReactDOMServer from 'react-dom/server';
-import { Dimmer, Loader} from 'semantic-ui-react';
-import ReactDOM from "react-dom";
-import UploadAPI from '../../utils/UploadAPI';
-import './aframeInterview.css';
+import 'super-hands';
 import { API_URL } from '../../config/api.config';
-import aframeUtils from './aframeUtils'
+import './aframeInterview.css';
+import aframeUtils from './aframeUtils';
 
 function jsonEqual(a,b) {
     return JSON.stringify(a) === JSON.stringify(b);
