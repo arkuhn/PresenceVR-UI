@@ -137,13 +137,19 @@ class AframeInterview extends Component {
                                                 <a-box class="img-box" geometry="" position="" rotation="" scale="" materialid="" ></a-box>
                                             </a-entity> 
                                         </template>
+
+                                        <template id="camera-template">
+                                            <a-entity class="cameraRig">
+                                            </a-entity>
+                                        </template>
+
                                         </div>`}} />
   
                 </a-assets>
 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
                 {this.state.entities}
-                <Entity id="cameraRig">
+                <Entity id="cameraRig" networked="template:#camera-template;attachTemplateToLocal:false;">
                     <Entity id="head" networked="template:#avatar-template;attachTemplateToLocal:false;" 
                         camera 
                         wasd-controls 
