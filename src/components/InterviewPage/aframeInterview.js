@@ -149,7 +149,7 @@ class AframeInterview extends Component {
 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
                 {this.state.entities}
-                <Entity id="cameraRig" networked="template:#camera-template;attachTemplateToLocal:false;">
+                <Entity id="cameraRig" networked="template:#camera-template;attachTemplateToLocal:false;" position="" rotation="">
                     <Entity id="head" networked="template:#avatar-template;attachTemplateToLocal:false;" 
                         camera 
                         wasd-controls 
