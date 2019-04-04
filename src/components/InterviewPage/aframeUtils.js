@@ -59,34 +59,36 @@ function getData(loadedAssetIds) {
 /* Turn each assets data into its respective JSX
 */
 function renderData(assets, user)  {
-   var sources =[];
-   var templates = [];
+   var sources = {};
    var entities = [];
    assets.forEach((asset, index) => {
        if (!asset) { return }
        if (asset.name.toLowerCase().includes(".jpg") || asset.name.toLowerCase().includes(".png")){
            //Create a 'source' (texture to be used) in the <a-assets> system
-           //Create a template in <a-assets> system
-           templates.push( `<template id="t${asset.id}">
-                           <a-entity position="" rotation="" scale=""> 
-                           </a-entity> 
-                           </template>`)
+           sources[asset.id] = `src: url(data:${asset.type};base64,${asset.file});`
+           //sources.push(<img id={`img${asset.id}`} alt='' src={`data:${asset.type};base64,${asset.file}`}/>)
 
            if (asset.owner === user){
                //Create entity that links to template and source
                let options = `template: #img-template; attachTemplateToLocal: false`
-               entities.push( <div>
-                                <img id={`img${asset.id}`} alt='' src={`data:${asset.type};base64,${asset.file}`}/>
-                                <a-entity key={index} id={`ent${asset.id}`} networked={options} position="0 0 0" rotation="0 0 0" scale="1 1 1"> 
-                                  <a-box class="img-box" position="0 0 0" rotation="0 0 0" scale="1 1 1" materialid={`id: img${asset.id}`} >
-                                  </a-box>
-                                </a-entity>
-                              </div>)
+               entities.push( 
+                    <a-entity key={index} id={`ent${asset.id}`} 
+                            networked={options} static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable=""
+                            position="0 0 0" rotation="0 0 0" scale="1 1 1">
+                                <a-box class="img-box" position={`${asset.x} ${asset.y} ${asset.z}`}
+                                                        rotation="0 0 0" 
+                                                        scale="1 1 1" 
+                                                        materialid={`id: ${asset.id}`}
+                                                         
+                                                        geometry={`width: ${asset.width}; height: ${asset.height}; depth: 0.1`}>
+                                </a-box>
+                    </a-entity>
+                )
            }
            
        }
    })
-   return {templates, entities, sources}
+   return {entities, sources}
 }
 
 export default {renderData, getData}

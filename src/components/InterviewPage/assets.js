@@ -14,6 +14,7 @@ class Asset extends Component {
         }
         
         InterviewAPI.patchInterview(this.props.interviewId, 'loadedAssets', this.props.id, op).then((response) => {
+            this.props.socket.emit('update')
             this.props.updateInterviewCallback();
         });
     }
@@ -142,6 +143,7 @@ class Assets extends Component {
                 <Asset 
                     key={asset._id}
                     name={asset.name} 
+                    socket={this.props.socket}
                     id={asset._id} 
                     loaded={loaded}
                     interviewId={this.props.interview}
