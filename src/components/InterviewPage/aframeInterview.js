@@ -35,7 +35,7 @@ class AframeInterview extends Component {
     }
 
     componentDidMount() {
-        let entity = document.querySelector('#head');
+        let entity = document.querySelector('#cameraRig');
         if (entity) {
             entity.addEventListener('componentchanged', function (evt) {
                 if (evt.detail.name === 'position') {
@@ -111,10 +111,24 @@ class AframeInterview extends Component {
         this.renderAssets(props)
     }
 
+    componentDidUpdate() {
+        let boxes = document.querySelectorAll('.img-box')
+        if (boxes) {
+            boxes.forEach((box) => {
+                let id = box.getAttribute('materialid')
+                if (id) {
+                    id = id.id
+                    let mat = document.createAttribute("material");
+                    mat.value = this.state.sources[id]
+                    box.setAttributeNode(mat);
+                }   
+            })
+        }
+    }
 
     render() { 
         let aframeOptions = `serverURL: ${API_URL};app: PresenceVR; room: ${this.props.interviewId}; debug: true; adapter: easyRTC`
-        
+
         return ( 
             <Scene className='aframeContainer' id="aframeContainer" embedded networked-scene={aframeOptions}>
                 <a-assets id="assetsSystem">
@@ -149,12 +163,11 @@ class AframeInterview extends Component {
 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
                 {this.state.entities}
-                <Entity id="cameraRig" networked="template:#camera-template;attachTemplateToLocal:false;" position="" rotation="">
+                <Entity id="cameraRig" networked="template:#camera-template;attachTemplateToLocal:false;" position={this.state.position}  rotation="">
                     <Entity id="head" networked="template:#avatar-template;attachTemplateToLocal:false;" 
                         camera 
                         wasd-controls 
                         look-controls 
-                        position={this.state.position} 
                     />
                     <Entity id='right-hand' 
                         laser-controls 
