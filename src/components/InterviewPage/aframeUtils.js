@@ -65,7 +65,7 @@ function renderData(assets, user)  {
        if (!asset) { return }
        if (asset.name.toLowerCase().includes(".jpg") || asset.name.toLowerCase().includes(".png")){
            //Create a 'source' (texture to be used) in the <a-assets> system
-           sources[asset.id] = `src: url(data:${asset.type};base64,${asset.file});`
+           sources[asset.id] = `src: url(data:${asset.type};base64,${asset.file}); npot: true;`
            //sources.push(<img id={`img${asset.id}`} alt='' src={`data:${asset.type};base64,${asset.file}`}/>)
 
            if (asset.owner === user){
