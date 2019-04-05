@@ -97,7 +97,6 @@ class AframeInterview extends Component {
             this.setState({fetching: true, loadedAssets: props.loadedAssets})
             Promise.all(aframeUtils.getData(props.loadedAssets)).then((data) => {
                 var {sources, entities} = aframeUtils.renderData(data, this.props.user)
-                console.log(sources, entities)
                 this.setState({sources, entities, fetching:false})
             })
         }
@@ -130,7 +129,6 @@ class AframeInterview extends Component {
         }, 200)
     } 
 
-   
 
     render() { 
         let aframeOptions = `serverURL: ${API_URL};app: PresenceVR; room: ${this.props.interviewId}; debug: true; adapter: easyRTC`
