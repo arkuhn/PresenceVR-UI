@@ -126,7 +126,7 @@ class AframeInterview extends Component {
                     }   
                 })
             }
-        }, 200)
+        }, 500)
     } 
 
 
