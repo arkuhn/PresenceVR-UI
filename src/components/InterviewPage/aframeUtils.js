@@ -23,35 +23,39 @@ function getDimensions(loadedAsset){
 
 function getData(loadedAssetIds) {
     return loadedAssetIds.map((loadedAssetId, index) => { 
-       return Promise.all([UploadAPI.getUpload(loadedAssetId), UploadAPI.getUploadFile(loadedAssetId)])
-           .then(([loadedAsset, file]) => {
-               if (loadedAsset && file) {
-                   var objectData = {
-                       file: file.data,
-                       owner: loadedAsset.data.owner,
-                       type: loadedAsset.data.filetype,
-                       name: loadedAsset.data.name,
-                       id: loadedAsset.data._id,
-                       x: index * 8
-                   }
-                   if(loadedAsset.data.name.toLowerCase().includes(".png") || loadedAsset.data.name.toLowerCase().includes(".jpg")){
-                       var [h, w] = getDimensions(loadedAsset)
-                       objectData.height = h
-                       objectData.width = w
-                       objectData.y = (objectData.height/2)
-                       objectData.z =-3
-                   }
-                   
-                   if (loadedAsset.data.name.toLowerCase().includes(".obj")){
-                       objectData.y = 1
-                       objectData.z = -3
-                   }
-                   return objectData;
-               }
-       })
-   
-   })
-
+        return UploadAPI.getUpload(loadedAssetId)
+                .then((loadedAsset) => {
+                    return Promise.all([Promise.resolve(loadedAsset), UploadAPI.getUploadFileURL(loadedAsset.data.name)])
+                })
+                .then(([loadedAsset, fileURL]) => {
+                    if (loadedAsset && fileURL) {
+                        var objectData = {
+                            file: fileURL,
+                            owner: loadedAsset.data.owner,
+                            type: loadedAsset.data.filetype,
+                            name: loadedAsset.data.name,
+                            id: loadedAsset.data._id,
+                            x: index * 8
+                        }
+                        if(loadedAsset.data.name.toLowerCase().includes(".png") || loadedAsset.data.name.toLowerCase().includes(".jpg")){
+                            var [h, w] = getDimensions(loadedAsset)
+                            objectData.height = h
+                            objectData.width = w
+                            objectData.y = (objectData.height/2)
+                            objectData.z =-3
+                        }
+                        
+                        if (loadedAsset.data.name.toLowerCase().includes(".obj")){
+                            objectData.y = 1
+                            objectData.z = -3
+                        }
+                        return objectData;
+                    }
+                })
+                .catch((err)=> {
+                    console.error(err)
+                })
+    })
 }
 
 
@@ -65,7 +69,7 @@ function renderData(assets, user)  {
        if (!asset) { return }
        if (asset.name.toLowerCase().includes(".jpg") || asset.name.toLowerCase().includes(".png")){
            //Create a 'source' (texture to be used) in the <a-assets> system
-           sources[asset.id] = `src: url(data:${asset.type};base64,${asset.file}); npot: true;`
+           sources[asset.id] = `src: ${asset.file}; npot: true;`
            //sources.push(<img id={`img${asset.id}`} alt='' src={`data:${asset.type};base64,${asset.file}`}/>)
 
            if (asset.owner === user){

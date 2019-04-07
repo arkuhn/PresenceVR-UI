@@ -63,18 +63,15 @@ function getUpload(id) {
     })
 }
 
-function getUploadFile(id) {
-    return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
-        let config = {headers: {Authorization: `${token}`}};
-        return axios.get(API_URL + `/uploads/${id}`
-        , config).then((response) => {
-            console.log('Got  upload for host response');
-            console.log(response);
-            return response;
-        }).catch((error) => {
-            console.log(error);
-        });
+function getUploadFileURL(filename) {
+    return safeGetUser().then((user) => {
+        return Promise.all([user.getIdToken(true), Promise.resolve(user.email)])
+    }).then(([token, email]) => {
+        return API_URL + `/uploads/${email.replace(/[^a-zA-Z0-9]/g, '')}/${filename}/${token}`
     })
+    .catch((error) => {
+        console.log(error);
+    });
 }
 
 export default {
@@ -82,5 +79,5 @@ export default {
     getUploads,
     deleteUpload,
     getUpload,
-    getUploadFile
+    getUploadFileURL
 }
