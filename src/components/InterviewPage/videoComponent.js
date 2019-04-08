@@ -6,6 +6,7 @@ import axios from 'axios';
 //import { Card, CardHeader, CardText } from 'material-ui/Card';
 import { Button, Divider, Grid, Card, Segment, Dimmer, Loader, Popup, Radio, Checkbox } from 'semantic-ui-react';
 import './videoInterview.css';
+import './videoComponent.css';
 
 import { API_URL } from "../../config/api.config";
 import { safeGetUser } from '../../utils/firebase';
@@ -55,7 +56,8 @@ export default class VideoComponent extends Component {
         console.log(this.props)
         console.log("Joining room '" + this.props.interviewId + "'...");
         let connectOptions = {
-            name: this.props.interviewId
+            name: this.props.interviewId,
+            video: { width: 100 }
         };
 
         if (this.state.prviewTracks) {
@@ -164,16 +166,21 @@ export default class VideoComponent extends Component {
                 </Segment>)
         }
 
+        var style = {
+            height: 480,
+            width: 690
+        }
         let showLocalTrack = this.state.localMediaAvailable ? (
-            <div  ><div ref="localMedia" /></div>
+            <Segment ><div ref="localMedia" /></Segment>
+            //<div class="localMedia" ></div>
         ) : '';
         return (
-                <div >
+                <Segment style={style}>
                     {showLocalTrack}
                     
                     <div className="flex-item" ref="remoteMedia" id="remote-media" />
 
-                </div>
+                </Segment>
         );
         //errorText={this.state.roomNameErr ? 'Room Name is required' : undefined}
     }

@@ -27,6 +27,8 @@ class InterviewPage extends Component {
             loadedAssets: [],
             details: '',
             host: '',
+            occursOnDate: '',
+            occursAtTime: '',
             vidChat: false
         },
         messages: [],
@@ -184,7 +186,10 @@ class InterviewPage extends Component {
                         <Header as='h1' textAlign='center'>
                             <Header.Content>
                             {this.state.interview.details}
-                            <Header.Subheader>Hosted by {this.state.interview.host}</Header.Subheader>
+                            <Header.Subheader>  Scheduled Date: {this.state.interview.occursOnDate}
+                                                <br />
+                                                Scheduled Time: {this.state.interview.occursAtTime}
+                            </Header.Subheader>
                             </Header.Content>
                         </Header>
                         </Grid.Column>
