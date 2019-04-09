@@ -65,10 +65,7 @@ class PresenceVRNavBar extends Component {
                 <Header icon='question circle' content='Help' />
                 <Modal.Content>
                     <p>
-                    Te eum doming eirmod, nominati pertinacia argumentum ad his. Ex eam alia facete scriptorem,
-                    est autem aliquip detraxit at. Usu ocurreret referrentur at, cu epicurei appellantur vix. Cum
-                    ea laoreet recteque electram, eos choro alterum definiebas in. Vim dolorum definiebas an. Mei
-                    ex natum rebum iisque.
+                    This feature has not been implemented yet.
                     </p>
                 </Modal.Content>
             </Modal>

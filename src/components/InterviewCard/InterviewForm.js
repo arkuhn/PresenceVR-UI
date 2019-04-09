@@ -103,7 +103,7 @@ class InterviewForm extends React.Component {
                         <Input fluid label='Time' value={this.state.timeValue} placeholder='HH:MM:SS' name='timeValue' onChange={this.handleFieldUpdate} />
                     </List.Item>
                     <List.Item>
-                        <Input fluid label='Participants' value={this.state.participantsValue} placeholder={'No one, I guess'} name='participantsValue' onChange={this.handleFieldUpdate} />
+                        <Input fluid label='Participants' value={this.state.participantsValue} placeholder={'email or for multiple, email,email'} name='participantsValue' onChange={this.handleFieldUpdate} />
                     </List.Item>
                     <List.Item>
                         <Input fluid label='Details' value={this.state.detailsValue} placeholder='Art interview' name='detailsValue' onChange={this.handleFieldUpdate} />

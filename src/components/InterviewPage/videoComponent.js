@@ -7,6 +7,7 @@ import { safeGetUser } from '../../utils/firebase';
 import './videoInterview.css';
 
 
+
 export default class VideoComponent extends Component {
     constructor(props) {
         super();
@@ -52,7 +53,8 @@ export default class VideoComponent extends Component {
         console.log(this.props)
         console.log("Joining room '" + this.props.interviewId + "'...");
         let connectOptions = {
-            name: this.props.interviewId
+            name: this.props.interviewId,
+            video: { width: 100 }
         };
 
         if (this.state.prviewTracks) {
@@ -160,16 +162,21 @@ export default class VideoComponent extends Component {
                 </Segment>)
         }
 
+        var style = {
+            height: 480,
+            width: 690
+        }
         let showLocalTrack = this.state.localMediaAvailable ? (
-            <div  ><div ref="localMedia" /></div>
+            <Segment ><div ref="localMedia" /></Segment>
+            //<div class="localMedia" ></div>
         ) : '';
         return (
-                <div >
+                <Segment style={style}>
                     {showLocalTrack}
                     
                     <div className="flex-item" ref="remoteMedia" id="remote-media" />
 
-                </div>
+                </Segment>
         );
     }
 }

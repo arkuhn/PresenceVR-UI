@@ -62,13 +62,6 @@ class LoginPage extends Component {
                                 <Icon name='google' />
                                 Login with Google
                             </Button>
-
-                            <Divider />
-
-                            <Button as={Link} to="/home" fluid size='medium' basic color='blue'>
-                                <Icon name='facebook' />
-                                Login with Facebook
-                            </Button>
                             </Segment>
                         </Card>
                         </Grid.Column>
@@ -78,13 +71,10 @@ class LoginPage extends Component {
                         <Grid.Column width={9 } floated='right'>
                             <Card fluid={true} >
                             <Card.Content>
-                                <Image src="/images/vrimage.png" />
+                                <Image src="/images/presencevr2.jpg" />
                                 <Card.Description>
                                     <span>
-                                    Te eum doming eirmod, nominati pertinacia argumentum ad his. Ex eam alia facete scriptorem,
-                                        est autem aliquip detraxit at. Usu ocurreret referrentur at, cu epicurei appellantur vix. Cum
-                                        ea laoreet recteque electram, eos choro alterum definiebas in. Vim dolorum definiebas an. Mei
-                                        ex natum rebum iisque.
+                                    Welcome!
                                     </span>
                                 </Card.Description>
                                 </Card.Content>

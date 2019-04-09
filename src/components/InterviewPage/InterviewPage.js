@@ -26,6 +26,8 @@ class InterviewPage extends Component {
             loadedAssets: [],
             details: '',
             host: '',
+            occursOnDate: '',
+            occursAtTime: '',
             vidChat: false
         },
         fetching: false,

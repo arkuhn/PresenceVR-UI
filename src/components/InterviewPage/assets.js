@@ -118,7 +118,8 @@ class Assets extends Component {
     renderAssets = (type) => {
         var getIcon = {
             'image': 'image outline',
-            'obj': 'box'
+            'obj': 'box',
+            'video': 'mp4'
         }
 
         var getFilter = {
