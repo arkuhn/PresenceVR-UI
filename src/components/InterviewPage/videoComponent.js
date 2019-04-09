@@ -165,7 +165,7 @@ export default class VideoComponent extends Component {
         }
 
         let showLocalTrack = this.state.localMediaAvailable ? (
-            <div  ><div ref="localMedia" /></div>
+            <div><div ref="localMedia" /></div>
         ) : '';
         return (
                 <div >

@@ -262,9 +262,9 @@ class AframeInterview extends Component {
         console.log("refs: " + this.refs.localMedia);
         
         var previewContainer = this.refs.localMedia;
-        /* if (!previewContainer.querySelector('video')) {
+        if (!previewContainer.querySelector('video')) {
             this.attachParticipantsTracks(room.localParticipant, previewContainer);
-        } */
+        }
 
         room.participants.forEach(participant => {
             console.log("already in Room '" + participant.identity + "'");
@@ -375,7 +375,13 @@ class AframeInterview extends Component {
         
         let isHost = this.props.host;
 
+        let showLocalTrack = this.state.localMediaAvailable ? (
+            <div  ><div ref="localMedia" /></div>
+        ) : '';
+
         return (
+            <div>
+            {showLocalTrack}
             <Scene className='aframeContainer' embedded networked-scene={aframeOptions}>
                 <a-assets>
                     {this.state.sources}
@@ -392,7 +398,7 @@ class AframeInterview extends Component {
                                                                 </a-entity> 
                                                             </a-entity> 
                                                             </template> 
-                                                            ` + this.state.templates.join('')}}/ >
+                                                            ` + this.state.templates.join('')}} />
                                                             {/* If you hard code the templates above they will work */}
                                                             
                     <video ref="remoteMedia" id="remote-media" playsinline />
@@ -427,6 +433,8 @@ class AframeInterview extends Component {
                     {this.state.entities}
                     {this.state.lights}
             </Scene>
+
+            </div>
         )
     }
 }
