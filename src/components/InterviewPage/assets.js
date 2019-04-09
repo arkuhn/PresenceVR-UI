@@ -113,7 +113,7 @@ class Assets extends Component {
     }
 
     /* Type corresponds to filetype
-    image, obj, or 
+    image, obj, or mp4
     */
     renderAssets = (type) => {
         var getIcon = {
@@ -123,7 +123,8 @@ class Assets extends Component {
 
         var getFilter = {
             'image': 'image',
-            'obj': 'application/octet-stream'
+            'obj': 'application/octet-stream',
+            'video': 'video/mp4'
         }
 
         var filtertedAssets = this.state.assets.filter(asset => asset.filetype.includes(getFilter[type]))
