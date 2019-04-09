@@ -246,6 +246,7 @@ class AframeInterview extends Component {
 
     attachParticipantsTracks(participant, container) {
         var tracks = Array.from(participant.tracks.values());
+        console.log("tracks: " + tracks);
         this.attachTracks(tracks, container);
     }
 
@@ -278,6 +279,7 @@ class AframeInterview extends Component {
         room.on('trackSubscribed', (track, participant) => {
             console.log(participant.identity + ' added track: ' + track.kind);
             var previewContainer = this.refs.remoteMedia;
+            console.log("other tracks: " + track);
             this.attachTracks([track], previewContainer);
             this.setState({
                 remoteMedia: true,
@@ -373,10 +375,6 @@ class AframeInterview extends Component {
         
         let isHost = this.props.host;
 
-        let showRemoteTrack = this.state.remoteMedia ? (
-            <a-box src="#remote-media"></a-box>
-        ) : '';
-
         return (
             <Scene className='aframeContainer' embedded networked-scene={aframeOptions}>
                 <a-assets>
@@ -397,12 +395,12 @@ class AframeInterview extends Component {
                                                             ` + this.state.templates.join('')}}/ >
                                                             {/* If you hard code the templates above they will work */}
                                                             
-                    <video ref="remoteMedia" id="remote-media" playsinline></video>
+                    <video ref="remoteMedia" id="remote-media" playsinline />
                 </a-assets>
 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
 
-                {showRemoteTrack}
+                <a-box material="src: #remote-media"></a-box>
 
                 <Entity id="cameraRig">
                     <Entity id="head" networked="template:#avatar-template;attachTemplateToLocal:false;" 
