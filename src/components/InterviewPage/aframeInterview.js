@@ -5,13 +5,18 @@ import 'networked-aframe';
 import 'aframe-physics-system'
 import 'super-hands'
 import 'aframe-extras'
+import 'aframe-look-at-component';
 import { Entity, Scene } from 'aframe-react';
 import React, { Component } from 'react';
 import ReactDOMServer from 'react-dom/server';
 
+import Video from 'twilio-video';
+import axios from 'axios';
+
 import UploadAPI from '../../utils/UploadAPI';
 import './aframeInterview.css';
 import { API_URL } from '../../config/api.config';
+import { safeGetUser } from '../../utils/firebase';
 
 
 class AframeInterview extends Component {
@@ -24,34 +29,48 @@ class AframeInterview extends Component {
             sources: [],
             loadedAssets: [],
             templates: [],
-            position: {x: 0, y: 2, z: 0}
-        })
+            position: {x: 0, y: 2, z: 0},
+            webcamPosition: {x: 2,y: 2,z: 2},
+            identity: null,
+            roomNameErr: false,
+            previewTracks: null,
+            localMediaAvailable: false,
+            hasJoinedRoom: false,
+            activateRoom: null,
+            loading: true,
+            remoteMedia: false
+        });
+        this.joinRoom = this.joinRoom.bind(this);
+        this.roomJoined = this.roomJoined.bind(this);
+        this.leaveRoom = this.leaveRoom.bind(this);
+        this.detachTracks = this.detachTracks.bind(this) ;
+        this.detachParticipantTracks = this.detachParticipantTracks.bind(this);
     }
 
     getDimensions = (loadedAsset) => {
-        var varheight = loadedAsset.data.height
-        var varwidth = loadedAsset.data.width
-        var ratio = 0
+        var varheight = loadedAsset.data.height;
+        var varwidth = loadedAsset.data.width;
+        var ratio = 0;
         if (varheight > varwidth){
-            ratio = varwidth/varheight
-            varheight = 6
-            varwidth = 6 * ratio
+            ratio = varwidth/varheight;
+            varheight = 6;
+            varwidth = 6 * ratio;
         }
         else{
-            ratio = varheight/varwidth
-            varheight = 6 * ratio
-            varwidth = 6 
+            ratio = varheight/varwidth;
+            varheight = 6 * ratio;
+            varwidth = 6;
         }
 
-        return [varheight, varwidth]
+        return [varheight, varwidth];
     }
 
     getControllers = () => {
         let collision;
         if (this.props.controllerMode === 'grab') {
-            collision = {colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}
+            collision = {colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'};
         } else {
-            collision = {colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}
+            collision = {colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'};
         }
         return <div>
                 <Entity id='right-hand' 
@@ -77,7 +96,7 @@ class AframeInterview extends Component {
             .then(([loadedAsset, file]) => {
                 if (file && loadedAsset) {
                     if(loadedAsset.data.name.toLowerCase().includes(".png") || loadedAsset.data.name.toLowerCase().includes(".jpg")){
-                        var [varheight, varwidth] = this.getDimensions(loadedAsset)
+                        var [varheight, varwidth] = this.getDimensions(loadedAsset);
                         
                         return {
                             file: file.data,
@@ -105,12 +124,12 @@ class AframeInterview extends Component {
                     }
                 } 
             
-            })
-        })
+            });
+        });
     }
 
     renderLoadedAssets = (loadedAssetPromises) => {
-        const NAF = window.NAF
+        const NAF = window.NAF;
         Promise.all(loadedAssetPromises).then((loadedAssets)=> {
             this.setState({loadedAssets}, () => {
                 var entities = []
@@ -123,20 +142,20 @@ class AframeInterview extends Component {
                         //Entities
                         if (loadedAsset.name.toLowerCase().includes(".jpg") || loadedAsset.name.toLowerCase().includes(".png")){
                             
-                            var material = `data:${loadedAsset.type};base64,${loadedAsset.file}`
+                            var material = `data:${loadedAsset.type};base64,${loadedAsset.file}`;
                             sources.push(
                                 <a-asset-item id={`img${loadedAsset.id}`} src={material } autoplay></a-asset-item>
-                            )
+                            );
 
-                            templates.push(`<template id="t${loadedAsset.id}"><a-entity><a-box  class="assets" static-body="shape: box" position="${loadedAsset.x} ${loadedAsset.y} ${loadedAsset.z}" hoverable grabbable stretchable draggable material="src: #img${loadedAsset.id}" geometry="primitive: box; width: ${loadedAsset.width}; height: ${loadedAsset.height}; depth: 0.1"> </a-box> <a-entity> </template>`)
+                            templates.push(`<template id="t${loadedAsset.id}"><a-entity><a-box  class="assets" static-body="shape: box" position="${loadedAsset.x} ${loadedAsset.y} ${loadedAsset.z}" hoverable grabbable stretchable draggable material="src: #img${loadedAsset.id}" geometry="primitive: box; width: ${loadedAsset.width}; height: ${loadedAsset.height}; depth: 0.1"> </a-box> <a-entity> </template>`);
                             
                             //WILL: if you copy and paste the output of this into the template section it will work (except the texture)
-                            console.log(templates[0])
+                            console.log(templates[0]);
 
-                            var networked = `template: #t${loadedAsset.id}; attachTemplateToLocal: true`
-                            entities.push(<a-entity networked={networked }/>)
+                            var networked = `template: #t${loadedAsset.id}; attachTemplateToLocal: true`;
+                            entities.push(<a-entity networked={networked }/>);
                                 
-                            lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${loadedAsset.height * 1.5} ${loadedAsset.z * -6}`}/>)
+                            lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${loadedAsset.height * 1.5} ${loadedAsset.z * -6}`}/>);
                         }
                         else if (loadedAsset.name.toLowerCase().includes(".obj")){
                             entities.push(
@@ -149,14 +168,14 @@ class AframeInterview extends Component {
                                         hoverable grabbable stretchable draggabless
                                 /> 
                                 
-                                )
-                                lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${10} ${loadedAsset.z * -6}`}/>)
+                                );
+                                lights.push(<a-light type="point" intensity=".3" color="white" position={`${loadedAsset.x} ${10} ${loadedAsset.z * -6}`}/>);
                         }                        
                     }
                 })
 
                 // Templates must be in the page before we can do entities maybe?
-                this.setState({ lights, sources, templates}, () => this.setState({entities}))
+                this.setState({ lights, sources, templates}, () => this.setState({entities}));
             })
 
         })
@@ -168,28 +187,142 @@ class AframeInterview extends Component {
         let entity = document.querySelector('#head');
         entity.addEventListener('componentchanged', function (evt) {
             if (evt.detail.name === 'position') {
-              this.setState({position: evt.target.getAttribute('position') })
+              this.setState({position: evt.target.getAttribute('position') });
             }
           }.bind(this));
         
         if (this.props.loadedAssets) {
-            if (this.props.loadedAssets.length === 0) { return this.setState({loadedAssets: [], entities: [], lights: [], assets: []})}
+            if (this.props.loadedAssets.length === 0) { return this.setState({loadedAssets: [], entities: [], lights: [], assets: []})};
 
             //We must first get all the Asset data using the id (name, type, the file, size, etc)
-            var loadedAssetPromises = this.getLoadedAssetPromises(this.props.loadedAssets)
+            var loadedAssetPromises = this.getLoadedAssetPromises(this.props.loadedAssets);
 
             // Then we can render by adding entities and a light per loaded Asset
-            this.renderLoadedAssets(loadedAssetPromises)
+            this.renderLoadedAssets(loadedAssetPromises);
         }
 
-        navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-            .then(stream => {
-                let $video = document.querySelector('video')
-                $video.srcObject = stream
-                $video.onloadedmetadata = () => {
-                    $video.play()
-                }
+        return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
+            let config = { headers: { Authorization: `${token}` } };
+            axios.get(API_URL + '/api/token', config).then(results => {
+
+                const { identity, token } = results.data;
+                this.setState({ identity, token });
+                this.joinRoom();
             });
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+
+    componentWillUnmount() {
+        this.leaveRoom();
+    }
+
+    joinRoom() {
+        /* if (!this.props.id.trim()) {
+            this.setState({ roomaNameErr: true });
+            return;
+        } */
+        console.log(this.props)
+        console.log("Joining room '" + this.props.interviewId + "'VR...");
+        let connectOptions = {
+            name: this.props.interviewId + "VR"
+        };
+
+        if (this.state.prviewTracks) {
+            connectOptions.tracks = this.state.previewTracks;
+        }
+
+        Video.connect(this.state.token, connectOptions).then(this.roomJoined, error => {
+            alert('Could not connect to Twilio: ' + error.message);
+        });
+    }
+
+    attachTracks(tracks, container) {
+        tracks.forEach(track => {
+            container.appendChild(track.attach());
+        });
+    }
+
+    attachParticipantsTracks(participant, container) {
+        var tracks = Array.from(participant.tracks.values());
+        this.attachTracks(tracks, container);
+    }
+
+    roomJoined(room) {
+        console.log("Joined as '" + this.state.identity + "'");
+        this.setState({
+            activateRoom: room,
+            localMediaAvailable: true,
+            hasJoinedRoom: true,
+            loading: false
+        });
+
+        console.log("refs: " + this.refs.localMedia);
+        
+        var previewContainer = this.refs.localMedia;
+        /* if (!previewContainer.querySelector('video')) {
+            this.attachParticipantsTracks(room.localParticipant, previewContainer);
+        } */
+
+        room.participants.forEach(participant => {
+            console.log("already in Room '" + participant.identity + "'");
+            var previewContainer = this.refs.remoteMedia;
+            this.attachParticipantsTracks(participant, previewContainer);
+        });
+
+        room.on('participantConnected', participant => {
+            console.log("Joining '" + participant.identity + "'");
+        });
+
+        room.on('trackSubscribed', (track, participant) => {
+            console.log(participant.identity + ' added track: ' + track.kind);
+            var previewContainer = this.refs.remoteMedia;
+            this.attachTracks([track], previewContainer);
+            this.setState({
+                remoteMedia: true,
+            });
+        });
+
+        room.on('trackUnsubscribed', (track, participant) => {
+            console.log(participant.identity + ' removed track: ' + track.kind);
+            this.detachTracks([track]);
+        });
+
+        room.on('participantDisconnected', participant => {
+            console.log("Participant '" + participant.identity + "' left the room");
+            this.detachParticipantTracks(participant);
+        });
+
+        room.on('disconnected', () => {
+            if (this.state.previewTracks) {
+                this.state.previewTracks.forEach(track => {
+                    track.stop();
+                });
+            }
+            this.detachParticipantTracks(room.localParticipant);
+            room.participants.forEach(this.detachParticipantTracks);
+            this.state.activateRoom = null;
+            this.setState({ hasJoinedRoom: false, localMediaAvailable: false, remoteMedia: false});
+        });
+    }
+
+    leaveRoom() {
+        this.state.activateRoom.disconnect();
+        this.setState({ hasJoinedRoom: false, localMediaAvailable: false });
+    }
+
+    detachTracks(tracks) {
+        tracks.forEach(tracks => {
+            tracks.detach().forEach(detachedElement => {
+                detachedElement.remove();
+            });
+        });
+    }
+
+    detachParticipantTracks(participant) {
+        var tracks = Array.from(participant.tracks.values());
+        this.detachTracks(tracks);
     }
 
     componentWillReceiveProps(data) {
@@ -240,12 +373,13 @@ class AframeInterview extends Component {
         
         let isHost = this.props.host;
 
-        console.log("host: " + this.props.host);
+        let showRemoteTrack = this.state.remoteMedia ? (
+            <a-box src="#remote-media"></a-box>
+        ) : '';
 
         return (
             <Scene className='aframeContainer' embedded networked-scene={aframeOptions}>
                 <a-assets>
-                    <video id="webcam" playsInline></video>
                     {this.state.sources}
                     <div dangerouslySetInnerHTML={{__html: `<template id="avatar-template"> 
                                                             <a-entity class="avatar"> 
@@ -262,12 +396,13 @@ class AframeInterview extends Component {
                                                             </template> 
                                                             ` + this.state.templates.join('')}}/ >
                                                             {/* If you hard code the templates above they will work */}
-      
+                                                            
+                    <video ref="remoteMedia" id="remote-media" playsinline></video>
                 </a-assets>
 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
 
-                <a-box position="-5 2 -5" shadow depth="4" height="4" width="0.1" visible={isHost} material="src: #webcam"></a-box>
+                {showRemoteTrack}
 
                 <Entity id="cameraRig">
                     <Entity id="head" networked="template:#avatar-template;attachTemplateToLocal:false;" 
