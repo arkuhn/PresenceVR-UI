@@ -188,7 +188,6 @@ class AframeInterview extends Component {
                         teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20, landingNormal:"0 1 0" }} 
                     />        
                 </Entity>
-                <a-videosphere src="C:\Users\johnn\Videos\samplesbikboi\testvideo.mp4" position="0 5 0"></a-videosphere>
             </Scene>
         )
     }
