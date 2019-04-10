@@ -56,18 +56,18 @@ function getUpload(id) {
         , config).then((response) => {
             console.log('Got  upload for host response');
             console.log(response);
-            return response;
+            return response; 
         }).catch((error) => {
             console.log(error);
         });
     })
 }
 
-function getUploadFileURL(filename) {
+function getUploadFileURL(id) {
     return safeGetUser().then((user) => {
-        return Promise.all([user.getIdToken(true), Promise.resolve(user.email)])
+        return Promise.all([user.getIdToken(true),  Promise.resolve(user.email)])
     }).then(([token, email]) => {
-        return API_URL + `/uploads/${email.replace(/[^a-zA-Z0-9]/g, '')}/${filename}/${token}`
+        return API_URL + `/uploads/${email.replace(/[^a-zA-Z0-9]/g, '')}/${id}/${token}`
     })
     .catch((error) => {
         console.log(error);
