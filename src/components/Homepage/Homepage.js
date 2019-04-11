@@ -23,6 +23,10 @@ class Homepage extends Component {
         this.setState({ activeItem: name })
     }
 
+    returnHome = () => {
+        this.setState({ activeItem: 'home'})
+    }
+
     componentWillMount() {
         this.setState({loading: true})
         // Bind the variable to the instance of the class.
@@ -134,7 +138,7 @@ class Homepage extends Component {
 
             return (
                 <div className="Homepage">
-                <PresenceVRNavBar email={this.state.user.email}/>
+                <PresenceVRNavBar goHome={this.returnHome} email={this.state.user.email}/>
                 <br/>
                 <Grid padded>
                     <Grid.Column style={{scrollbarWidth: 'none'}}width={2}>

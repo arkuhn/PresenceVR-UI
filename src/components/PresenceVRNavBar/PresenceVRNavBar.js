@@ -6,14 +6,6 @@ import './PresenceVRNavBar.css';
 
 class PresenceVRNavBar extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = { activeItem: 'PresenceVR' }
-    }
-
-    handleItemClick (e, { name }) {
-        this.setState({ activeItem: name })
-    }
 
     handleLogOut() {
         logout()
@@ -57,13 +49,12 @@ class PresenceVRNavBar extends Component {
     }
 
     render() {
-        const { activeItem } = this.state
 
         return (
             <div className="PresenceVRNavBar" >
                 <Menu style={{height: '10vp'}} pointing secondary >
                         
-                    <Menu.Item as={Link} to="/home" name='PresenceVR' active={activeItem === 'home'} onClick={this.handleItemClick} icon='home' position={'left'} />
+                    <Menu.Item onClick={this.props.goHome}name='PresenceVR' icon='home' position={'left'} />
                     
                     {this.helpButton()}
                         
