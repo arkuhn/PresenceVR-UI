@@ -66,7 +66,6 @@ function renderData(assets, user)  {
         if (!asset) { return }
         //Create a 'source' (texture to be used) in the <a-assets> system
         sources[asset.id] = `src: ${asset.file}; npot: true;`
-        if (!(asset.owner === user)){ return }
 
         let entity;
         let options;

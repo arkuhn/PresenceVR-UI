@@ -39,7 +39,7 @@ class CancelInterview extends React.Component {
     render() {
         return (
             <Modal basic size='small' open={this.state.modalOpen} onClose={this.handleCancel} trigger={ 
-                <Button basic color='red' onClick={this.handleOpen} floated='right' size='small' > Delete </Button>     
+                <Button basic  active color='red' onClick={this.handleOpen} floated='right' size='small' > Delete </Button>     
             }>
             <Header icon='alternate calendar outline' content='Are you sure you want to delete this interview?' />
             <Modal.Content>

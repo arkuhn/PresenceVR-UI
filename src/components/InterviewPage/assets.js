@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Checkbox, Dimmer, Header, Icon, List, Loader, Popup, Segment } from 'semantic-ui-react';
+import { Button, Checkbox, Dimmer, Accordion, Header, Icon, List, Loader, Popup, Segment } from 'semantic-ui-react';
 import InterviewAPI from '../../utils/InterviewAPI';
 import UploadAPI from '../../utils/UploadAPI';
 
@@ -119,7 +119,7 @@ class Assets extends Component {
         var getIcon = {
             'image': 'image outline',
             'obj': 'box',
-            'video': 'mp4'
+            'video': 'video'
         }
 
         var getFilter = {
@@ -179,14 +179,8 @@ class Assets extends Component {
         let popupContent = 'Upload an asset below. Clicking the slider will render the asset. Rendered assets are visible to the host and all participants.';
         
         return (
-            <div>
-                <Popup trigger = {
-                    <Header as='h3'>
-                        <Icon circular name='boxes' />
-                        Assets
-                    </Header>
-                } content={popupContent} />
-                <List divided className="AssetsList">
+                <div>
+                    <List divided className="AssetsList">
                     <Popup trigger={
                     <List.Header as='h4'>
                         <Icon  name='image outline' />
@@ -214,7 +208,7 @@ class Assets extends Component {
                 </List>
                 {this.uploadBox()}
                 <style>{css}</style>
-            </div>
+                </div>      
         );              
     }
 }

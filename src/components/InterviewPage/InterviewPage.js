@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Checkbox, Dimmer, Divider, Grid, Header, Loader, Segment } from 'semantic-ui-react';
+import { Checkbox, Dimmer, Divider, Grid, Header, Loader, Menu, Accordion, Icon, Segment } from 'semantic-ui-react';
 import openSocket from 'socket.io-client';
 import { API_URL } from '../../config/api.config';
 import { firebaseAuth } from '../../utils/firebase';
@@ -20,108 +20,69 @@ import VideoComponent from "./videoComponent";
 class InterviewPage extends Component {
     constructor(props) {
         super(props);
-        this.id = this.props.match.params.id;
-        this.state = {interview: {
-            participants: [],
-            loadedAssets: [],
-            details: '',
-            host: '',
-            occursOnDate: '',
-            occursAtTime: '',
-            vidChat: false
-        },
-        fetching: false,
-        messages: [],
-        upToDate: false,
-        socket: openSocket(API_URL),
-        controllerMode: 'raycaster',
-        participantStatuses: {}
+        this.state = {
+            vidChat: false,
+            fetching: false,
+            messages: [],
+            upToDate: false,
+            socket: openSocket(API_URL),
+            controllerMode: 'raycaster',
+            participantStatuses: {}
         }
+        console.log(props)
 
-        socketEvents.registerEventHandlers(this.state.socket, this.addMessage, this.handleParticipantStatusChange, this.getCurrentUser, this.getUserStatus, this.updateInterview)
+        socketEvents.registerEventHandlers(this.state.socket, this.addMessage, this.handleParticipantStatusChange, this.getCurrentUser, this.getUserStatus, this.props.updateInterviews)
     }
 
     videoToggled = () => {
         var message = {
             color: 'yellow',
             type: 'system',
-            id: this.id + this.id
+            id: this.props._id + this.props._id
         }
         if(!this.state.vidChat){
-            message.content = this.state.user.email + ' has entered video chat mode'
+            message.content = this.props.email + ' has entered video chat mode'
             this.state.socket.emit('message', message)
             this.setState({vidChat: true});
         } else {
-            message.content = this.state.user.email + ' has left video chat mode'
+            message.content = this.props.email + ' has left video chat mode'
             this.state.socket.emit('message', message)
             this.setState({vidChat: false});
         }
     }
-    
-    
-    updateInterview = () => {
-        if(!this.state.fetching) {
-            this.setState({fetching: true})
-            return InterviewAPI.getInterview(this.id).then((data) => {
-                if(data){
-                    console.log('got data');
-                    console.log(data.data);
-                    this.setState({
-                        interview: data.data,
-                        upToDate: true,
-                        fetching: false
-                    });
-                }
-            })
-            .catch((err) => {
-                this.setState({error: true})
-            });
-        }
-          
-        
-    }
 
     updateControllerMode = (type) => {
-        console.log(type)
         this.setState({controllerMode: type})
     }
 
     updateHost = (newHost) => {
-        const newParticipants = (this.state.interview.participants).filter(participant => participant !== newHost)
-        newParticipants.push(this.state.interview.host)
+        const newParticipants = (this.props.participants).filter(participant => participant !== newHost)
+        newParticipants.push(this.props.host)
         let newParString = newParticipants.join()
-        return InterviewAPI.updateInterview( {participants: newParString}, this.state.interview._id)
+        return InterviewAPI.updateInterview( {participants: newParString}, this.props._id)
                 .then((response) => {
-                    console.log(response)
-                    return InterviewAPI.updateInterview( {host: newHost}, this.state.interview._id)
+                    return InterviewAPI.updateInterview( {host: newHost}, this.props._id)
                 })
                 .then(() => {
                     var message = {
                         color: 'yellow',
                         type: 'system',
                         content: newHost + ' has become the host.',
-                        id: this.id + this.id
+                        id: this.props._id + this.props._id
                     }
                     this.state.socket.emit('message', message)
                     return this.state.socket.emit('update')
                 })
     }
+
+    getCurrentUser = () => {
+        return this.props.email;
+    }
     
     componentWillMount() {
-        this.setState({loading: true})
-        // Bind the variable to the instance of the class.
-        this.authFirebaseListener = firebaseAuth.onAuthStateChanged((user) => { 
-          this.setState({
-            loading: false,  // For the loader maybe
-            user // User Details
-          });
-          this.updateInterview()
-
-          this.state.socket.emit('join', {id: this.id + this.id, user: firebaseAuth.currentUser.email })
-          this.state.socket.emit('Marco', {id: this.id + this.id, caller: firebaseAuth.currentUser.email});
-          // Could add Marco to join functionality, but it may be best to keep the Marco call general so it can be called at any time
-        });
-        
+          this.state.socket.emit('join', {id: this.props._id + this.props._id, user: this.props.email })
+          this.state.socket.emit('Marco', {id: this.props._id + this.props._id, caller: this.props.email});
+          // Could add Marco to join functionality, but it may be best to keep the Marco call general so it can be called at any time        
     }
     
     addMessage = (message) => {
@@ -144,130 +105,122 @@ class InterviewPage extends Component {
         return 1
     }
 
-    getCurrentUser = () => {
-        return firebaseAuth.currentUser.email;
-    }
-
-    componentWillUnmount() {
-        this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
-    }
+    handleClick = (e, titleProps) => {
+        const { index } = titleProps
+        const { activeIndex } = this.state
+        const newIndex = activeIndex === index ? -1 : index
+    
+        this.setState({ activeIndex: newIndex })
+      }
 
 
     render() {
-        if (this.state.loading) {
-            return <Dimmer active>
-                        <Loader />
-                    </Dimmer>
-        }
-        if ((!this.state.loading && !this.state.user) || this.state.error) {
+        const { activeIndex } = this.state
+
+        if (this.state.error) {
             return <Redirect to='/'/>
         }
-
-        if (!this.state.upToDate) {
-            return <Dimmer active>
-                        <Loader />
-                    </Dimmer>
-        }
-
-        let isHost = (this.state.user.email === this.state.interview.host)
-        let isParticipant = this.state.interview.participants.includes(this.state.user.email)
         
 
         
         let videoToggle = this.state.vidChat ? (
-            <VideoComponent interviewId={this.id} joined={true}/>) :
-            (<AframeInterview loadedAssets={this.state.interview.loadedAssets}
-                                updateInterviewCallback={this.updateInterview}
-                                environment={this.state.interview.loadedEnvironment}
-                                interviewId={this.id}
+            <VideoComponent interviewId={this.props._id} joined={true}/>) :
+            <AframeInterview loadedAssets={this.props.loadedAssets}
+                                updateInterviewCallback={this.props.updateInterviews}
+                                environment={this.props.loadedEnvironment}
+                                interviewId={this.props._id}
                                 controllerMode={this.state.controllerMode}
-                                user={this.state.user.email}/>);
-
-        if (this.state.upToDate && !isHost && !isParticipant) {
-            return <Redirect to='/'/>
-        }
+                                user={this.props.email}/>
 
         return (
             <div className="InterviewPage">
-                <PresenceVRNavBar/>
-                <br/>
-                <Grid centered padded divided>
+                <Grid width={14}>
+                    <Grid.Column  width={10}>
+                        {/* Browser mode */}
+                        <Grid.Row style={{height: '90vh'}}>
+                            {videoToggle}
+                        </Grid.Row>
+                    </Grid.Column>
 
-                    {/* Left column*/}
+                    <Grid.Column width={1}/>
                     <Grid.Column width={4}>
                     <Grid.Row>
-                        <Segment>
-                            <Header as='h2' textAlign='center'>
-                                <Header.Content>
-                                Interview Details
-                                <Header.Subheader>Description: <b>{this.state.interview.details}</b> </Header.Subheader>
-                                <Header.Subheader>Scheduled for <b>{this.state.interview.occursOnDate}</b> at <b>{this.state.interview.occursAtTime}</b> </Header.Subheader>
-                                </Header.Content>
+                        <Segment> 
+                            <Header as='h3'>
+                                Presentation hosted by {this.props.host}
                             </Header>
-                            
                         </Segment>
-                        <br></br>
-                        </Grid.Row>
 
-                        {/* Host */}
-                        <Grid.Row>
-                            <Host  host={this.state.interview.host} participantStatuses={this.state.participantStatuses}/>
-                        </Grid.Row>
+                        <Accordion id='dropdown' styled>
+                            {/* Assets */}
+                            <Accordion.Title active={activeIndex === 0} index={0} onClick={this.handleClick}>
+                                <Header as='h4'>
+                                    <Icon circular name='boxes' />
+                                    Assets
+                                </Header>
+                            </Accordion.Title>
+                            <Accordion.Content active={activeIndex === 0}>
+                                <Assets type="web" 
+                                    isHost={this.props.email === this.props.host} 
+                                    loadedAssets={this.props.loadedAssets} 
+                                    interview={this.props._id} 
+                                    socket={this.state.socket}
+                                    updateInterviewCallback={this.props.updateInterviews} />
+                            </Accordion.Content>
 
-                        {/*Participants*/}
-                        <Divider />
-                        <Grid.Row>
-                            <Participants   updateHost={this.updateHost} 
-                                            isHost={isHost} 
-                                            participants={this.state.interview.participants} 
-                                            participantStatuses={this.state.participantStatuses}/>
-                        </Grid.Row>
-
-                        <Divider />
-                        <Grid.Row>
-                            <Configuration isHost={isHost} 
-                                    interview={this.state.interview} 
-                                    updateInterviewCallback={this.updateInterview}
+                            {/* Environments */}
+                            <Accordion.Title active={activeIndex === 1} index={1} onClick={this.handleClick}>
+                            <Header as='h4'>
+                                <Icon circular name='image outline' />
+                                Environments
+                            </Header>
+                            </Accordion.Title>
+                            <Accordion.Content active={activeIndex === 1}>
+                                <Environments isHost={this.props.email === this.props.host} 
                                     socket={this.state.socket} 
-                                    videoToggled={this.videoToggled}
-                                    updateControllerMode={this.updateControllerMode}/>
-                        </Grid.Row>
-                        
-                        
+                                    environment={this.props.loadedEnvironment} 
+                                    interviewId={this.props._id} 
+                                    updateInterviewCallback={this.props.updateInterviews}/>
+                            </Accordion.Content>
+
+                            {/* Participants */}
+                            <Accordion.Title active={activeIndex === 2} index={2} onClick={this.handleClick}>
+                            <Header as='h4'>
+                                <Icon circular name='users' />
+                                Participants
+                            </Header>
+                            </Accordion.Title>
+                            <Accordion.Content active={activeIndex === 2}>
+                                <Participants updateHost={this.updateHost} 
+                                    isHost={this.props.email === this.props.host} 
+                                    participants={this.props.participants} 
+                                    socket={this.state.socket}
+                                    participantStatuses={this.state.participantStatuses}/>
+                            </Accordion.Content>
+
+                            {/* Config */}
+                            <Accordion.Title active={activeIndex === 3} index={3} onClick={this.handleClick}>
+                                <Header as='h4'>
+                                    <Icon bordered circular name='settings' />
+                                    Configuration
+                                </Header>
+                            </Accordion.Title>
+                            <Accordion.Content active={activeIndex === 3}>
+                                <Configuration isHost={this.props.email === this.props.host} 
+                                    socket={this.state.socket}
+                                    interview={this.props} 
+                                    updateInterviewCallback={this.props.updateInterviews} 
+                                    updateControllerMode={this.updateControllerMode}
+                                    videoToggled={this.videoToggled}/>
+                            </Accordion.Content>
+                        </Accordion>
+
+                        <Segment basic />
+
+                        <Chat id={this.props._id + this.props._id} socket={this.state.socket} user={this.props.email} messages={this.state.messages}/>
+                    </Grid.Row>
                     </Grid.Column>
-
-
-                    {/* Center Column*/}
-                    <Grid.Column width={8}>
-                        {/* Browser mode */}
-                        <Grid.Row>
-                            {videoToggle}
-
-                        </Grid.Row>
-                        
-                        <Divider/>
-                        {/* Chat */}
-                        <Grid.Row>
-                            <Chat id={this.id + this.id} socket={this.state.socket} user={this.state.user.email} messages={this.state.messages}/>
-                        </Grid.Row>
-                    </Grid.Column>
-
-
-                    {/* Right column*/}
-                    <Grid.Column  width={4}>
-                        {/* Environments */}
-                        <Grid.Row>
-                            <Environments socket={this.state.socket} isHost={isHost} environment={this.state.interview.loadedEnvironment} interviewId={this.id}/>
-                        </Grid.Row>
-                        <Divider/>
-                        {/* Assets */}
-                        <Grid.Row>
-                            <Assets type="web" isHost={isHost} socket={this.state.socket} loadedAssets={this.state.interview.loadedAssets} interview={this.id} updateInterviewCallback={this.updateInterview}/>
-                        </Grid.Row>
-                    </Grid.Column>
-
                 </Grid>
-                <Divider />
             </div>
         );
     }

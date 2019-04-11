@@ -84,11 +84,11 @@ class InterviewForm extends React.Component {
 
     getTrigger() {
         if (this.props.type === 'create') {
-            return <Button circular icon='pencil alternate' onClick={this.handleOpen}  floated='right' size='medium' />
+            return <Button circular icon='pencil' onClick={this.handleOpen}  floated='right' size='medium' />
         } else {
-            return <Button basic onClick={this.handleOpen} color='grey' >Edit</Button>
+            return <Button active basic color='grey' onClick={this.handleOpen}  >Edit</Button>
         }
-    }
+    } 
 
     render() {
         return (
@@ -96,6 +96,9 @@ class InterviewForm extends React.Component {
             <Header icon={this.icon} content={this.title} />
             <Modal.Content>
                 <List>
+                    <List.Item>
+                        <Input fluid label='Description' value={this.state.detailsValue} placeholder='Art interview' name='detailsValue' onChange={this.handleFieldUpdate} />
+                    </List.Item>
                     <List.Item>
                         <Input fluid label='Date' value={this.state.dateValue} placeholder='MM/DD/YYYY' name='dateValue' onChange={this.handleFieldUpdate} />
                     </List.Item>
@@ -105,13 +108,12 @@ class InterviewForm extends React.Component {
                     <List.Item>
                         <Input fluid label='Participants' value={this.state.participantsValue} placeholder={'email or for multiple, email,email'} name='participantsValue' onChange={this.handleFieldUpdate} />
                     </List.Item>
-                    <List.Item>
-                        <Input fluid label='Details' value={this.state.detailsValue} placeholder='Art interview' name='detailsValue' onChange={this.handleFieldUpdate} />
-                    </List.Item>
                 </List>
+            </Modal.Content>
+            <Modal.Actions>
                 <Button primary onClick={this.handleSubmit}>{this.positiveButtonName}</Button>
                 <Button secondary onClick={this.handleClose}>{this.negativeButtonName}</Button>
-            </Modal.Content>
+            </Modal.Actions>
             </Modal>
         );
     }

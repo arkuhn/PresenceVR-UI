@@ -35,17 +35,10 @@ class Environments extends Component {
 
         return (
             <div>
-                <Popup trigger={
-                    <Header as='h3'>
-                        <Icon circular name='image outline' />
-                        Environments
-                        
-                    </Header>
-                } content={this.getPopUp()}/>
                 <Form>
                     <Form.Field>
                     <Checkbox
-                        toggle
+                        slider
                         disabled={!this.props.isHost}
                         label='Default'
                         name='checkboxRadioGroup'
@@ -56,7 +49,7 @@ class Environments extends Component {
                     </Form.Field>
                     <Form.Field>
                     <Checkbox
-                        toggle
+                        slider
                         disabled={!this.props.isHost}
                         label='Starry'
                         name='checkboxRadioGroup'
@@ -67,7 +60,7 @@ class Environments extends Component {
                     </Form.Field>
                     <Form.Field>
                     <Checkbox
-                        toggle
+                        slider
                         disabled={!this.props.isHost}
                         label='Japan'
                         name='checkboxRadioGroup'
@@ -78,7 +71,7 @@ class Environments extends Component {
                     </Form.Field>
                     <Form.Field>
                     <Checkbox
-                        toggle
+                        slider
                         disabled={!this.props.isHost}
                         label='Tron'
                         name='checkboxRadioGroup'

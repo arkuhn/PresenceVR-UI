@@ -29,9 +29,12 @@ class AframeInterview extends Component {
             position: {x: 0, y: 2, z: 0}
         })
 
-        window.AFRAME.registerComponent('materialid', {
-            id: {type: 'string', default: ''}
-        });
+        if (!window.AFRAME.components['materialid']) {
+            window.AFRAME.registerComponent('materialid', {
+                id: {type: 'string', default: ''}
+            });
+        }
+
     }
 
     componentDidMount() {

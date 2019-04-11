@@ -116,14 +116,6 @@ class Participants extends Component {
         `
         return (
             <div className="ParticipantsBox">
-            <Popup trigger= {
-                <Header as='h3'>
-                <Icon bordered circular name='users' />
-                Participants
-                </Header>
-            }
-            content={this.getPopUp()} />
-            
             <List divided className="ParticipantsList">
 
                 {this.generateParticipants()}

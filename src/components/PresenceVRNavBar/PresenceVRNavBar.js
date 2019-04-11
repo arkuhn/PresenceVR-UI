@@ -11,22 +11,6 @@ class PresenceVRNavBar extends Component {
         this.state = { activeItem: 'PresenceVR' }
     }
 
-    componentWillMount() {
-        this.setState({loading: true})
-        // Bind the variable to the instance of the class.
-        this.authFirebaseListener = firebaseAuth.onAuthStateChanged((user) => {
-          this.setState({
-            loading: false,  // For the loader maybe
-            user
-          });
-        });
-    
-    }
-
-    componentWillUnmount() {
-        this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
-    }
-
     handleItemClick (e, { name }) {
         this.setState({ activeItem: name })
     }
@@ -47,7 +31,7 @@ class PresenceVRNavBar extends Component {
                         <List.Content>
                             <List.Header>Username</List.Header>
                             <List.Description>
-                            {firebaseAuth.currentUser.email}
+                            {this.props.email}
                             </List.Description>
                         </List.Content>
                     </List.Item>
@@ -72,41 +56,21 @@ class PresenceVRNavBar extends Component {
         );
     }
 
-    notificationBell () {
-        return (
-                <Menu.Item>
-                    <Dropdown
-                        inline
-                        icon='bell'
-                        header='Notifications'                        
-                    />
-                </Menu.Item>                
-
-        );
-    }
-
     render() {
-
         const { activeItem } = this.state
 
-        if (!this.state.loading && !this.state.user) {
-            return <Redirect to='/'/>
-        }
-
         return (
-            <div className="PresenceVRNavBar">
-                <Menu size='huge' pointing secondary >
+            <div className="PresenceVRNavBar" >
+                <Menu style={{height: '10vp'}} pointing secondary >
                         
                     <Menu.Item as={Link} to="/home" name='PresenceVR' active={activeItem === 'home'} onClick={this.handleItemClick} icon='home' position={'left'} />
                     
-                    {this.notificationBell()}
-
                     {this.helpButton()}
                         
                     {this.accountButton()}
-                    
-                    
+
                 </Menu> 
+                
             </div>
         );
     }

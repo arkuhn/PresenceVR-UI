@@ -37,7 +37,7 @@ class LeaveInterview extends React.Component {
     render() {
         return (
             <Modal basic size='small' open={this.state.modalOpen} onClose={this.handleCancel} trigger={ 
-                <Button basic color='red' onClick={this.handleOpen} size='small' > Leave </Button>     
+                <Button active basic color='red' onClick={this.handleOpen} size='small' > Leave </Button>     
             }>
             <Header icon='alternate calendar outline' content='Are you sure you want to leave this interview?' />
             <Modal.Content>

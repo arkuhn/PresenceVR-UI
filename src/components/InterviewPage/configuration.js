@@ -77,14 +77,6 @@ class Configuation extends Component {
 
         return (
             <div>
-                <Popup trigger = {
-                <Header as='h3'>
-                    <Icon bordered circular name='settings' />
-                    Configuration
-                </Header>
-                } content={this.getPopOutContent()} />
-
-
                 <Header sub>
                 Interview Options:
                 </Header>
