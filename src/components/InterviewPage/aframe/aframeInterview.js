@@ -21,7 +21,6 @@ class AframeInterview extends Component {
         this.state = ({
             lights: [],
             entities: [],
-            sources: [],
             loadedAssets: [],
             templates: [],
             loading: true,
@@ -46,13 +45,12 @@ class AframeInterview extends Component {
               }.bind(this));
         }
 
-        let properties = ['geometry', 'position', 'rotation', 'scale', "material"]
-        let schemas = [{template: '#img-template', selector: '.img-box'},
-                        {template: '#obj-template', selector: '.obj-model'},
-                        {template: '#vid-template', selector: '.vid-box'}] 
+        let schemas = [{template: '#img-template', selector: '.img-box', properties: ['geometry', 'position', 'rotation', 'scale', "material"]},
+                        {template: '#obj-template', selector: '.obj-model', properties: ['position', 'rotation', 'scale', "src"]},
+                        {template: '#vid-template', selector: '.vid-box', properties: ['position', 'rotation', 'scale', "material"]}] 
 
         schemas.forEach((schema) => {
-            let components = properties.map((property) => {
+            let components = schema.properties.map((property) => {
                 return {
                     selector: schema.selector,
                     component: property
@@ -93,8 +91,8 @@ class AframeInterview extends Component {
         if (!equal) {
             this.setState({fetching: true, loadedAssets: props.loadedAssets})
             Promise.all(aframeUtils.getData(props.loadedAssets)).then((data) => {
-                var {sources, entities} = aframeUtils.renderData(data, this.props.user)
-                this.setState({sources, entities, fetching:false})
+                var {entities} = aframeUtils.renderData(data, this.props.user)
+                this.setState({entities, fetching:false})
             })
         }
     }
