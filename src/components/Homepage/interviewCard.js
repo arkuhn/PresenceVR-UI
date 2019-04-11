@@ -1,10 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Button, Card, Divider, Image, List } from 'semantic-ui-react';
-import CancelInterview from './cancelInterview';
-import InterviewForm from './InterviewForm';
-import LeaveInterview from './leaveInterview';
-import './interviewCard.css'
+import { Card } from 'semantic-ui-react';
 
 class InterviewCard extends Component {
 

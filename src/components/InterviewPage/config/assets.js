@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Checkbox, Dimmer, Accordion, Header, Icon, List, Loader, Popup, Segment } from 'semantic-ui-react';
-import InterviewAPI from '../../utils/InterviewAPI';
-import UploadAPI from '../../utils/UploadAPI';
+import { Button, Checkbox, Dimmer, Icon, List, Loader, Popup, Segment } from 'semantic-ui-react';
+import InterviewAPI from '../../../utils/InterviewAPI';
+import UploadAPI from '../../../utils/UploadAPI';
 
 
 class Asset extends Component {

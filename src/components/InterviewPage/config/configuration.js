@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { Header, Icon, Checkbox, Button, Popup, Form, Radio, Divider} from 'semantic-ui-react';
-import InterviewForm from "../InterviewCard/InterviewForm"
-import CancelInterview from "../InterviewCard/cancelInterview"
-import LeaveInterview from "../InterviewCard/leaveInterview"
+import { Button, Checkbox, Form, Header, Popup, Radio } from 'semantic-ui-react';
+import CancelInterview from "../../InterviewOperations/cancelInterview";
+import InterviewForm from "../../InterviewOperations/InterviewForm";
+import LeaveInterview from "../../InterviewOperations/leaveInterview";
 
 class Configuation extends Component {
     constructor(props) {
         super(props)
         this.state = {value: 'raycaster'}
-    }
+    }xO
 
     handleChange = (e, { value }) => {
         this.setState({ value })

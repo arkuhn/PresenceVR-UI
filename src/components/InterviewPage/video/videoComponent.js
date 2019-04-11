@@ -2,8 +2,8 @@ import axios from 'axios';
 import React, { Component } from 'react';
 import { Dimmer, Loader, Segment } from 'semantic-ui-react';
 import Video from 'twilio-video';
-import { API_URL } from "../../config/api.config";
-import { safeGetUser } from '../../utils/firebase';
+import { API_URL } from "../../../config/api.config";
+import { safeGetUser } from '../../../utils/firebase';
 import './videoInterview.css';
 
 

@@ -1,21 +1,18 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Checkbox, Dimmer, Divider, Grid, Header, Loader, Menu, Accordion, Icon, Segment } from 'semantic-ui-react';
+import { Accordion, Grid, Header, Icon, Segment } from 'semantic-ui-react';
 import openSocket from 'socket.io-client';
 import { API_URL } from '../../config/api.config';
-import { firebaseAuth } from '../../utils/firebase';
 import InterviewAPI from "../../utils/InterviewAPI";
 import socketEvents from '../../utils/socketEvents';
-import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar";
-import AframeInterview from "./aframeInterview";
-import Assets from "./assets";
+import AframeInterview from "./aframe/aframeInterview";
 import Chat from "./chat";
-import Configuration from "./configuration";
-import Environments from "./environments";
-import Host from "./host";
+import Assets from "./config/assets";
+import Configuration from "./config/configuration";
+import Environments from "./config/environments";
 import './InterviewPage.css';
 import Participants from "./participants";
-import VideoComponent from "./videoComponent";
+import VideoComponent from "./video/videoComponent";
 
 class InterviewPage extends Component {
     constructor(props) {

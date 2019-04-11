@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Dimmer, Divider, Grid, Header, Icon, Loader, Menu, Card, Image } from 'semantic-ui-react';
+import { Card, Dimmer, Grid, Image, Loader, Menu } from 'semantic-ui-react';
 import { firebaseAuth } from '../../utils/firebase';
+import InterviewAPI from "../../utils/InterviewAPI";
+import InterviewForm from '../InterviewOperations/InterviewForm';
+import InterviewPage from '../InterviewPage/InterviewPage';
 import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar";
 import './Homepage.css';
-import InterviewAPI from "../../utils/InterviewAPI";
-import InterviewCard from "../InterviewCard/interviewCard"
-import InterviewPage from '../InterviewPage/InterviewPage';
-import InterviewForm from '../InterviewCard/InterviewForm'
+import InterviewCard from "./interviewCard";
 
 class Homepage extends Component {
     constructor(props) {
@@ -41,10 +41,8 @@ class Homepage extends Component {
         if (!this.state.fetching) {
             this.setState({fetching: true})
             InterviewAPI.getAllInterviews(this.state.user.email).then((interviews) => {
-                let interviewData = interviews.data;
-                if (!interviews) {
-                    interviewData = []
-                }
+                let interviewData;
+                interviews ? interviewData = interviews.data : interviewData = []
                 this.setState({loading: false, fetching: false, interviews:interviewData})
             });
         }
@@ -101,11 +99,12 @@ class Homepage extends Component {
             var interview = this.state.interviews.filter(interview => {
                 return interview._id === this.state.activeItem
             })
-            interview = interview[0]
-
+            
             if (!interview) {
                 return <p>oh dear</p>
             }
+
+            interview = interview[0]
             
             return <InterviewPage _id={interview._id} 
                 details={interview.details}

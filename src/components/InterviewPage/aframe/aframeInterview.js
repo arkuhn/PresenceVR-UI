@@ -7,8 +7,7 @@ import 'aframe-teleport-controls';
 import 'networked-aframe';
 import React, { Component } from 'react';
 import 'super-hands';
-import { API_URL } from '../../config/api.config';
-import './aframeInterview.css';
+import { API_URL } from '../../../config/api.config'
 import aframeUtils from './aframeUtils';
 
 function jsonEqual(a,b) {

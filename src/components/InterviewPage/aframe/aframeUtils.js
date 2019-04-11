@@ -1,6 +1,6 @@
 import React from 'react';
 
-import UploadAPI from '../../utils/UploadAPI';
+import UploadAPI from '../../../utils/UploadAPI';
 
 function getDimensions(loadedAsset){
     var varheight = loadedAsset.data.height

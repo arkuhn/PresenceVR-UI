@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Checkbox, Form, Header, Popup, Icon } from 'semantic-ui-react';
-import InterviewAPI from '../../utils/InterviewAPI';
+import InterviewAPI from '../../../utils/InterviewAPI';
 
 class Environments extends Component {
 
