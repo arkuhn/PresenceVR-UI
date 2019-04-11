@@ -247,6 +247,10 @@ class AframeInterview extends Component {
 
     attachTracks(tracks, container) {
         tracks.forEach(track => {
+            if(track.kind === "video") {
+                print("FOUND")
+                print(track)
+            }
             container.appendChild(track.attach());
         });
     }
