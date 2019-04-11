@@ -1,6 +1,6 @@
 import React from 'react';
 
-import UploadAPI from '../../../utils/UploadAPI';
+import UploadAPI from '../../utils/UploadAPI';
 
 function getDimensions(loadedAsset){
     var varheight = loadedAsset.data.height
@@ -65,12 +65,12 @@ function renderData(assets, user)  {
    assets.forEach((asset, index) => {
         if (!asset) { return }
         //Create a 'source' (texture to be used) in the <a-assets> system
-        
+        sources[asset.id] = `src: ${asset.file}; npot: true;`
+        if (!(asset.owner === user)){ return }
 
         let entity;
         let options;
         if (asset.name.toLowerCase().includes(".jpg") || asset.name.toLowerCase().includes(".png")){
-            sources[asset.id] = `src: ${asset.file}; npot: true;`
             options = `template: #img-template; attachTemplateToLocal: false`
             entity = <a-entity key={index} id={`ent${asset.id}`} 
                         networked={options}
@@ -84,7 +84,6 @@ function renderData(assets, user)  {
                     </a-entity>
         }
         else if (asset.name.toLowerCase().includes(".obj")){
-            sources[asset.id] = ``
             options = `template: #obj-template; attachTemplateToLocal: false`
             entity = <a-entity key={index} id={`ent${asset.id}`}
                         networked={options} 
@@ -99,7 +98,6 @@ function renderData(assets, user)  {
                     </a-entity>
         }
         else if(asset.name.toLowerCase().includes(".mp4")){
-            sources[asset.id] = `src: ${asset.file}`
             options = `template: #vid-template; attachTemplateToLocal: false`
             entity = <a-entity key={index} id={`ent${asset.id}`} 
                         networked={options}
