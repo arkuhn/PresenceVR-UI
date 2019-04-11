@@ -38,7 +38,8 @@ class AframeInterview extends Component {
             hasJoinedRoom: false,
             activateRoom: null,
             loading: true,
-            remoteMedia: false
+            remoteMedia: false,
+            host_cam_material: ''
         });
         this.joinRoom = this.joinRoom.bind(this);
         this.roomJoined = this.roomJoined.bind(this);
@@ -205,12 +206,9 @@ class AframeInterview extends Component {
                 this.renderLoadedAssets(loadedAssetPromises);
             }
         }
-        console.log("++++++++++++++++++")
         return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
             let config = { headers: { Authorization: `${token}` } };
             axios.get(API_URL + '/api/token', config).then(results => {
-
-                console.log("=================================")
 
                 const { identity, token } = results.data;
                 this.setState({ identity, token });
@@ -247,12 +245,18 @@ class AframeInterview extends Component {
 
     attachTracks(tracks, container) {
         tracks.forEach(track => {
-            if(track.kind === "video") {
-                console.log("FOUND")
-                console.log(track)
-            }
             container.appendChild(track.attach());
+            if(track.kind === "video") {
+                this.attachIdToVideoTag();
+            }
         });
+    }
+
+    attachIdToVideoTag = () => {
+        let assets_el = document.querySelector("a-assets");
+        let video_el = assets_el.querySelector("video");
+        video_el.setAttribute("id", "host-video");
+        this.setState({host_cam_material: "src: #host-video"});
     }
 
     attachParticipantsTracks(participant, container) {
@@ -412,7 +416,7 @@ class AframeInterview extends Component {
 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
 
-                <a-box material="src: #host-video"></a-box>
+                <a-box id="host-cam" material={this.state.host_cam_material}></a-box>
 
                 <Entity id="cameraRig">
                     <Entity id="head" networked="template:#avatar-template;attachTemplateToLocal:false;" 
