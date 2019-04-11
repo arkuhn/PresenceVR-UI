@@ -70,15 +70,16 @@ function renderData(assets, user)  {
         let entity;
         let options;
         if (asset.name.toLowerCase().includes(".jpg") || asset.name.toLowerCase().includes(".png")){
-            sources[asset.id] = `src: ${asset.file}; npot: true;`
+            sources[asset.id] = `src: url(${asset.file}); npot: true;`
             options = `template: #img-template; attachTemplateToLocal: false`
             entity = <a-entity key={index} id={`ent${asset.id}`} 
                         networked={options}
-                        position="0 0 0" rotation="0 0 0" scale="1 1 1">
+                        position="0 0 0" rotation="0 0 0" scale="1 1 1"
+                        static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable="">
                         <a-box class="img-box"  position={`${asset.x} ${asset.y} ${asset.z}`}
                             rotation="0 0 0" 
                             scale="1 1 1" 
-                            materialid={`id: ${asset.id}`}
+                            material={`src: url(${asset.file})`}
                             geometry={`width: ${asset.width}; height: ${asset.height}; depth: 0.1`}>
                         </a-box>
                     </a-entity>
@@ -88,31 +89,34 @@ function renderData(assets, user)  {
             options = `template: #obj-template; attachTemplateToLocal: false`
             entity = <a-entity key={index} id={`ent${asset.id}`}
                         networked={options} 
-                        position="0 0 0" rotation="0 0 0" scale="1 1 1">
+                        position="0 0 0" rotation="0 0 0" scale="1 1 1"
+                        static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable="">
                         <a-obj-model    class="obj-model"
                             position={`${asset.x} ${asset.y} ${asset.z}`}
                             rotation="0 0 0" 
                             scale="1 1 1" 
-                            materialid={`id: ${asset.id}`}
+                            material=''
                             geometry="">
                         </a-obj-model>
                     </a-entity>
         }
         else if(asset.name.toLowerCase().includes(".mp4")){
-            sources[asset.id] = `src: ${asset.file}`
+            sources[asset.id] = `src: url(${asset.file})`
             options = `template: #vid-template; attachTemplateToLocal: false`
             entity = <a-entity key={index} id={`ent${asset.id}`} 
                         networked={options}
-                        position="0 0 0" rotation="0 0 0" scale="1 1 1">
+                        position="0 0 0" rotation="0 0 0" scale="1 1 1"
+                        static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable="">
                         <a-video class="vid-box"
                             position={`${asset.x} ${asset.y} ${asset.z}`}
-                            rotation="0 0 0" 
-                            materialid={`id: ${asset.id}`}>
+                            rotation="0 0 0"
+                            material= {`src: url(${asset.file})`}
+                            >
                         </a-video>
                     </a-entity>
         }
-
-        if (entity) {
+        console.log(asset.owner, user)
+        if (entity && asset.owner === user) {
             //Create entity that links to template and source
             entities.push( entity )
         }
@@ -138,7 +142,7 @@ const avatarTemplate = `<template id="avatar-template">
 
 const imgTemplate = `<template id="img-template">
                         <a-entity class="assets" static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable="" position="" rotation="" scale="">
-                            <a-box class="img-box" geometry="" position="" rotation="" scale="" materialid="" ></a-box>
+                            <a-box class="img-box" geometry="" position="" rotation="" scale="" material="" ></a-box>
                         </a-entity> 
                      </template>`
 
@@ -149,13 +153,13 @@ const cameraTemplate = `<template id="camera-template">
  
 const objTemplate = `<template id="obj-template">
                     <a-entity class="assets" static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable="" position="" rotation="" scale="">
-                        <a-obj-model class="obj-model" geometry="" position="" rotation="" scale="" materialid="" ></a-obj-model>
+                        <a-obj-model class="obj-model" geometry="" position="" rotation="" scale="" material="" ></a-obj-model>
                     </a-entity> 
                     </template>`
 
 const vidTemplate = `<template id="vid-template">
                     <a-entity class="assets" static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable="" position="" rotation="" scale="">
-                        <a-video class="vid-box" geometry="" position="" rotation="" scale="" materialid="" ></video>
+                        <a-video class="vid-box" geometry="" position="" rotation="" scale="" material="" ></video>
                     </a-entity> 
                     </template>`
 

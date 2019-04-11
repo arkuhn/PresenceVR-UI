@@ -46,9 +46,7 @@ class AframeInterview extends Component {
               }.bind(this));
         }
 
-        document.body.addEventListener('entityCreated', this.attachMaterialToAsset);
-
-        let properties = ['materialid', 'geometry', 'position', 'rotation', 'scale']
+        let properties = ['geometry', 'position', 'rotation', 'scale', "material"]
         let schemas = [{template: '#img-template', selector: '.img-box'},
                         {template: '#obj-template', selector: '.obj-model'},
                         {template: '#vid-template', selector: '.vid-box'}] 
@@ -77,7 +75,6 @@ class AframeInterview extends Component {
         let entity;
         if (box) { entity = box}
         if (vid) {entity = vid}
-        if (obj) {entity = obj}
         
         if(entity) {
             console.log(entity)
@@ -111,24 +108,6 @@ class AframeInterview extends Component {
         this.renderAssets(props)
     }
 
-    componentDidUpdate() {
-        //TODO fix this annoying hack for an annoying race condition
-        setTimeout(() => {
-            let boxes = document.querySelectorAll('.img-box')
-            if (boxes) {
-                boxes.forEach((box) => {
-                    let id = box.getAttribute('materialid')
-                    if (id) {
-                        id = id.id
-                        let mat = document.createAttribute("material");
-                        mat.value = this.state.sources[id] + ''
-                        box.setAttributeNode(mat);
-                    }   
-                })
-            }
-        }, 500)
-    } 
-
 
     render() { 
         let aframeOptions = `serverURL: ${API_URL};app: PresenceVR; room: ${this.props.interviewId}; debug: true; adapter: easyRTC`
@@ -157,14 +136,12 @@ class AframeInterview extends Component {
                     />
                     <Entity id='right-hand' 
                         laser-controls 
-                        raycaster={{objects: [".img-box", '.vid-box', 'obj-model']}}
                         super-hands={{colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}}
                         hand-controls='right'
                         teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20, landingNormal:"0 1 0" }} 
                     />         
                     <Entity id='left-hand' 
                         laser-controls
-                        raycaster={{objects: [".img-box", '.vid-box', 'obj-model']}}
                         super-hands={{colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}}
                         hand-controls='left' 
                         teleport-controls={{cameraRig: '#cameraRig', teleportOrigin: '#head', type:'line', maxLength:20, landingNormal:"0 1 0" }} 

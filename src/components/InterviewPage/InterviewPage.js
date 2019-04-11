@@ -86,6 +86,11 @@ class InterviewPage extends Component {
         this.setState({messages: this.state.messages.concat([message])})
     }
 
+    componentWillUnmount() {
+        this.state.socket.disconnect()
+        window.AFRAME.scenes[0].removeAttribute('networked-scene');
+    }
+
     handleParticipantStatusChange = (data) => {
         this.setState(state => {
             let statuses = state.participantStatuses;

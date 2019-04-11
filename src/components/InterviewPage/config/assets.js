@@ -15,7 +15,6 @@ class Asset extends Component {
         
         InterviewAPI.patchInterview(this.props.interviewId, 'loadedAssets', this.props.id, op).then((response) => {
             this.props.socket.emit('update')
-            this.props.updateInterviewCallback();
         });
     }
 
