@@ -38,14 +38,11 @@ class Homepage extends Component {
     }
 
     updateInterviews = () => {
-        if (!this.state.fetching) {
-            this.setState({fetching: true})
             InterviewAPI.getAllInterviews(this.state.user.email).then((interviews) => {
                 let interviewData;
                 interviews ? interviewData = interviews.data : interviewData = []
-                this.setState({loading: false, fetching: false, interviews:interviewData})
+                this.setState({loading: false, interviews:interviewData})
             });
-        }
     }
 
     componentWillUnmount() {

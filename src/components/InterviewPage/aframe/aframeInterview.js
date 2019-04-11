@@ -26,13 +26,6 @@ class AframeInterview extends Component {
             loading: true,
             position: {x: 0, y: 2, z: 0}
         })
-
-        if (!window.AFRAME.components['materialid']) {
-            window.AFRAME.registerComponent('materialid', {
-                id: {type: 'string', default: ''}
-            });
-        }
-
     }
 
     componentDidMount() {
@@ -44,24 +37,6 @@ class AframeInterview extends Component {
                 }
               }.bind(this));
         }
-
-        let schemas = [{template: '#img-template', selector: '.img-box', properties: ['geometry', 'position', 'rotation', 'scale', "material"]},
-                        {template: '#obj-template', selector: '.obj-model', properties: ['position', 'rotation', 'scale', "src"]},
-                        {template: '#vid-template', selector: '.vid-box', properties: ['position', 'rotation', 'scale', "material"]}] 
-
-        schemas.forEach((schema) => {
-            let components = schema.properties.map((property) => {
-                return {
-                    selector: schema.selector,
-                    component: property
-                }
-            })
-
-            window.NAF.schemas.add({
-                template: schema.template,
-                components: components.concat(['position', 'rotation', 'scale'])
-            })
-        })
     }
 
     renderAssets = (props) => {
@@ -80,6 +55,24 @@ class AframeInterview extends Component {
 
     componentWillMount() {
         this.renderAssets(this.props)
+
+        let schemas = [{template: '#img-template', selector: '.img-box', properties: ['geometry', 'position', 'rotation', 'scale', "material"]},
+                        {template: '#obj-template', selector: '.obj-model', properties: ['position', 'rotation', 'scale', "src"]},
+                        {template: '#vid-template', selector: '.vid-box', properties: ['position', 'rotation', 'scale', "material"]}] 
+
+        schemas.forEach((schema) => {
+            let components = schema.properties.map((property) => {
+            return {
+                selector: schema.selector,
+                component: property
+            }
+        })
+
+        window.NAF.schemas.add({
+            template: schema.template,
+            components: components.concat(['position', 'rotation', 'scale'])
+            })
+        })
     }
 
 

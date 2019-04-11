@@ -88,9 +88,6 @@ class InterviewPage extends Component {
 
     componentWillUnmount() {
         this.state.socket.disconnect()
-        if ( window.AFRAME.scenes[0]) {
-            window.AFRAME.scenes[0].removeAttribute('networked-scene');
-        }
     }
 
     handleParticipantStatusChange = (data) => {
