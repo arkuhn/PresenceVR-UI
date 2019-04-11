@@ -32,7 +32,7 @@ function getData(loadedAssetIds) {
                             type: loadedAsset.data.filetype,
                             name: loadedAsset.data.name,
                             id: loadedAsset.data._id,
-                            x: index * 8
+                            x: index * 6
                         }
                         if(loadedAsset.data.name.toLowerCase().includes(".png") || loadedAsset.data.name.toLowerCase().includes(".jpg")){
                             var [h, w] = getDimensions(loadedAsset)
@@ -72,9 +72,9 @@ function renderData(assets, user)  {
             options = `template: #img-template; attachTemplateToLocal: false`
             entity = <a-entity key={index} id={`ent${asset.id}`} 
                         networked={options}
-                        position="0 0 0" rotation="0 0 0" scale="1 1 1"
-                        static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable="">
+                        position="0 0 0" rotation="0 0 0" scale="1 1 1">
                         <a-box 
+                        static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable=""
                             class="img-box"  
                             position={`${asset.x} ${asset.y} ${asset.z}`}
                             rotation="0 0 0" 
@@ -88,15 +88,14 @@ function renderData(assets, user)  {
             options = `template: #obj-template; attachTemplateToLocal: false`
             entity = <a-entity key={index} id={`ent${asset.id}`}
                         networked={options} 
-                        position="0 0 0" rotation="0 0 0" scale="1 1 1"
-                        static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable="">
+                        position="0 0 0" rotation="0 0 0" scale="1 1 1">
                         <a-obj-model    
+                        static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable=""
                             class="obj-model"
                             position={`${asset.x} ${asset.y} ${asset.z}`}
                             rotation="0 0 0" 
                             scale="1 1 1" 
-                            src={`url(${asset.file})`}
-                            geometry="">
+                            src={`url(${asset.file})`}>
                         </a-obj-model>
                     </a-entity>
         }
@@ -104,9 +103,9 @@ function renderData(assets, user)  {
             options = `template: #vid-template; attachTemplateToLocal: false`
             entity = <a-entity key={index} id={`ent${asset.id}`} 
                         networked={options}
-                        position="0 0 0" rotation="0 0 0" scale="1 1 1"
-                        static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable="">
+                        position="0 0 0" rotation="0 0 0" scale="3 3 3">
                         <a-video 
+                            static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable=""
                             class="vid-box"
                             position={`${asset.x} ${asset.y} ${asset.z}`}
                             rotation="0 0 0"
@@ -142,7 +141,7 @@ const avatarTemplate = `<template id="avatar-template">
                         </template>`
 
 const imgTemplate = `<template id="img-template">
-                        <a-entity class="assets" static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable="" position="" rotation="" scale="">
+                        <a-entity class="assets" position="" rotation="" scale="">
                             <a-box class="img-box" geometry="" position="" rotation="" scale="" material="" ></a-box>
                         </a-entity> 
                      </template>`
@@ -153,13 +152,13 @@ const cameraTemplate = `<template id="camera-template">
                         </template>`
  
 const objTemplate = `<template id="obj-template">
-                    <a-entity class="assets" static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable="" position="" rotation="" scale="">
+                    <a-entity class="assets"  position="" rotation="" scale="">
                         <a-obj-model class="obj-model"  position="" rotation="" scale="" src="" ></a-obj-model>
                     </a-entity> 
                     </template>`
 
 const vidTemplate = `<template id="vid-template">
-                    <a-entity class="assets" static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable="" position="" rotation="" scale="">
+                    <a-entity class="assets" position="" rotation="" scale="">
                         <a-video class="vid-box" position="" rotation="" scale="" material="" ></video>
                     </a-entity> 
                     </template>`

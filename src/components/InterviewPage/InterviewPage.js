@@ -135,9 +135,9 @@ class InterviewPage extends Component {
                                 user={this.props.email}/>
 
         return (
-                <Grid centered width={14}>
+                <Grid padded centered width={14}>
            
-                    <Grid.Column  width={10}>
+                    <Grid.Column width={10}>
                         {/* Browser mode */}
                         <Grid.Row style={{height: '90vh'}}>
                             {videoToggle}

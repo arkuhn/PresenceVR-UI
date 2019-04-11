@@ -82,7 +82,10 @@ class Homepage extends Component {
 
     renderActiveItem = () => {
         if (this.state.activeItem === 'home') {
-            return <Card fluid={true} >
+            return <Grid width={14}>
+                <Grid.Column width={5} />
+                <Grid.Column width={9}>
+                <Card fluid={true} >
                     <Card.Content>
                         <Image src="/images/presencevr2.jpg" />
                         <Card.Description>
@@ -95,6 +98,8 @@ class Homepage extends Component {
                             A R.I.T Career Services project
                         </Card.Content>
                     </Card>
+                </Grid.Column>
+                </Grid>
         } else {
             var interview = this.state.interviews.filter(interview => {
                 return interview._id === this.state.activeItem

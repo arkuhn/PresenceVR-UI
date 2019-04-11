@@ -64,25 +64,6 @@ class AframeInterview extends Component {
         })
     }
 
-    attachMaterialToAsset = (evt) => {
-        let el = evt.detail.el;
-        let box = el.querySelector('.img-box')
-        let obj = el.querySelector('.obj-model')
-        let vid = el.querySelector('.vid-box')
-
-        let entity;
-        if (box) { entity = box}
-        if (vid) {entity = vid}
-        
-        if(entity) {
-            console.log(entity)
-            let id = entity.getAttribute('materialid').id
-            let mat = document.createAttribute("material");
-            mat.value = this.state.sources[id]
-            entity.setAttributeNode(mat);
-        }
-    }
-
     renderAssets = (props) => {
         let equal = jsonEqual(props.loadedAssets, this.state.loadedAssets) 
         if ( this.state.fetching && equal  )  {
