@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Card, Dimmer, Grid, Header, Image, Loader, Menu } from 'semantic-ui-react';
+import { Card, Dimmer, Grid, Header, Image, Loader, Menu, Divider } from 'semantic-ui-react';
 import { firebaseAuth } from '../../utils/firebase';
 import InterviewAPI from "../../utils/InterviewAPI";
 import InterviewForm from '../InterviewOperations/InterviewForm';
@@ -126,7 +126,7 @@ class Homepage extends Component {
     }
 
     render() {
-            if (this.state.loading) {
+            if (this.state.loading || this.state.fetching) {
                 return <Dimmer active>
                             <Loader />
                         </Dimmer>
@@ -146,11 +146,10 @@ class Homepage extends Component {
                 <br/>
                 <Grid padded>
                     <Grid.Column style={{scrollbarWidth: 'none'}}width={2}>
-                        <Menu  className="interviewList" pointing   vertical >
-                            
+                    <Grid.Row>
+                    <Menu  className="interviewList" pointing   vertical >
                             <Menu.Header as='h4'> 
-                                <InterviewForm updateInterviewListCallback={this.updateInterviews} type='create'/>
-                                <Header  textAlign='center'>
+                                <Header style={{paddingTop: '10px'}} textAlign='center'>
                                     Your Presentations 
                                 </Header>
                             </Menu.Header>
@@ -158,18 +157,31 @@ class Homepage extends Component {
                             <Menu.Menu style={style}>
                                 {this.renderInterviews('host')}
                             </Menu.Menu>
-                            
+                            <InterviewForm updateInterviewListCallback={this.updateInterviews} type='create'/>
+
+                        </Menu>
+
+
+                    </Grid.Row>
+
+                    <Grid.Row>
+                        <br />
+
+                    </Grid.Row>
+
+                    <Grid.Row>
+                    <Menu  className="interviewList" pointing   vertical >
                             <Menu.Header as='h4'> 
-                                <Header textAlign='center'>
+                                <Header style={{paddingTop: '10px'}} textAlign='center'>
                                     Shared With You 
                                 </Header>
                             </Menu.Header>
                             <Menu.Menu style={style}>
                                 {this.renderInterviews('participant')}
                             </Menu.Menu>
-                   
-             
                         </Menu>
+                    </Grid.Row>
+        
                     </Grid.Column>
                     
                     <Grid.Column width={14}>

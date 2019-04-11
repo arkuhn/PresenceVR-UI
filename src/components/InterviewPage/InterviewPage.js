@@ -88,7 +88,9 @@ class InterviewPage extends Component {
 
     componentWillUnmount() {
         this.state.socket.disconnect()
-        window.AFRAME.scenes[0].removeAttribute('networked-scene');
+        if ( window.AFRAME.scenes[0]) {
+            window.AFRAME.scenes[0].removeAttribute('networked-scene');
+        }
     }
 
     handleParticipantStatusChange = (data) => {
@@ -117,14 +119,8 @@ class InterviewPage extends Component {
 
 
     render() {
-        const { activeIndex } = this.state
+        const { activeIndex, loading } = this.state
 
-        if (this.state.error) {
-            return <Redirect to='/'/>
-        }
-        
-
-        
         let videoToggle = this.state.vidChat ? (
             <VideoComponent interviewId={this.props._id} joined={true}/>) :
             <AframeInterview loadedAssets={this.props.loadedAssets}
@@ -133,6 +129,7 @@ class InterviewPage extends Component {
                                 interviewId={this.props._id}
                                 controllerMode={this.state.controllerMode}
                                 user={this.props.email}/>
+        
 
         return (
                 <Grid padded centered width={14}>

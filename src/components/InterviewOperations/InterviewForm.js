@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Header, Input, List, Modal } from 'semantic-ui-react';
+import { Button, Header, Input, List, Modal, Icon } from 'semantic-ui-react';
 import InterviewAPI from '../../utils/InterviewAPI';
 
 class InterviewForm extends React.Component {
@@ -84,7 +84,7 @@ class InterviewForm extends React.Component {
 
     getTrigger() {
         if (this.props.type === 'create') {
-            return <Button circular icon='pencil' onClick={this.handleOpen}  floated='right' size='medium' />
+            return <Button attached='bottom' basic   onClick={this.handleOpen}  > <Icon name='pencil' /> New Presentation </Button>
         } else {
             return <Button active basic color='grey' onClick={this.handleOpen}  >Edit</Button>
         }
