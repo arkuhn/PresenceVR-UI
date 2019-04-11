@@ -192,18 +192,25 @@ class AframeInterview extends Component {
           }.bind(this));
         
         if (this.props.loadedAssets) {
-            if (this.props.loadedAssets.length === 0) { return this.setState({loadedAssets: [], entities: [], lights: [], assets: []})};
+            if (this.props.loadedAssets.length === 0) {
+                this.setState({loadedAssets: [], entities: [], lights: [], assets: []})
 
-            //We must first get all the Asset data using the id (name, type, the file, size, etc)
-            var loadedAssetPromises = this.getLoadedAssetPromises(this.props.loadedAssets);
+            }
+            else {
 
-            // Then we can render by adding entities and a light per loaded Asset
-            this.renderLoadedAssets(loadedAssetPromises);
+                //We must first get all the Asset data using the id (name, type, the file, size, etc)
+                var loadedAssetPromises = this.getLoadedAssetPromises(this.props.loadedAssets);
+
+                // Then we can render by adding entities and a light per loaded Asset
+                this.renderLoadedAssets(loadedAssetPromises);
+            }
         }
-
+        console.log("++++++++++++++++++")
         return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
             let config = { headers: { Authorization: `${token}` } };
             axios.get(API_URL + '/api/token', config).then(results => {
+
+                console.log("=================================")
 
                 const { identity, token } = results.data;
                 this.setState({ identity, token });
@@ -331,13 +338,18 @@ class AframeInterview extends Component {
         //data.loadedAssets is named poorly, its really just a list of ids
         if (data.loadedAssets) {
             // If the list is empty reset all of our rendered data
-            if (data.loadedAssets.length === 0) { return this.setState({loadedAssets: [], entities: [], lights: [], assets: []})}
+            if (data.loadedAssets.length === 0) { 
 
-            //We must first get all the Asset data using the id (name, type, the file, size, etc)
-            var loadedAssetPromises = this.getLoadedAssetPromises(data.loadedAssets)
+                this.setState({loadedAssets: [], entities: [], lights: [], assets: []})
+            }
+            else {
 
-            // Then we can render by adding entities and a light per loaded Asset
-            this.renderLoadedAssets(loadedAssetPromises)
+                //We must first get all the Asset data using the id (name, type, the file, size, etc)
+                var loadedAssetPromises = this.getLoadedAssetPromises(data.loadedAssets)
+
+                // Then we can render by adding entities and a light per loaded Asset
+                this.renderLoadedAssets(loadedAssetPromises)
+            }
         }
     }
 
@@ -401,12 +413,12 @@ class AframeInterview extends Component {
                                                             ` + this.state.templates.join('')}} />
                                                             {/* If you hard code the templates above they will work */}
                                                             
-                    <video ref="remoteMedia" id="remote-media" playsinline />
+                    <div ref="remoteMedia" id="remote-media" playsinline />
                 </a-assets>
 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
 
-                <a-box material="src: #remote-media"></a-box>
+                <a-box material="src: #host-video"></a-box>
 
                 <Entity id="cameraRig">
                     <Entity id="head" networked="template:#avatar-template;attachTemplateToLocal:false;" 
