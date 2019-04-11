@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Card, Dimmer, Grid, Image, Loader, Menu } from 'semantic-ui-react';
+import { Card, Dimmer, Grid, Header, Image, Loader, Menu } from 'semantic-ui-react';
 import { firebaseAuth } from '../../utils/firebase';
 import InterviewAPI from "../../utils/InterviewAPI";
 import InterviewForm from '../InterviewOperations/InterviewForm';
@@ -142,17 +142,23 @@ class Homepage extends Component {
                 <Grid padded>
                     <Grid.Column style={{scrollbarWidth: 'none'}}width={2}>
                         <Menu  className="interviewList" pointing   vertical >
-                            <InterviewForm updateInterviewListCallback={this.updateInterviews} type='create'/>
-                            <Menu.Header as='h4'> 
-                            Your Presentations 
                             
+                            <Menu.Header as='h4'> 
+                                <InterviewForm updateInterviewListCallback={this.updateInterviews} type='create'/>
+                                <Header  textAlign='center'>
+                                    Your Presentations 
+                                </Header>
                             </Menu.Header>
                             
                             <Menu.Menu style={style}>
                                 {this.renderInterviews('host')}
                             </Menu.Menu>
                             
-                            <Menu.Header as='h4'> Shared With You </Menu.Header>
+                            <Menu.Header as='h4'> 
+                                <Header textAlign='center'>
+                                    Shared With You 
+                                </Header>
+                            </Menu.Header>
                             <Menu.Menu style={style}>
                                 {this.renderInterviews('participant')}
                             </Menu.Menu>
