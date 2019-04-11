@@ -168,7 +168,8 @@ class InterviewPage extends Component {
                  environment={this.state.interview.loadedEnvironment}
                   interviewId={this.id}
                   controllerMode={this.state.controllerMode}
-                  host={(isHost) ? true : false }/></div>);
+                  host={(isHost) ? true : false }
+                  hostName={this.state.host}/></div>);
 
         if (this.state.upToDate && !isHost && !isParticipant) {
             return <Redirect to='/'/>
