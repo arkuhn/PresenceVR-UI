@@ -34,13 +34,16 @@ class Homepage extends Component {
     }
 
     updateInterviews = () => {
-        InterviewAPI.getAllInterviews(this.state.user.email).then((interviews) => {
-            let interviewData = interviews.data;
-            if (!interviews) {
-                interviewData = []
-            }
-            this.setState({loading: false, interviews:interviewData})
-        });
+        if (!this.state.fetching) {
+            this.setState({fetching: true})
+            InterviewAPI.getAllInterviews(this.state.user.email).then((interviews) => {
+                let interviewData = interviews.data;
+                if (!interviews) {
+                    interviewData = []
+                }
+                this.setState({loading: false, fetching: false, interviews:interviewData})
+            });
+        }
     }
 
     componentWillUnmount() {
@@ -142,12 +145,12 @@ class Homepage extends Component {
                             
                             </Menu.Header>
                             
-                            <Menu.Menu pointing secondary vertical="true" style={style}>
+                            <Menu.Menu style={style}>
                                 {this.renderInterviews('host')}
                             </Menu.Menu>
                             
                             <Menu.Header as='h4'> Shared With You </Menu.Header>
-                            <Menu.Menu pointing secondary vertical="true" vertical style={style}>
+                            <Menu.Menu style={style}>
                                 {this.renderInterviews('participant')}
                             </Menu.Menu>
                    

@@ -53,15 +53,19 @@ class Participant extends Component {
 
     render() {
         let hostFunctions;
-        if (this.props.isHost) {
+        if (this.props.isHost && this.props.name !== this.props.host) {
             hostFunctions = <List.Content floated='right'>
                                 {this.makeHostModal()}
                             </List.Content>
         }
+        let icon = 'user circle'
+        if (this.props.host === this.props.name) {
+            icon = 'chess queen'
+        }
         return (
             <List.Item >
             <List.Content floated='left'>
-            <Icon name='user circle' />
+            <Icon name={icon} />
             </List.Content>
                 <List.Content floated='left'>
                     <List.Header>{this.props.name}</List.Header>
@@ -82,14 +86,14 @@ class Participants extends Component {
             <span>&#160;Offline <Icon color='red' size='small' name='circle thin' /></span>,
             <span>&#160;Online <Icon color='green' size='small' name='circle thin' /></span>
             ];
-
-        if (this.props.participants.length === 0) {
+        let participants = this.props.participants
+        if (participants.length === 0) {
             return <p> No particpants added!</p>
         }
-        return this.props.participants.map((participant, index) => {
+        return participants.map((participant, index) => {
             let status = this.props.participantStatuses[participant] ? this.props.participantStatuses[participant] : 0;
 
-            return <Participant key={index} isHost={this.props.isHost} updateHost={this.props.updateHost} name={participant} status={statuses[status]}/>
+            return <Participant key={index} isHost={this.props.isHost} host={this.props.host} updateHost={this.props.updateHost} name={participant} status={statuses[status]}/>
         })
     }
 

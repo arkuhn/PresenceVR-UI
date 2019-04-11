@@ -58,7 +58,7 @@ class InterviewPage extends Component {
     updateHost = (newHost) => {
         const newParticipants = (this.props.participants).filter(participant => participant !== newHost)
         newParticipants.push(this.props.host)
-        let newParString = newParticipants.join()
+        let newParString = newParticipants.join() 
         return InterviewAPI.updateInterview( {participants: newParString}, this.props._id)
                 .then((response) => {
                     return InterviewAPI.updateInterview( {host: newHost}, this.props._id)
@@ -193,8 +193,9 @@ class InterviewPage extends Component {
                             <Accordion.Content active={activeIndex === 2}>
                                 <Participants updateHost={this.updateHost} 
                                     isHost={this.props.email === this.props.host} 
-                                    participants={this.props.participants} 
+                                    participants={this.props.participants.concat(this.props.host)} 
                                     socket={this.state.socket}
+                                    host={this.props.host}
                                     participantStatuses={this.state.participantStatuses}/>
                             </Accordion.Content>
 
