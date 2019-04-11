@@ -130,8 +130,8 @@ class InterviewPage extends Component {
                                 user={this.props.email}/>
 
         return (
-            <div className="InterviewPage">
-                <Grid width={14}>
+                <Grid centered width={14}>
+           
                     <Grid.Column  width={10}>
                         {/* Browser mode */}
                         <Grid.Row style={{height: '90vh'}}>
@@ -139,7 +139,6 @@ class InterviewPage extends Component {
                         </Grid.Row>
                     </Grid.Column>
 
-                    <Grid.Column width={1}/>
                     <Grid.Column width={4}>
                     <Grid.Row>
                         <Segment> 
@@ -219,7 +218,6 @@ class InterviewPage extends Component {
                     </Grid.Row>
                     </Grid.Column>
                 </Grid>
-            </div>
         );
     }
 }
