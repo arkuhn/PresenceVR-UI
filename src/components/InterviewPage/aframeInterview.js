@@ -17,6 +17,7 @@ import UploadAPI from '../../utils/UploadAPI';
 import './aframeInterview.css';
 import { API_URL } from '../../config/api.config';
 import { safeGetUser } from '../../utils/firebase';
+import { hostname } from 'os';
 
 
 class AframeInterview extends Component {
@@ -46,6 +47,7 @@ class AframeInterview extends Component {
         this.leaveRoom = this.leaveRoom.bind(this);
         this.detachTracks = this.detachTracks.bind(this) ;
         this.detachParticipantTracks = this.detachParticipantTracks.bind(this);
+        this.isHostVideoTrack = this.isHostVideoTrack.bind(this);
     }
 
     getDimensions = (loadedAsset) => {
@@ -223,6 +225,13 @@ class AframeInterview extends Component {
         this.leaveRoom();
     }
 
+    isHostVideoTrack(participant) {
+        if(participant.identity === this.props.hostName){
+            return true;
+        }
+        return false;
+    }
+
     joinRoom() {
         /* if (!this.props.id.trim()) {
             this.setState({ roomaNameErr: true });
@@ -234,7 +243,7 @@ class AframeInterview extends Component {
             name: this.props.interviewId + "VR"
         };
 
-        if (this.state.prviewTracks) {
+        if (this.state.previewTracks) {
             connectOptions.tracks = this.state.previewTracks;
         }
 
@@ -275,6 +284,11 @@ class AframeInterview extends Component {
         });
 
         console.log("refs: " + this.refs.localMedia);
+        
+        var previewContainer = this.refs.localMedia;
+        /* if (!previewContainer.querySelector('video')) {
+            this.attachParticipantsTracks(room.localParticipant, previewContainer);
+        } */
 
         room.participants.forEach(participant => {
             console.log("already in Room '" + participant.identity + "'");
@@ -288,17 +302,23 @@ class AframeInterview extends Component {
 
         room.on('trackSubscribed', (track, participant) => {
             console.log(participant.identity + ' added track: ' + track.kind);
-            var previewContainer = this.refs.remoteMedia;
+            //var previewContainer = this.refs.remoteMedia;
+            var assetContainer = this.refs.assets;
             console.log("other tracks: " + track);
-            this.attachTracks([track], previewContainer);
-            this.setState({
-                remoteMedia: true,
-            });
+            //this.attachTracks([track], previewContainer);
+            if(track.kind === "video" ){
+                console.log("this is video: " + [track]);
+                this.attachTracks([track], assetContainer);
+            }
+
         });
 
         room.on('trackUnsubscribed', (track, participant) => {
             console.log(participant.identity + ' removed track: ' + track.kind);
             this.detachTracks([track]);
+            this.setState({
+                videoTrackAttached: false
+            });
         });
 
         room.on('participantDisconnected', participant => {
@@ -393,7 +413,7 @@ class AframeInterview extends Component {
         return (
             <div>
             <Scene className='aframeContainer' embedded networked-scene={aframeOptions}>
-                <a-assets>
+                <a-assets ref='assets'>
                     {this.state.sources}
                     <div dangerouslySetInnerHTML={{__html: `<template id="avatar-template"> 
                                                             <a-entity class="avatar"> 

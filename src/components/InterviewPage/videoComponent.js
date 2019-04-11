@@ -58,7 +58,7 @@ export default class VideoComponent extends Component {
             name: this.props.interviewId
         };
 
-        if (this.state.prviewTracks) {
+        if (this.state.previewTracks) {
             connectOptions.tracks = this.state.previewTracks;
         }
 
