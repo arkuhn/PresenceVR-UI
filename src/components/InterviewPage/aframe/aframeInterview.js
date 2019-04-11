@@ -7,7 +7,7 @@ import 'aframe-teleport-controls';
 import 'networked-aframe';
 import React, { Component } from 'react';
 import 'super-hands';
-import { API_URL } from '../../../config/api.config'
+import { API_URL } from '../../../config/api.config';
 import aframeUtils from './aframeUtils';
 
 function jsonEqual(a,b) {
@@ -58,16 +58,18 @@ class AframeInterview extends Component {
     }
 
     renderAssets = (props) => {
-        let equal = jsonEqual(props.loadedAssets, this.state.loadedAssets) 
-        if ( this.state.fetching && equal  )  {
-            return
-        }
-        if (!equal) {
-            this.setState({fetching: true, loadedAssets: props.loadedAssets})
-            Promise.all(aframeUtils.getData(props.loadedAssets)).then((data) => {
-                var {entities} = aframeUtils.renderData(data, this.props.user)
-                this.setState({entities, fetching:false})
-            })
+        if (!this.state.fetching){
+            let equal = jsonEqual(props.loadedAssets, this.state.loadedAssets) 
+            if ( equal  )  {
+                return
+            }
+            if (!equal) {
+                this.setState({fetching: true, loadedAssets: props.loadedAssets})
+                Promise.all(aframeUtils.getData(props.loadedAssets)).then((data) => {
+                    var {entities} = aframeUtils.renderData(data, this.props.user)
+                    this.setState({entities, fetching:false})
+                })
+            }
         }
     }
 
