@@ -284,11 +284,6 @@ class AframeInterview extends Component {
         });
 
         console.log("refs: " + this.refs.localMedia);
-        
-        var previewContainer = this.refs.localMedia;
-        /* if (!previewContainer.querySelector('video')) {
-            this.attachParticipantsTracks(room.localParticipant, previewContainer);
-        } */
 
         room.participants.forEach(participant => {
             console.log("already in Room '" + participant.identity + "'");
@@ -302,10 +297,8 @@ class AframeInterview extends Component {
 
         room.on('trackSubscribed', (track, participant) => {
             console.log(participant.identity + ' added track: ' + track.kind);
-            //var previewContainer = this.refs.remoteMedia;
             var assetContainer = this.refs.assets;
             console.log("other tracks: " + track);
-            //this.attachTracks([track], previewContainer);
             if(track.kind === "video" ){
                 console.log("this is video: " + [track]);
                 this.attachTracks([track], assetContainer);
@@ -436,7 +429,7 @@ class AframeInterview extends Component {
 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
 
-                <a-box id="host-cam" material={this.state.host_cam_material}></a-box>
+                <a-box id="host-cam" material={this.state.host_cam_material} look-at="[camera]" position="0 2 0"></a-box>
 
                 <Entity id="cameraRig">
                     <Entity id="head" networked="template:#avatar-template;attachTemplateToLocal:false;" 
