@@ -27,7 +27,8 @@ class InterviewPage extends Component {
             loadedAssets: [],
             details: '',
             host: '',
-            vidChat: false
+            vidChat: false,
+            hostCamActive: false
         },
         messages: [],
         upToDate: false,
@@ -55,6 +56,23 @@ class InterviewPage extends Component {
             message.content = this.state.user.email + ' has left video chat mode'
             this.state.socket.emit('message', message)
             this.setState({vidChat: false});
+        }
+    }
+
+    hostCamToggled = () => {
+        var message = {
+            color: 'yellow',
+            type: 'system',
+            id: this.id + this.id
+        }
+        if(!this.state.hostCamActive){
+            message.content = this.state.user.email + ' has activated Video Camera'
+            this.state.socket.emit('message', message)
+            this.setState({hostCamActive: true});
+        } else {
+            message.content = this.state.user.email + ' has disabled Video Camera'
+            this.state.socket.emit('message', message)
+            this.setState({hostCamActive: false});
         }
     }
     
@@ -169,6 +187,7 @@ class InterviewPage extends Component {
                   interviewId={this.id}
                   controllerMode={this.state.controllerMode}
                   host={(isHost) ? true : false }
+                  hostCamToggled={this.state.hostCamActive}
                   hostName={this.state.host}/></div>);
 
         if (this.state.upToDate && !isHost && !isParticipant) {
@@ -220,6 +239,8 @@ class InterviewPage extends Component {
                         <Divider />
                         <Grid.Row>
                             <Checkbox toggle label="Enable Video Chat" value="default" onChange={this.videoToggled}/>
+                            <br />
+                            <Checkbox toggle label="Enable Host Camera" value="default" onChange={this.hostCamToggled}/>
                         </Grid.Row>
                     </Grid.Column>
 

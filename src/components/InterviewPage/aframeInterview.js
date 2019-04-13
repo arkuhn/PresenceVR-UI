@@ -40,7 +40,8 @@ class AframeInterview extends Component {
             activateRoom: null,
             loading: true,
             remoteMedia: false,
-            host_cam_material: ''
+            host_cam_material: '',
+            user_audio: ''
         });
         this.joinRoom = this.joinRoom.bind(this);
         this.roomJoined = this.roomJoined.bind(this);
@@ -208,7 +209,7 @@ class AframeInterview extends Component {
                 this.renderLoadedAssets(loadedAssetPromises);
             }
         }
-        return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
+        safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
             let config = { headers: { Authorization: `${token}` } };
             axios.get(API_URL + '/api/token', config).then(results => {
 
@@ -258,6 +259,9 @@ class AframeInterview extends Component {
             if(track.kind === "video") {
                 this.attachIdToVideoTag();
             }
+            if(track.kind === "audio") {
+                this.attachIdToAudioTag();
+            }
         });
     }
 
@@ -266,6 +270,13 @@ class AframeInterview extends Component {
         let video_el = assets_el.querySelector("video");
         video_el.setAttribute("id", "host-video");
         this.setState({host_cam_material: "src: #host-video"});
+    }
+
+    attachIdToAudioTag = () => {
+        let assets_el = document.querySelector("a-assets");
+        let audio_el = assets_el.querySelector("audio");
+        audio_el.setAttribute("id", "user_audio");
+        this.setState({audio_material: "src: #user_audio"});
     }
 
     attachParticipantsTracks(participant, container) {
@@ -278,12 +289,14 @@ class AframeInterview extends Component {
         console.log("Joined as '" + this.state.identity + "'");
         this.setState({
             activateRoom: room,
-            localMediaAvailable: true,
             hasJoinedRoom: true,
             loading: false
         });
-
-        console.log("refs: " + this.refs.localMedia);
+        if(this.refs.localMedia){
+            this.setState({
+                localMediaAvailable: true
+            });
+        }
 
         room.participants.forEach(participant => {
             console.log("already in Room '" + participant.identity + "'");
@@ -301,6 +314,10 @@ class AframeInterview extends Component {
             console.log("other tracks: " + track);
             if(track.kind === "video" ){
                 console.log("this is video: " + [track]);
+                this.attachTracks([track], assetContainer);
+            }
+            if(track.kind === "audio"){
+                console.log("this is audio: " + [track]);
                 this.attachTracks([track], assetContainer);
             }
 
@@ -403,6 +420,10 @@ class AframeInterview extends Component {
         
         let isHost = this.props.host;
 
+        console.log("HostCamToggle: " + this.props.hostCamToggled)
+
+        let hostCam = (!isHost && this.props.hostCamToggled) ? <a-box id="host-cam" material={this.state.host_cam_material} look-at="[camera]" position="0 2 0"></a-box> : '';
+
         return (
             <div>
             <Scene className='aframeContainer' embedded networked-scene={aframeOptions}>
@@ -429,7 +450,7 @@ class AframeInterview extends Component {
 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
 
-                <a-box id="host-cam" material={this.state.host_cam_material} look-at="[camera]" position="0 2 0"></a-box>
+                {hostCam}
 
                 <Entity id="cameraRig">
                     <Entity id="head" networked="template:#avatar-template;attachTemplateToLocal:false;" 
