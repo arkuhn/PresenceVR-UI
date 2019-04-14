@@ -53,14 +53,14 @@ class InterviewPage extends Component {
         var message = {
             color: 'yellow',
             type: 'system',
-            id: this.id + this.id
+            id: this.props._id + this.props._id
         }
         if(!this.state.hostCamActive){
-            message.content = this.props.email + ' has activated Video Camera'
+            message.content = this.props.email + ' has turned on camera in VR'
             this.state.socket.emit('message', message)
             this.setState({hostCamActive: true});
         } else {
-            message.content = this.props.email + ' has disabled Video Camera'
+            message.content = this.props.email + 'has turned off camera in VR'
             this.state.socket.emit('message', message)
             this.setState({hostCamActive: false});
         }
@@ -95,6 +95,13 @@ class InterviewPage extends Component {
     }
     
     addMessage = (message) => {
+        // TODO These should be tracked in Interview state in database
+        if (message.content.includes('turned on camera in VR') && message.author !== this.props.email) {
+            this.setState({hostCamActive: true})
+        } 
+        if (message.content.includes('turned off camera in VR') && message.author !== this.props.email) {
+            this.setState({hostCamActive: false})
+        } 
         this.setState({messages: this.state.messages.concat([message])})
     }
 
