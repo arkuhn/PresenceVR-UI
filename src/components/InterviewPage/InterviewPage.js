@@ -24,7 +24,8 @@ class InterviewPage extends Component {
             upToDate: false,
             socket: openSocket(API_URL),
             controllerMode: 'raycaster',
-            participantStatuses: {}
+            participantStatuses: {},
+            hostCamActive: false
         }
         console.log(props)
 
@@ -45,6 +46,23 @@ class InterviewPage extends Component {
             message.content = this.props.email + ' has left video chat mode'
             this.state.socket.emit('message', message)
             this.setState({vidChat: false});
+        }
+    }
+
+    hostCamToggled = () => {
+        var message = {
+            color: 'yellow',
+            type: 'system',
+            id: this.id + this.id
+        }
+        if(!this.state.hostCamActive){
+            message.content = this.props.email + ' has activated Video Camera'
+            this.state.socket.emit('message', message)
+            this.setState({hostCamActive: true});
+        } else {
+            message.content = this.props.email + ' has disabled Video Camera'
+            this.state.socket.emit('message', message)
+            this.setState({hostCamActive: false});
         }
     }
 
@@ -125,8 +143,10 @@ class InterviewPage extends Component {
                                 environment={this.props.loadedEnvironment}
                                 interviewId={this.props._id}
                                 controllerMode={this.state.controllerMode}
-                                user={this.props.email}/>
-        
+                                user={this.props.email}
+                                host={this.props.email === this.props.host}
+                                hostCamToggled={true}
+                                hostName={this.state.host}/>
 
         return (
                 <Grid padded centered width={14}>
@@ -207,7 +227,8 @@ class InterviewPage extends Component {
                                     interview={this.props} 
                                     updateInterviewCallback={this.props.updateInterviews} 
                                     updateControllerMode={this.updateControllerMode}
-                                    videoToggled={this.videoToggled}/>
+                                    videoToggled={this.videoToggled}
+                                    hostCamToggled={this.hostCamToggled}/>
                             </Accordion.Content>
                         </Accordion>
 

@@ -8,7 +8,7 @@ class Configuation extends Component {
     constructor(props) {
         super(props)
         this.state = {value: 'raycaster'}
-    }xO
+    }
 
     handleChange = (e, { value }) => {
         this.setState({ value })
@@ -75,6 +75,16 @@ class Configuation extends Component {
 
     render() {
 
+        let presenterCam = ''
+        if (this.props.isHost) {
+            presenterCam = <div>
+                <Header sub>
+                Presenter camera in VR
+                </Header>
+                <Checkbox toggle label="Presenter camera in VR" value="default" onChange={this.props.hostCamToggled}/>
+            </div>
+        }
+
         return (
             <div>
                 <Header sub>
@@ -91,6 +101,8 @@ class Configuation extends Component {
                 Video conferencing:
                 </Header>
                 <Checkbox toggle label="Enable Video Chat" value="default" onChange={this.props.videoToggled}/>
+
+                {presenterCam}
 
                 <Popup trigger={<Header icon='keyboard' content='CONTROLS' as="h4"/>}  position="right center" content =" Use WASD to move directions while using the webpage. Click the goggles button to enter VR mode. 
                                             While in VR, you can interact with assets using the two grab modes described in the configuration box." />

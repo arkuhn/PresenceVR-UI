@@ -57,7 +57,7 @@ export default class VideoComponent extends Component {
             video: { width: 100 }
         };
 
-        if (this.state.prviewTracks) {
+        if (this.state.previewTracks) {
             connectOptions.tracks = this.state.previewTracks;
         }
 
@@ -167,8 +167,7 @@ export default class VideoComponent extends Component {
             width: 690
         }
         let showLocalTrack = this.state.localMediaAvailable ? (
-            <Segment ><div ref="localMedia" /></Segment>
-            //<div class="localMedia" ></div>
+            <div><div ref="localMedia" /></div>
         ) : '';
         return (
                 <Segment style={style}>

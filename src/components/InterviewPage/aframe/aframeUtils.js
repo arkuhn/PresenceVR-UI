@@ -126,6 +126,26 @@ function renderData(assets, user)  {
    return {entities}
 }
 
+function registerSchemas() {
+    let schemas = [{template: '#img-template', selector: '.img-box', properties: ['geometry', 'position', 'rotation', 'scale', "material"]},
+    {template: '#obj-template', selector: '.obj-model', properties: ['position', 'rotation', 'scale', "src"]},
+    {template: '#vid-template', selector: '.vid-box', properties: ['position', 'rotation', 'scale', "material"]}] 
+
+    schemas.forEach((schema) => {
+        let components = schema.properties.map((property) => {
+        return {
+        selector: schema.selector,
+        component: property
+        }
+    })
+
+    window.NAF.schemas.add({
+        template: schema.template,
+        components: components.concat(['position', 'rotation', 'scale'])
+        })
+    })
+}
+
 const avatarTemplate = `<template id="avatar-template"> 
                         <a-entity class="avatar"> 
                             <a-sphere class="head"color="#5985ff"scale="0.45 0.5 0.4"random-color></a-sphere> 
@@ -164,4 +184,4 @@ const vidTemplate = `<template id="vid-template">
                     </template>`
 
                     
-export default {renderData, getData, avatarTemplate, imgTemplate, cameraTemplate, objTemplate, vidTemplate}
+export default {renderData, registerSchemas, getData, avatarTemplate, imgTemplate, cameraTemplate, objTemplate, vidTemplate}
