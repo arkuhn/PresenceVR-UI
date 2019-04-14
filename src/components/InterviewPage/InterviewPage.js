@@ -28,7 +28,6 @@ class InterviewPage extends Component {
             hostCamActive: false
         }
         console.log(props)
-
         socketEvents.registerEventHandlers(this.state.socket, this.addMessage, this.handleParticipantStatusChange, this.getCurrentUser, this.getUserStatus, this.props.updateInterviews)
     }
 
@@ -50,6 +49,7 @@ class InterviewPage extends Component {
     }
 
     hostCamToggled = () => {
+        console.error('===========')
         var message = {
             color: 'yellow',
             type: 'system',
@@ -94,18 +94,29 @@ class InterviewPage extends Component {
         return this.props.email;
     }
     
-    componentWillMount() {
-          this.state.socket.emit('join', {id: this.props._id + this.props._id, user: this.props.email })
-          this.state.socket.emit('Marco', {id: this.props._id + this.props._id, caller: this.props.email});
-          // Could add Marco to join functionality, but it may be best to keep the Marco call general so it can be called at any time        
-    }
-    
     addMessage = (message) => {
         this.setState({messages: this.state.messages.concat([message])})
     }
 
     componentWillUnmount() {
         this.state.socket.disconnect()
+    }
+
+    componentDidMount() {
+        this.state.socket.emit('join', {id: this.props._id + this.props._id, user: this.props.email })
+        this.state.socket.emit('Marco', {id: this.props._id + this.props._id, caller: this.props.email});
+    }
+
+    componentWillReceiveProps(props) {
+        if (props._id !== this.props._id) {
+            this.setState({ messages: [],
+                            hostCamActive: false,
+                            vidChat: false })
+
+            this.state.socket.emit('leave')
+            this.state.socket.emit('join', {id: props._id + props._id, user: props.email })
+            this.state.socket.emit('Marco', {id: props._id + props._id, caller: props.email});
+        }
     }
 
     handleParticipantStatusChange = (data) => {
@@ -145,8 +156,8 @@ class InterviewPage extends Component {
                                 controllerMode={this.state.controllerMode}
                                 user={this.props.email}
                                 host={this.props.email === this.props.host}
-                                hostCamToggled={true}
-                                hostName={this.state.host}/>
+                                hostCamToggled={this.state.hostCamActive}
+                                hostName={this.props.host}/>
 
         return (
                 <Grid padded centered width={14}>
