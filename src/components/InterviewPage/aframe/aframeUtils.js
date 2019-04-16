@@ -91,7 +91,7 @@ function renderData(assets, user)  {
                         position="0 0 0" rotation="0 0 0" scale="1 1 1">
                         <a-obj-model    
                         static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable=""
-                            class="obj-model"
+                            class="obj-model-test"
                             position={`${asset.x} ${asset.y} ${asset.z}`}
                             rotation="0 0 0" 
                             scale="1 1 1" 
@@ -127,7 +127,7 @@ function renderData(assets, user)  {
 
 function registerSchemas() {
     let schemas = [{template: '#img-template', selector: '.img-box', properties: ['geometry', 'position', 'rotation', 'scale', "material"]},
-    {template: '#obj-template', selector: '.obj-model', properties: ['position', 'rotation', 'scale', "src"]},
+    {template: '#obj-template', selector: '.obj-model-test', properties: ['position', 'rotation', 'scale', 'src']},
     {template: '#vid-template', selector: '.vid-box', properties: ['position', 'rotation', 'scale', "material"]}] 
 
     schemas.forEach((schema) => {
@@ -172,7 +172,7 @@ const cameraTemplate = `<template id="camera-template">
  
 const objTemplate = `<template id="obj-template">
                     <a-entity class="assets"  position="" rotation="" scale="">
-                        <a-obj-model class="obj-model"  position="" rotation="" scale="" src="" ></a-obj-model>
+                        <a-obj-model class="obj-model-test"  position="" rotation="" scale="" src="" ></a-obj-model>
                     </a-entity> 
                     </template>`
 
