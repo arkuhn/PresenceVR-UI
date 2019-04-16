@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Header, Icon, List, Button, Modal, Popup } from 'semantic-ui-react';
-import InterviewAPI from '../../utils/InterviewAPI';
+import { Button, Header, Icon, List, Modal, Popup } from 'semantic-ui-react';
 
 
 class Participant extends Component {
@@ -32,7 +31,7 @@ class Participant extends Component {
 
     makeHostModal = () => {
         return (<Modal basic size='small' open={this.state.modalOpen} onClose={this.handleCancel} trigger={ 
-            <Icon corner color='green' onClick={this.handleOpen} name='chess queen' circular link aria-hidden='Make host' />
+            <Icon corner color='green' onClick={this.handleOpen} name='chess queen' circular link />
         }>
         <Header as='h1' icon='chess queen' content={`Are you sure you want to make ${this.props.name} the host?`} />
         <Header as='h3'>This means they can change the environment, remove participants and update interview details.</Header>
@@ -54,15 +53,19 @@ class Participant extends Component {
 
     render() {
         let hostFunctions;
-        if (this.props.isHost) {
+        if (this.props.isHost && this.props.name !== this.props.host) {
             hostFunctions = <List.Content floated='right'>
                                 {this.makeHostModal()}
                             </List.Content>
         }
+        let icon = 'user circle'
+        if (this.props.host === this.props.name) {
+            icon = 'chess queen'
+        }
         return (
             <List.Item >
             <List.Content floated='left'>
-            <Icon name='user circle' />
+            <Icon name={icon} />
             </List.Content>
                 <List.Content floated='left'>
                     <List.Header>{this.props.name}</List.Header>
@@ -83,16 +86,14 @@ class Participants extends Component {
             <span>&#160;Offline <Icon color='red' size='small' name='circle thin' /></span>,
             <span>&#160;Online <Icon color='green' size='small' name='circle thin' /></span>
             ];
-
-        if (this.props.participants.length === 0) {
+        let participants = this.props.participants
+        if (participants.length === 0) {
             return <p> No particpants added!</p>
         }
-        return this.props.participants.map((participant, index) => {
-
-            console.log(this.props.participantStatuses);
+        return participants.map((participant, index) => {
             let status = this.props.participantStatuses[participant] ? this.props.participantStatuses[participant] : 0;
 
-            return <Participant key={index} isHost={this.props.isHost} updateHost={this.props.updateHost} name={participant} status={statuses[status]}/>
+            return <Participant key={index} isHost={this.props.isHost} host={this.props.host} updateHost={this.props.updateHost} name={participant} status={statuses[status]}/>
         })
     }
 
@@ -119,14 +120,6 @@ class Participants extends Component {
         `
         return (
             <div className="ParticipantsBox">
-            <Popup trigger= {
-                <Header as='h3'>
-                <Icon bordered circular name='users' />
-                Participants
-                </Header>
-            }
-            content={this.getPopUp()} />
-            
             <List divided className="ParticipantsList">
 
                 {this.generateParticipants()}

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 import InterviewAPI from '../../utils/InterviewAPI';
+import { firebaseAuth } from '../../utils/firebase';
 
-class CancelInterview extends React.Component {
+class LeaveInterview extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -14,27 +15,31 @@ class CancelInterview extends React.Component {
         this.handleOpen = this.handleOpen.bind(this);
     }
 
-    handleSubmit(event) {
-        InterviewAPI.deleteInterview(this.props.id)
-        .then(() => this.props.updateInterviewListCallback());
-        this.setState({ modalOpen: false })
-        event.preventDefault();
+    handleSubmit() {
+        InterviewAPI.patchInterview(this.props.id, 'participants', firebaseAuth.currentUser.email, 'remove').then(() => {
+            this.setState({ modalOpen: false });
+            if (this.props.socket) {
+                this.props.socket.emit('update')
+            } else {
+                window.location.reload()
+            }
+        })
     }
 
-    handleOpen(event) {
+    handleOpen() {
         this.setState({ modalOpen: true })
     }
 
-    handleCancel(event) {
+    handleCancel() {
         this.setState({ modalOpen: false })
     }
 
     render() {
         return (
             <Modal basic size='small' open={this.state.modalOpen} onClose={this.handleCancel} trigger={ 
-                <Button basic color='red' onClick={this.handleOpen} floated='right' size='small' > Delete </Button>     
+                <Button active basic color='red' onClick={this.handleOpen} size='small' > Leave </Button>     
             }>
-            <Header icon='alternate calendar outline' content='Are you sure you want to delete this interview?' />
+            <Header icon='alternate calendar outline' content='Are you sure you want to leave this interview?' />
             <Modal.Content>
                 <Button color='green' onClick={this.handleSubmit} inverted>
                     <Icon name='checkmark' /> Yes
@@ -48,4 +53,4 @@ class CancelInterview extends React.Component {
     }
 }
 
-export default CancelInterview;
+export default LeaveInterview;

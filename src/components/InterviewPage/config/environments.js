@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { Checkbox, Form, Header, Popup, Icon } from 'semantic-ui-react';
-import InterviewAPI from '../../utils/InterviewAPI';
+import InterviewAPI from '../../../utils/InterviewAPI';
 
 class Environments extends Component {
 
     handleChange = (e, { value }) => {
         this.setState({ value })
-        console.log(this.state)
         InterviewAPI.updateInterview({loadedEnvironment: value}, this.props.interviewId).then ((response) =>{
-            this.props.updateInterviewCallback();
+            this.props.socket.emit('update')
         })
     }
 
@@ -36,20 +35,10 @@ class Environments extends Component {
 
         return (
             <div>
-                <Popup trigger={
-                    <Header as='h3'>
-                        <Icon circular name='image outline' />
-                        Environments
-                        
-                    </Header>
-                } content={this.getPopUp()}/>
                 <Form>
                     <Form.Field>
-                    Selected environment: <b>{this.props.environment}</b>
-                    </Form.Field>
-                    <Form.Field>
                     <Checkbox
-                        toggle
+                        slider
                         disabled={!this.props.isHost}
                         label='Default'
                         name='checkboxRadioGroup'
@@ -60,7 +49,7 @@ class Environments extends Component {
                     </Form.Field>
                     <Form.Field>
                     <Checkbox
-                        toggle
+                        slider
                         disabled={!this.props.isHost}
                         label='Starry'
                         name='checkboxRadioGroup'
@@ -71,7 +60,7 @@ class Environments extends Component {
                     </Form.Field>
                     <Form.Field>
                     <Checkbox
-                        toggle
+                        slider
                         disabled={!this.props.isHost}
                         label='Japan'
                         name='checkboxRadioGroup'
@@ -82,7 +71,7 @@ class Environments extends Component {
                     </Form.Field>
                     <Form.Field>
                     <Checkbox
-                        toggle
+                        slider
                         disabled={!this.props.isHost}
                         label='Tron'
                         name='checkboxRadioGroup'

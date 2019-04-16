@@ -6,30 +6,6 @@ import './PresenceVRNavBar.css';
 
 class PresenceVRNavBar extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = { activeItem: 'PresenceVR' }
-    }
-
-    componentWillMount() {
-        this.setState({loading: true})
-        // Bind the variable to the instance of the class.
-        this.authFirebaseListener = firebaseAuth.onAuthStateChanged((user) => {
-          this.setState({
-            loading: false,  // For the loader maybe
-            user
-          });
-        });
-    
-    }
-
-    componentWillUnmount() {
-        this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
-    }
-
-    handleItemClick (e, { name }) {
-        this.setState({ activeItem: name })
-    }
 
     handleLogOut() {
         logout()
@@ -47,7 +23,7 @@ class PresenceVRNavBar extends Component {
                         <List.Content>
                             <List.Header>Username</List.Header>
                             <List.Description>
-                            {firebaseAuth.currentUser.email}
+                            {this.props.email}
                             </List.Description>
                         </List.Content>
                     </List.Item>
@@ -65,51 +41,27 @@ class PresenceVRNavBar extends Component {
                 <Header icon='question circle' content='Help' />
                 <Modal.Content>
                     <p>
-                    Te eum doming eirmod, nominati pertinacia argumentum ad his. Ex eam alia facete scriptorem,
-                    est autem aliquip detraxit at. Usu ocurreret referrentur at, cu epicurei appellantur vix. Cum
-                    ea laoreet recteque electram, eos choro alterum definiebas in. Vim dolorum definiebas an. Mei
-                    ex natum rebum iisque.
+                    This feature has not been implemented yet.
                     </p>
                 </Modal.Content>
             </Modal>
         );
     }
 
-    notificationBell () {
-        return (
-                <Menu.Item>
-                    <Dropdown
-                        inline
-                        icon='bell'
-                        header='Notifications'                        
-                    />
-                </Menu.Item>                
-
-        );
-    }
-
     render() {
 
-        const { activeItem } = this.state
-
-        if (!this.state.loading && !this.state.user) {
-            return <Redirect to='/'/>
-        }
-
         return (
-            <div className="PresenceVRNavBar">
-                <Menu size='huge' pointing secondary >
+            <div className="PresenceVRNavBar" >
+                <Menu style={{height: '10vp'}} pointing secondary >
                         
-                    <Menu.Item as={Link} to="/home" name='PresenceVR' active={activeItem === 'home'} onClick={this.handleItemClick} icon='home' position={'left'} />
+                    <Menu.Item onClick={this.props.goHome}name='PresenceVR' icon='home' position={'left'} />
                     
-                    {this.notificationBell()}
-
                     {this.helpButton()}
                         
                     {this.accountButton()}
-                    
-                    
+
                 </Menu> 
+                
             </div>
         );
     }

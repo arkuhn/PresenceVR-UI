@@ -1,9 +1,8 @@
 import React from 'react';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 import InterviewAPI from '../../utils/InterviewAPI';
-import { firebaseAuth } from '../../utils/firebase';
 
-class LeaveInterview extends React.Component {
+class CancelInterview extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -15,27 +14,34 @@ class LeaveInterview extends React.Component {
         this.handleOpen = this.handleOpen.bind(this);
     }
 
-    handleSubmit() {
-        InterviewAPI.patchInterview(this.props.id, 'participants', firebaseAuth.currentUser.email, 'remove').then(() => {
-            this.setState({ modalOpen: false });
-            window.location.reload()
-        })
+    handleSubmit(event) {
+        InterviewAPI.deleteInterview(this.props.id)
+        .then(() => {
+            if (this.props.updateInterviewCallback) {
+                this.props.updateInterviewCallback()
+            } else {
+                this.props.updateInterviewListCallback()
+            }
+            
+        });
+        this.setState({ modalOpen: false })
+        event.preventDefault();
     }
 
-    handleOpen() {
+    handleOpen(event) {
         this.setState({ modalOpen: true })
     }
 
-    handleCancel() {
+    handleCancel(event) {
         this.setState({ modalOpen: false })
     }
 
     render() {
         return (
             <Modal basic size='small' open={this.state.modalOpen} onClose={this.handleCancel} trigger={ 
-                <Button basic color='red' onClick={this.handleOpen} size='small' > Leave </Button>     
+                <Button basic  active color='red' onClick={this.handleOpen} floated='right' size='small' > Delete </Button>     
             }>
-            <Header icon='alternate calendar outline' content='Are you sure you want to leave this interview?' />
+            <Header icon='alternate calendar outline' content='Are you sure you want to delete this interview?' />
             <Modal.Content>
                 <Button color='green' onClick={this.handleSubmit} inverted>
                     <Icon name='checkmark' /> Yes
@@ -49,4 +55,4 @@ class LeaveInterview extends React.Component {
     }
 }
 
-export default LeaveInterview;
+export default CancelInterview;

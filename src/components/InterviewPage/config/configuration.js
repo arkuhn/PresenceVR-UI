@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Header, Icon, Button, Popup, Form, Radio, Divider} from 'semantic-ui-react';
-import InterviewForm from "../InterviewCard/InterviewForm"
-import CancelInterview from "../InterviewCard/cancelInterview"
-import LeaveInterview from "../InterviewCard/leaveInterview"
+import { Button, Checkbox, Form, Header, Popup, Radio } from 'semantic-ui-react';
+import CancelInterview from "../../InterviewOperations/cancelInterview";
+import InterviewForm from "../../InterviewOperations/InterviewForm";
+import LeaveInterview from "../../InterviewOperations/leaveInterview";
 
 class Configuation extends Component {
     constructor(props) {
@@ -20,17 +20,17 @@ class Configuation extends Component {
         if (this.props.isHost) {
             interviewControls = 
             <Button.Group>
-                <InterviewForm updateInterviewListCallback={this.props.updateInterviewCallback} type='edit' id={this.props.interview._id} 
+                <InterviewForm socket={this.props.socket} type='edit' id={this.props.interview._id} 
                     participants={this.props.interview.participants} 
                     date={this.props.interview.occursOnDate} 
                     time={this.props.interview.occursAtTime} 
                     details={this.props.interview.details} />
 
-                <CancelInterview updateInterviewListCallback={this.props.updateInterviewCallback} id={this.props.interview._id} />
+                <CancelInterview updateInterviewCallback={this.props.updateInterviewCallback} id={this.props.interview._id} />
             </Button.Group>
                 
         } else {
-            interviewControls = <LeaveInterview id={this.props.interview._id} />
+            interviewControls = <LeaveInterview socket={this.props.socket} id={this.props.interview._id} />
         }
         return interviewControls;
     }
@@ -75,31 +75,35 @@ class Configuation extends Component {
 
     render() {
 
+        let presenterCam = ''
+        if (this.props.isHost) {
+            presenterCam = <div>
+                <Header sub>
+                Presenter camera in VR
+                </Header>
+                <Checkbox toggle label="Presenter camera in VR" checked={this.props.hostCamInVR} onChange={this.props.updateHostCamInVR}/>
+            </div>
+        }
+
         return (
             <div>
-                <Popup trigger = {
-                <Header as='h3'>
-                    <Icon bordered circular name='settings' />
-                    Configuration
-                </Header>
-                } content={this.getPopOutContent()} />
-
-
                 <Header sub>
                 Interview Options:
                 </Header>
                 {this.getInterviewControls()}
 
-                <Divider />
                 <Header sub>
                 Grab Options:
                 </Header>
                 {this.getPhysicsControls()}
 
-                <Divider />
-                
-                
-                
+                <Header sub>
+                Video conferencing:
+                </Header>
+                <Checkbox toggle label="Enable Video Chat" value="default" onChange={this.props.videoToggled}/>
+
+                {presenterCam}
+
                 <Popup trigger={<Header icon='keyboard' content='CONTROLS' as="h4"/>}  position="right center" content =" Use WASD to move directions while using the webpage. Click the goggles button to enter VR mode. 
                                             While in VR, you can interact with assets using the two grab modes described in the configuration box." />
                 

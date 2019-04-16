@@ -1,116 +1,161 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Checkbox, Dimmer, Divider, Grid, Header, Icon, Loader, Popup } from 'semantic-ui-react';
+import { Accordion, Grid, Header, Icon, Segment } from 'semantic-ui-react';
 import openSocket from 'socket.io-client';
 import { API_URL } from '../../config/api.config';
-import { firebaseAuth } from '../../utils/firebase';
 import InterviewAPI from "../../utils/InterviewAPI";
 import socketEvents from '../../utils/socketEvents';
-import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar";
-import AframeInterview from "./aframeInterview";
-import Assets from "./assets";
+import AframeInterview from "./aframe/aframeInterview";
 import Chat from "./chat";
-import Configuration from "./configuration";
-import Environments from "./environments";
-import Host from "./host";
+import Assets from "./config/assets";
+import Configuration from "./config/configuration";
+import Environments from "./config/environments";
 import './InterviewPage.css';
 import Participants from "./participants";
-import VideoComponent from "./videoComponent";
-
+import VideoComponent from "./video/videoComponent";
 
 class InterviewPage extends Component {
     constructor(props) {
         super(props);
-        this.id = this.props.match.params.id;
-        this.state = {interview: {
-            participants: [],
-            loadedAssets: [],
-            details: '',
-            host: '',
-            vidChat: false
-        },
-        messages: [],
-        upToDate: false,
-        socket: openSocket(API_URL),
-        controllerMode: 'raycaster',
-        participantStatuses: {}
+        this.state = {
+            vidChat: false,
+            messages: [],
+            socket: openSocket(API_URL),
+            controllerMode: 'raycaster',
+            participantStatuses: {},
+            fetching: false,
+            render: true,
+            interview : {
+                participants: [],
+                hostCamInVR: false,
+                loadedEnvironment: 'default',
+                host: '',
+                loadedAssets: []
+            }
         }
-
-        socketEvents.registerEventHandlers(this.state.socket, this.addMessage, this.handleParticipantStatusChange, this.getCurrentUser, this.getUserStatus)
-        this.updateInterview = this.updateInterview.bind(this);
-        this.videoToggled = this.videoToggled.bind(this);
+        
+        socketEvents.registerEventHandlers(this.state.socket, this.addMessage, this.handleParticipantStatusChange, this.getCurrentUser, this.getUserStatus, this.updateInterview)
     }
 
-    videoToggled = () => {
+    componentWillMount() {
+        console.error('IP MOUNTING')
+        this.state.socket.emit('join', {id: this.props._id + this.props._id, user: this.props.email })
+        this.state.socket.emit('Marco', {id: this.props._id + this.props._id, caller: this.props.email});
+        this.updateInterview()
+    }
+
+    componentWillUnmount() {
+        console.error('IP UN MOUNTING')
+        this.state.socket.emit('leave')
+    }
+
+    componentWillReceiveProps(props) {
+        console.error('IP PROPS NEW')
+        if (props._id !== this.props._id) {
+            this.setState({render: false,
+                            messages: [],
+                            hostCamActive: false,
+                            vidChat: false,
+                            interview : {
+                                participants: [],
+                                hostCamInVR: false,
+                                loadedEnvironment: 'default',
+                                host: '',
+                                loadedAssets: []
+                            }
+            }, ()=> {
+                this.state.socket.emit('leave')
+                this.state.socket.emit('join', {id: props._id + props._id, user: props.email })
+                this.state.socket.emit('Marco', {id: props._id + props._id, caller: props.email});
+                this.updateInterview()
+            })
+        }
+    }
+
+    handleClick = (e, titleProps) => {
+        const { index } = titleProps
+        const { activeIndex } = this.state
+        const newIndex = activeIndex === index ? -1 : index
+    
+        this.setState({ activeIndex: newIndex })
+    }
+
+    handleVideoToggle = () => {
         var message = {
             color: 'yellow',
             type: 'system',
-            id: this.id + this.id
+            id: this.props._id + this.props._id
         }
         if(!this.state.vidChat){
-            message.content = this.state.user.email + ' has entered video chat mode'
+            message.content = this.props.email + ' has entered video chat mode'
             this.state.socket.emit('message', message)
             this.setState({vidChat: true});
         } else {
-            message.content = this.state.user.email + ' has left video chat mode'
+            message.content = this.props.email + ' has left video chat mode'
             this.state.socket.emit('message', message)
             this.setState({vidChat: false});
         }
     }
-    
-    updateInterview() {
-        return InterviewAPI.getInterview(this.id).then((data) => {
-            if(data){
-                console.log('got data');
-                console.log(data.data);
-                this.setState({
-                    interview: data.data,
-                    upToDate: true
-                });
-            }
-        });
+
+    handleHostCamInVRToggle = () => {
+        var message = {
+            color: 'yellow',
+            type: 'system',
+            id: this.props._id + this.props._id
+        }
+        let toggle;
+        if(!this.state.hostCamActive){
+            message.content = this.props.email + ' has turned on camera in VR'
+            toggle = true;
+        } else {
+            message.content = this.props.email + 'has turned off camera in VR'
+            toggle = false;
+        }
+        InterviewAPI.patchInterview(this.props._id, 'hostCamInVR', toggle, 'replace')
+        .then(() => {
+            this.state.socket.emit('message', message)
+            this.state.socket.emit('update')
+            this.setState({hostCamActive: toggle});
+        })
+        
     }
 
     updateControllerMode = (type) => {
-        console.log(type)
         this.setState({controllerMode: type})
     }
 
+    updateInterview = () => {
+        if (!this.state.fetching) {
+            this.setState({fetching: true}) 
+            InterviewAPI.getInterview(this.props._id).then((response) => {
+                let interview = response.data
+                this.setState({interview, fetching: false, render: true})
+            })
+        }
+    }
+
     updateHost = (newHost) => {
-        const newParticipants = (this.state.interview.participants).filter(participant => participant !== newHost)
-        newParticipants.push(this.state.interview.host)
-        let newParString = newParticipants.join()
-        return InterviewAPI.updateInterview( {participants: newParString}, this.state.interview._id)
+        const newParticipants = (this.props.participants).filter(participant => participant !== newHost)
+        newParticipants.push(this.props.host)
+        let newParString = newParticipants.join() 
+        return InterviewAPI.updateInterview( {participants: newParString}, this.props._id)
                 .then((response) => {
-                    console.log(response)
-                    return InterviewAPI.updateInterview( {host: newHost}, this.state.interview._id)
+                    return InterviewAPI.updateInterview( {host: newHost}, this.props._id)
                 })
-                .then((response) => {
-                    return this.updateInterview()
+                .then(() => {
+                    var message = {
+                        color: 'yellow',
+                        type: 'system',
+                        content: newHost + ' has become the host.',
+                        id: this.props._id + this.props._id
+                    }
+                    this.state.socket.emit('message', message)
+                    return this.state.socket.emit('update')
                 })
     }
 
-    //This is a temp fix for losing state on refresh
-    componentDidUpdate() {
-        if (!this.state.upToDate) {
-            this.updateInterview()
-        }
-    }
-    
-    componentWillMount() {
-        this.setState({loading: true})
-        // Bind the variable to the instance of the class.
-        this.authFirebaseListener = firebaseAuth.onAuthStateChanged((user) => { 
-          this.setState({
-            loading: false,  // For the loader maybe
-            user // User Details
-          });
-          this.state.socket.emit('join', {id: this.id + this.id, user: firebaseAuth.currentUser.email })
-          this.state.socket.emit('Marco', {id: this.id + this.id, caller: firebaseAuth.currentUser.email});
-          // Could add Marco to join functionality, but it may be best to keep the Marco call general so it can be called at any time
-        });
-        this.updateInterview()
-        
+    getCurrentUser = () => {
+        return this.props.email;
     }
     
     addMessage = (message) => {
@@ -133,142 +178,119 @@ class InterviewPage extends Component {
         return 1
     }
 
-    getCurrentUser = () => {
-        return firebaseAuth.currentUser.email;
-    }
-
-    componentWillUnmount() {
-        this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
-    }
-
 
     render() {
-        if (this.state.loading) {
-            return <Dimmer active>
-                        <Loader />
-                    </Dimmer>
-        }
-        if (!this.state.loading && !this.state.user) {
-            return <Redirect to='/'/>
+        const { activeIndex, interview } = this.state
+        if (!this.state.render) {
+            return ''
         }
 
-        if (!this.state.upToDate) {
-            return <Dimmer active>
-                        <Loader />
-                    </Dimmer>
-        }
-
-        let isHost = (this.state.user.email === this.state.interview.host)
-        let isParticipant = this.state.interview.participants.includes(this.state.user.email)
-        
-        
-        let videoToggle = this.state.vidChat ? (<VideoComponent interviewId={this.id} joined={true}/>) :
-            (<div><AframeInterview loadedAssets={this.state.interview.loadedAssets}
-                updateInterviewCallback={this.updateInterview}
-                 environment={this.state.interview.loadedEnvironment}
-                  interviewId={this.id}
-                  controllerMode={this.state.controllerMode}/></div>);
-
-        if (this.state.upToDate && !isHost && !isParticipant) {
-            return <Redirect to='/'/>
-        }
-
+        let videoToggle = this.state.vidChat ? (
+            <VideoComponent interviewId={this.props._id} joined={true}/>) :
+            <AframeInterview loadedAssets={interview.loadedAssets}
+                                updateInterviewCallback={this.updateInterview}
+                                environment={interview.loadedEnvironment}
+                                interviewId={this.props._id}
+                                controllerMode={this.state.controllerMode}
+                                user={this.props.email}
+                                socket={this.state.socket}
+                                host={this.props.email === interview.host}
+                                hostCamInVR={interview.hostCamInVR}
+                                updateHostCamInVR={this.handleHostCamInVRToggle}
+                                hostName={interview.host}/>
         return (
-            <div className="InterviewPage">
-                <PresenceVRNavBar/>
-                <br/>
-                <Grid centered padded divided>
-                    {/* Header */}
-                    <Grid.Row>
-                        <Grid.Column  width={4}>
-                        <Header as='h1' textAlign='center'>
-                            <Header.Content>
-                            {this.state.interview.details}
-                            <Header.Subheader>Hosted by {this.state.interview.host}</Header.Subheader>
-                            </Header.Content>
-                        </Header>
-                        </Grid.Column>
-                    </Grid.Row>
+                <Grid padded centered width={14}>
+           
+                    <Grid.Column width={10}>
+                        {/* Browser mode */}
+                        <Grid.Row style={{height: '90vh'}}>
+                            {videoToggle}
+                        </Grid.Row>
+                    </Grid.Column>
 
-                    {/* Left column*/}
                     <Grid.Column width={4}>
+                    <Grid.Row>
+                        <Segment> 
+                            <Header as='h3'>
+                                Presentation hosted by {interview.host}
+                            </Header>
+                        </Segment>
 
-                        {/* Host */}
-                        <Grid.Row>
-                            <Host  host={this.state.interview.host} participantStatuses={this.state.participantStatuses}/>
-                        </Grid.Row>
+                        <Accordion id='dropdown' styled>
+                            {/* Assets */}
+                            <Accordion.Title active={activeIndex === 0} index={0} onClick={this.handleClick}>
+                                <Header as='h4'>
+                                    <Icon circular name='boxes' />
+                                    Assets
+                                </Header>
+                            </Accordion.Title>
+                            <Accordion.Content active={activeIndex === 0}>
+                                <Assets type="web" 
+                                    isHost={this.props.email === interview.host} 
+                                    loadedAssets={interview.loadedAssets} 
+                                    interview={this.props._id} 
+                                    socket={this.state.socket}
+                                    updateInterviewCallback={this.updateInterview} />
+                            </Accordion.Content>
 
-                        {/*Participants*/}
-                        <Divider />
-                        <Grid.Row>
-                            <Participants   updateHost={this.updateHost} 
-                                            isHost={isHost} 
-                                            participants={this.state.interview.participants} 
-                                            participantStatuses={this.state.participantStatuses}/>
-                        </Grid.Row>
+                            {/* Environments */}
+                            <Accordion.Title active={activeIndex === 1} index={1} onClick={this.handleClick}>
+                            <Header as='h4'>
+                                <Icon circular name='image outline' />
+                                Environments
+                            </Header>
+                            </Accordion.Title>
+                            <Accordion.Content active={activeIndex === 1}>
+                                <Environments isHost={this.props.email === interview.host} 
+                                    socket={this.state.socket} 
+                                    environment={interview.loadedEnvironment} 
+                                    interviewId={this.props._id} 
+                                    updateInterviewCallback={this.updateInterview}/>
+                            </Accordion.Content>
 
-                        <Divider />
-                        <Grid.Row>
-                            <Configuration isHost={isHost} 
+                            {/* Participants */}
+                            <Accordion.Title active={activeIndex === 2} index={2} onClick={this.handleClick}>
+                            <Header as='h4'>
+                                <Icon circular name='users' />
+                                Participants
+                            </Header>
+                            </Accordion.Title>
+                            <Accordion.Content active={activeIndex === 2}>
+                                <Participants updateHost={this.updateHost} 
+                                    isHost={this.props.email === interview.host} 
+                                    participants={interview.participants.concat(interview.host)} 
+                                    socket={this.state.socket}
+                                    host={interview.host}
+                                    participantStatuses={this.state.participantStatuses}/>
+                            </Accordion.Content>
+
+                            {/* Config */}
+                            <Accordion.Title active={activeIndex === 3} index={3} onClick={this.handleClick}>
+                                <Header as='h4'>
+                                    <Icon bordered circular name='settings' />
+                                    Configuration
+                                </Header>
+                            </Accordion.Title>
+                            <Accordion.Content active={activeIndex === 3}>
+                                <Configuration isHost={this.props.email === interview.host} 
+                                    socket={this.state.socket}
                                     interview={this.state.interview} 
                                     updateInterviewCallback={this.updateInterview} 
-                                    updateControllerMode={this.updateControllerMode}/>
-                        </Grid.Row>
-                        
-                        <Divider />
-                        <Grid.Row>
-                            <Checkbox toggle label="Enable Video Chat" value="default" onChange={this.videoToggled}/>
-                        </Grid.Row>
+                                    updateControllerMode={this.updateControllerMode}
+                                    videoToggled={this.handleVideoToggle}
+                                    updateHostCamInVR={this.handleHostCamInVRToggle}
+                                    hostCamInVR={interview.hostCamInVR}/>
+                            </Accordion.Content>
+                        </Accordion>
+
+                        <Segment basic />
+
+                        <Chat id={this.props._id + this.props._id} socket={this.state.socket} user={this.props.email} messages={this.state.messages}/>
+                    </Grid.Row>
                     </Grid.Column>
-
-
-                    {/* Center Column*/}
-                    <Grid.Column width={8}>
-                        {/* Browser mode */}
-                        <Grid.Row>
-                            {videoToggle}
-
-                        </Grid.Row>
-                        
-                        <Divider/>
-                        {/* Chat */}
-                        <Grid.Row>
-                            <Chat id={this.id + this.id} socket={this.state.socket} user={this.state.user.email} messages={this.state.messages}/>
-                        </Grid.Row>
-                    </Grid.Column>
-
-
-                    {/* Right column*/}
-                    <Grid.Column  width={4}>
-                        {/* Environments */}
-                        <Grid.Row>
-                            <Environments isHost={isHost} environment={this.state.interview.loadedEnvironment} interviewId={this.id} updateInterviewCallback={this.updateInterview}/>
-                        </Grid.Row>
-                        <Divider/>
-                        {/* Assets */}
-                        <Grid.Row>
-                            <Assets type="web" isHost={isHost} loadedAssets={this.state.interview.loadedAssets} interview={this.id} updateInterviewCallback={this.updateInterview}/>
-                        </Grid.Row>
-                    </Grid.Column>
-
                 </Grid>
-            </div>
         );
     }
 }
 
 export default InterviewPage;
-
-{/* <AframeInterview loadedAssets={this.state.interview.loadedAssets}
-                                             updateInterviewCallback={this.updateInterview}
-                                              environment={this.state.interview.loadedEnvironment}
-                                               interviewId={this.id}
-                                               controllerMode={this.state.controllerMode}/>
-                            <Popup trigger={
-                                <Header floated="right" as="h4">
-                                <Icon name="keyboard" />
-                                    CONTROLS
-                                </Header>
-                            }  position="bottom right" content =" Use WASD to move directions while using the webpage. Click the goggles button to enter VR mode. 
-                                                            While in VR, you can interact with assets using the two grab modes described in the configuration box." />
-                                                            <br/> */}

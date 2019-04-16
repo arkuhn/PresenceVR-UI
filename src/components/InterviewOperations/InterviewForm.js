@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Header, Input, List, Modal } from 'semantic-ui-react';
+import { Button, Header, Input, List, Modal, Icon } from 'semantic-ui-react';
 import InterviewAPI from '../../utils/InterviewAPI';
 
 class InterviewForm extends React.Component {
@@ -53,9 +53,21 @@ class InterviewForm extends React.Component {
         }
 
         if (this.props.type === 'create') {
-            InterviewAPI.createInterview(data).then(() => this.props.updateInterviewListCallback())
+            InterviewAPI.createInterview(data).then(() =>{ 
+                if (this.props.socket) {
+                    this.props.socket.emit('update')
+                } else {
+                    this.props.updateInterviewListCallback()
+                }
+            })
         } else {
-            InterviewAPI.updateInterview(data, this.state.id).then(() => this.props.updateInterviewListCallback())
+            InterviewAPI.updateInterview(data, this.state.id).then(() => {
+                if (this.props.socket) {
+                    this.props.socket.emit('update')
+                } else {
+                    this.props.updateInterviewListCallback()
+                }
+            })
         }
         this.setState({ modalOpen: false })
         
@@ -72,11 +84,11 @@ class InterviewForm extends React.Component {
 
     getTrigger() {
         if (this.props.type === 'create') {
-            return <Button circular icon='pencil alternate' onClick={this.handleOpen}  floated='right' size='medium' />
+            return <Button attached='bottom' basic   onClick={this.handleOpen}  > <Icon name='pencil' /> New Presentation </Button>
         } else {
-            return <Button basic onClick={this.handleOpen} color='grey' >Edit</Button>
+            return <Button active basic color='grey' onClick={this.handleOpen}  >Edit</Button>
         }
-    }
+    } 
 
     render() {
         return (
@@ -85,21 +97,23 @@ class InterviewForm extends React.Component {
             <Modal.Content>
                 <List>
                     <List.Item>
+                        <Input fluid label='Description' value={this.state.detailsValue} placeholder='Art interview' name='detailsValue' onChange={this.handleFieldUpdate} />
+                    </List.Item>
+                    <List.Item>
                         <Input fluid label='Date' value={this.state.dateValue} placeholder='MM/DD/YYYY' name='dateValue' onChange={this.handleFieldUpdate} />
                     </List.Item>
                     <List.Item>
                         <Input fluid label='Time' value={this.state.timeValue} placeholder='HH:MM:SS' name='timeValue' onChange={this.handleFieldUpdate} />
                     </List.Item>
                     <List.Item>
-                        <Input fluid label='Participants' value={this.state.participantsValue} placeholder={'No one, I guess'} name='participantsValue' onChange={this.handleFieldUpdate} />
-                    </List.Item>
-                    <List.Item>
-                        <Input fluid label='Details' value={this.state.detailsValue} placeholder='Art interview' name='detailsValue' onChange={this.handleFieldUpdate} />
+                        <Input fluid label='Participants' value={this.state.participantsValue} placeholder={'email or for multiple, email,email'} name='participantsValue' onChange={this.handleFieldUpdate} />
                     </List.Item>
                 </List>
+            </Modal.Content>
+            <Modal.Actions>
                 <Button primary onClick={this.handleSubmit}>{this.positiveButtonName}</Button>
                 <Button secondary onClick={this.handleClose}>{this.negativeButtonName}</Button>
-            </Modal.Content>
+            </Modal.Actions>
             </Modal>
         );
     }

@@ -47,10 +47,10 @@ class Chat extends Component {
             return <b>No messages to show yet!</b>
 
         }
-        return this.props.messages.map((message) => {
+        return this.props.messages.map((message, index) => {
             if (message.type === 'system') {
                 return (
-                 <List.Item >
+                 <List.Item key={index}>
                     <Message info color={message.color} size='tiny' header={message.content}  />
                 </List.Item>)
                      
@@ -59,7 +59,7 @@ class Chat extends Component {
             if (message.author ===  this.props.user) {
                 floated = 'right'
             }
-            return (<List.Item>
+            return (<List.Item key={index}>
                     <List.Content floated={floated}>
                         <List.Header as='Header' floated={floated}> <Icon name='user circle' /> {message.author} </List.Header>
                     </List.Content>
