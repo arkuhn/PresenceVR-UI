@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Checkbox, Dimmer, Icon, List, Loader, Popup, Segment, Container } from 'semantic-ui-react';
+import { Checkbox, Container, Dimmer, Icon, Input, List, Loader, Popup, Segment } from 'semantic-ui-react';
 import InterviewAPI from '../../../utils/InterviewAPI';
 import UploadAPI from '../../../utils/UploadAPI';
 
@@ -98,16 +98,13 @@ class Assets extends Component {
 
     uploadBox = () => {
         return (
-            <form onSubmit={this.onSubmit}>
-                <Segment>
-                    <Button secondary content='Upload' onClick={this.onSubmit} />
-                    <input
+                    <Input
+                        fluid
+                        action={{ icon: 'upload', onClick: this.onSubmit }}
                         type="file"
                         name="uploadedFile"
                         onChange={this.onChange}
-                    />
-                </Segment>
-            </form>
+                        />
         )
     }
 
