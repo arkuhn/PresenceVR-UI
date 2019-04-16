@@ -273,6 +273,7 @@ class InterviewPage extends Component {
                             </Accordion.Title>
                             <Accordion.Content active={activeIndex === 3}>
                                 <Configuration isHost={this.props.email === interview.host} 
+                                    goHome={this.props.goHome}
                                     socket={this.state.socket}
                                     interview={this.state.interview} 
                                     updateInterviewCallback={this.updateInterview} 
