@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Checkbox, Dimmer, Icon, List, Loader, Popup, Segment } from 'semantic-ui-react';
+import { Button, Checkbox, Dimmer, Icon, List, Loader, Popup, Segment, Container } from 'semantic-ui-react';
 import InterviewAPI from '../../../utils/InterviewAPI';
 import UploadAPI from '../../../utils/UploadAPI';
 
@@ -127,15 +127,23 @@ class Assets extends Component {
             'video': 'video/mp4'
         }
 
+        var getTitle = {
+            'image': 'Images',
+            'obj': 'Object',
+            'video': 'Videos'
+        }
+
+        var getContent = {
+            'image': "Supported image formats are png and jpg.",
+            'obj': "The only supported mesh format is obj.",
+            'video': "Supported video formats are MP4."
+        }
+
         var filtertedAssets = this.state.assets.filter(asset => asset.filetype.includes(getFilter[type]))
         if (filtertedAssets.length === 0) {
-            return (<List.Item>
-                        <List.Content>
-                            <List.Header>No {type} assets to show!</List.Header>
-                        </List.Content>
-                    </List.Item>)
+            return ''
         }
-        return filtertedAssets.map((asset) => {
+        let assetsjsx = filtertedAssets.map((asset) => {
             var loaded = false
             if (this.props.loadedAssets.indexOf(asset._id) >= 0) {
                 loaded = true
@@ -155,6 +163,17 @@ class Assets extends Component {
                 ></Asset>
             )
         })
+
+        return  <List divided>
+                <Popup trigger={
+                    
+                    <List.Header as='h4'>
+                        <Icon  name={getIcon[type]} />
+                        {getTitle[type]}
+                    </List.Header>
+                    } content={getContent[type]} />
+                    {assetsjsx}
+                    </List>
     }
 
     render() {
@@ -176,38 +195,30 @@ class Assets extends Component {
             </div>)
         }
         let popupContent = 'Upload an asset below. Clicking the slider will render the asset. Rendered assets are visible to the host and all participants.';
-        
+        let images = this.renderAssets('image')
+        let objects =  this.renderAssets('obj')
+        let videos = this.renderAssets('video')
+
+        let empty = '';
+        if (this.state.assets.length === 0) {
+            empty = <Segment>
+                        Upload a JPG, PNG, OBJ or MP4 to get Started!
+                    </Segment>
+        }
+
         return (
-                <div>
-                    <List divided className="AssetsList">
-                    <Popup trigger={
-                    <List.Header as='h4'>
-                        <Icon  name='image outline' />
-                        Images
-                    </List.Header>
-                    } content="Supported image formats are png and jpg." />
-                    {this.renderAssets('image')}
+                <Container style={{maxHeight: '30vh', overflowY: 'auto'}} className="assetsList" textAlign='center'>
+                                        
+                    {images}
 
-                    <Popup trigger={
-                    <List.Header as='h4'>
-                        <Icon  name='box' />
-                        Objects
-                    </List.Header>
-                    } content="The only supported mesh format is obj." />
-                    {this.renderAssets('obj')}
+                    {objects}
 
+                    {videos}
 
-                    <Popup trigger= {
-                    <List.Header as='h4'>
-                        <Icon  name='file video outline' />
-                        Videos
-                    </List.Header>
-                    } content = "Supported video formats are MP4."/>
-                    {this.renderAssets('video')}
-                </List>
+                    {empty}
+
                 {this.uploadBox()}
-                <style>{css}</style>
-                </div>      
+            </Container>
         );              
     }
 }

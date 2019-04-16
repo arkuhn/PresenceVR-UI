@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Checkbox, Form, Header, Popup, Radio } from 'semantic-ui-react';
+import { Button, Checkbox, Form, Header, Popup, Radio, Container } from 'semantic-ui-react';
 import CancelInterview from "../../InterviewOperations/cancelInterview";
 import InterviewForm from "../../InterviewOperations/InterviewForm";
 import LeaveInterview from "../../InterviewOperations/leaveInterview";
@@ -81,33 +81,47 @@ class Configuation extends Component {
                 <Header sub>
                 Presenter camera in VR
                 </Header>
-                <Checkbox toggle label="Presenter camera in VR" checked={this.props.hostCamInVR} onChange={this.props.updateHostCamInVR}/>
+                <Checkbox toggle label="Presenter camera in VR:" checked={this.props.hostCamInVR} onChange={this.props.updateHostCamInVR}/>
             </div>
         }
 
         return (
-            <div>
+            <Container>
+                <Container textAlign='center'>
                 <Header sub>
                 Interview Options:
                 </Header>
                 {this.getInterviewControls()}
+                </Container>
 
+                <br />
+   
+                <Container textAlign='center'>
                 <Header sub>
                 Grab Options:
                 </Header>
                 {this.getPhysicsControls()}
+                </Container>
 
+                <br />
+
+                <Container textAlign='center'>
                 <Header sub>
                 Video conferencing:
                 </Header>
                 <Checkbox toggle label="Enable Video Chat" value="default" onChange={this.props.videoToggled}/>
+                </Container>
 
+                <br />
+
+                <Container textAlign='center'>
                 {presenterCam}
+                </Container>
 
                 <Popup trigger={<Header icon='keyboard' content='CONTROLS' as="h4"/>}  position="right center" content =" Use WASD to move directions while using the webpage. Click the goggles button to enter VR mode. 
                                             While in VR, you can interact with assets using the two grab modes described in the configuration box." />
                 
-            </div>
+            </Container>
         );
     }
 }
