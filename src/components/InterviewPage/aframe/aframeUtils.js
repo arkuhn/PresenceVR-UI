@@ -89,14 +89,14 @@ function renderData(assets, user)  {
             entity = <a-entity key={index} id={`ent${asset.id}`}
                         networked={options} 
                         position="0 0 0" rotation="0 0 0" scale="1 1 1">
-                        <a-obj-model    
+                        <a-entity    
                         static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable=""
                             class="obj-model-test"
                             position={`${asset.x} ${asset.y} ${asset.z}`}
                             rotation="0 0 0" 
                             scale="1 1 1" 
-                            src={`url(${asset.file})`}>
-                        </a-obj-model>
+                            obj-model={`obj: url(${asset.file})`}>
+                        </a-entity>
                     </a-entity>
         }
         else if(asset.name.toLowerCase().includes(".mp4")){
@@ -127,7 +127,7 @@ function renderData(assets, user)  {
 
 function registerSchemas() {
     let schemas = [{template: '#img-template', selector: '.img-box', properties: ['geometry', 'position', 'rotation', 'scale', "material"]},
-    {template: '#obj-template', selector: '.obj-model-test', properties: ['position', 'rotation', 'scale', 'src']},
+    {template: '#obj-template', selector: '.obj-model-test', properties: ['position', 'rotation', 'scale', 'obj-model']},
     {template: '#vid-template', selector: '.vid-box', properties: ['position', 'rotation', 'scale', "material"]}] 
 
     schemas.forEach((schema) => {
@@ -172,7 +172,7 @@ const cameraTemplate = `<template id="camera-template">
  
 const objTemplate = `<template id="obj-template">
                     <a-entity class="assets"  position="" rotation="" scale="">
-                        <a-obj-model class="obj-model-test"  position="" rotation="" scale="" src="" ></a-obj-model>
+                        <a-entity class="obj-model-test"  position="" rotation="" scale="" obj-model="" ></a-entity>
                     </a-entity> 
                     </template>`
 
