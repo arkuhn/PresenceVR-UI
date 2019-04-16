@@ -115,7 +115,6 @@ function renderData(assets, user)  {
                         </a-video>
                     </a-entity>
         }
-        console.log(asset.owner, user)
         if (entity && asset.owner === user) {
             //Create entity that links to template and source
             entities.push( entity )

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Card, Dimmer, Grid, Header, Image, Loader, Menu, Divider } from 'semantic-ui-react';
+import { Card, Dimmer, Grid, Header, Image, Loader, Menu, Divider, Segment } from 'semantic-ui-react';
 import { firebaseAuth } from '../../utils/firebase';
 import InterviewAPI from "../../utils/InterviewAPI";
 import InterviewForm from '../InterviewOperations/InterviewForm';
@@ -13,13 +13,20 @@ class Homepage extends Component {
     constructor(props) {
         super(props);
         this.state = ({
-            loading: true,
             activeItem: 'home',
-            interviews: []
+            interviews: [],
+            fetching: false
         })
     }
 
     handleItemClick = (e, { name }) => {
+        if (name !== 'home') {
+            this.setState({
+                selectedInterview: <InterviewPage _id={name} 
+                                        email={this.state.user.email}
+                                        updateInterviews={this.updateInterview}/>, 
+                activeItem: name})
+        }
         this.setState({ activeItem: name })
     }
 
@@ -32,7 +39,6 @@ class Homepage extends Component {
         // Bind the variable to the instance of the class.
         this.authFirebaseListener = firebaseAuth.onAuthStateChanged((user) => {
             this.setState({ user }, () => { this.updateInterviews() });
-            
         })
         
     }
@@ -77,54 +83,8 @@ class Homepage extends Component {
         return renderInterviews
     }
 
-    renderActiveItem = () => {
-        if (this.state.activeItem === 'home') {
-            return <Grid width={14}>
-                <Grid.Column width={5} />
-                <Grid.Column width={9}>
-                <Card fluid={true} >
-                    <Card.Content>
-                        <Image src="/images/presencevr2.jpg" />
-                        <Card.Description>
-                            <span>
-                            Welcome!
-                            </span>
-                        </Card.Description>
-                        </Card.Content>
-                        <Card.Content extra={true}>
-                            A R.I.T Career Services project
-                        </Card.Content>
-                    </Card>
-                </Grid.Column>
-                </Grid>
-        } else {
-            var interview = this.state.interviews.filter(interview => {
-                return interview._id === this.state.activeItem
-            })
-            
-            if (!interview) {
-                return <p>oh dear</p>
-            }
-
-            interview = interview[0]
-            
-            return <InterviewPage _id={interview._id} 
-                details={interview.details}
-                participants={interview.participants}
-                time={interview.occursAtTime}
-                date={interview.occursOnDate}
-                loadedEnvironment={interview.loadedEnvironment}
-                host={interview.host}
-                email={this.state.user.email}
-                hostCamInVR={interview.hostCamInVR}
-                loadedAssets={interview.loadedAssets}
-                updateInterviews={this.updateInterviews}
-            />
-        }
-    }
-
     render() {
-            if (this.state.loading || this.state.fetching) {
+            if (this.state.loading) {
                 return <Dimmer active>
                             <Loader />
                         </Dimmer>
@@ -138,56 +98,75 @@ class Homepage extends Component {
                 scrollbarWidth: 'none'
             }
 
+            let selectedItem;
+            if (this.state.activeItem === 'home') {
+                selectedItem = <Grid width={14}>
+                                <Grid.Column width={5} />
+                                <Grid.Column width={9}>
+                                <Card fluid={true} >
+                                    <Card.Content>
+                                        <Image src="/images/presencevr2.jpg" />
+                                        <Card.Description>
+                                            <span>
+                                            Welcome!
+                                            </span>
+                                        </Card.Description>
+                                        </Card.Content>
+                                        <Card.Content extra={true}>
+                                            A R.I.T Career Services project
+                                        </Card.Content>
+                                    </Card>
+                                </Grid.Column>
+                                </Grid>
+            }
+            if (this.state.activeItem !== 'home') {
+                selectedItem = this.state.selectedInterview
+            }   
+
             return (
                 <div className="Homepage">
                 <PresenceVRNavBar goHome={this.returnHome} email={this.state.user.email}/>
                 <br/>
                 <Grid padded>
                     <Grid.Column style={{scrollbarWidth: 'none'}}width={2}>
-                    <Grid.Row>
-                    <Menu  className="interviewList" pointing   vertical >
-                            <Menu.Header as='h4'> 
-                                <Header style={{paddingTop: '10px'}} textAlign='center'>
-                                    Your Presentations 
-                                </Header>
-                            </Menu.Header>
-                            
-                            <Menu.Menu style={style}>
-                                {this.renderInterviews('host')}
-                            </Menu.Menu>
-                            <InterviewForm updateInterviewListCallback={this.updateInterviews} type='create'/>
+                        <Grid.Row>
+                            <Menu  className="interviewList" pointing   vertical >
+                                <Menu.Header as='h4'> 
+                                    <Header style={{paddingTop: '10px'}} textAlign='center'>
+                                        Your Presentations 
+                                    </Header>
+                                </Menu.Header>
+                                
+                                <Menu.Menu style={style}>
+                                    {this.renderInterviews('host')}
+                                </Menu.Menu>
+                                <InterviewForm updateInterviewListCallback={this.updateInterviews} type='create'/>
+                            </Menu>
+                        </Grid.Row>
 
-                        </Menu>
+                        <Grid.Row>
+                            <br />
+                        </Grid.Row>
 
-
-                    </Grid.Row>
-
-                    <Grid.Row>
-                        <br />
-
-                    </Grid.Row>
-
-                    <Grid.Row>
-                    <Menu  className="interviewList" pointing   vertical >
-                            <Menu.Header as='h4'> 
-                                <Header style={{paddingTop: '10px'}} textAlign='center'>
-                                    Shared With You 
-                                </Header>
-                            </Menu.Header>
-                            <Menu.Menu style={style}>
-                                {this.renderInterviews('participant')}
-                            </Menu.Menu>
-                        </Menu>
-                    </Grid.Row>
-        
+                        <Grid.Row>
+                            <Menu  className="interviewList" pointing   vertical >
+                                <Menu.Header as='h4'> 
+                                    <Header style={{paddingTop: '10px'}} textAlign='center'>
+                                        Shared With You 
+                                    </Header>
+                                </Menu.Header>
+                                <Menu.Menu style={style}>
+                                    {this.renderInterviews('participant')}
+                                </Menu.Menu>
+                            </Menu>
+                        </Grid.Row>
                     </Grid.Column>
                     
                     <Grid.Column width={14}>
-                        {this.renderActiveItem()}
+                        {selectedItem}
                     </Grid.Column>
 
                     </Grid>
-                    
                 </div>
             );
     }

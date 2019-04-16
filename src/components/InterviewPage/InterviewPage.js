@@ -19,18 +19,68 @@ class InterviewPage extends Component {
         super(props);
         this.state = {
             vidChat: false,
-            fetching: false,
             messages: [],
-            upToDate: false,
             socket: openSocket(API_URL),
             controllerMode: 'raycaster',
-            participantStatuses: {}
+            participantStatuses: {},
+            fetching: false,
+            render: true,
+            interview : {
+                participants: [],
+                hostCamInVR: false,
+                loadedEnvironment: 'default',
+                host: '',
+                loadedAssets: []
+            }
         }
-        console.log(props)
-        socketEvents.registerEventHandlers(this.state.socket, this.addMessage, this.handleParticipantStatusChange, this.getCurrentUser, this.getUserStatus, this.props.updateInterviews)
+        
+        socketEvents.registerEventHandlers(this.state.socket, this.addMessage, this.handleParticipantStatusChange, this.getCurrentUser, this.getUserStatus, this.updateInterview)
     }
 
-    videoToggled = () => {
+    componentWillMount() {
+        console.error('IP MOUNTING')
+        this.state.socket.emit('join', {id: this.props._id + this.props._id, user: this.props.email })
+        this.state.socket.emit('Marco', {id: this.props._id + this.props._id, caller: this.props.email});
+        this.updateInterview()
+    }
+
+    componentWillUnmount() {
+        console.error('IP UN MOUNTING')
+        this.state.socket.emit('leave')
+    }
+
+    componentWillReceiveProps(props) {
+        console.error('IP PROPS NEW')
+        if (props._id !== this.props._id) {
+            this.setState({render: false,
+                            messages: [],
+                            hostCamActive: false,
+                            vidChat: false,
+                            interview : {
+                                participants: [],
+                                hostCamInVR: false,
+                                loadedEnvironment: 'default',
+                                host: '',
+                                loadedAssets: []
+                            }
+            }, ()=> {
+                this.state.socket.emit('leave')
+                this.state.socket.emit('join', {id: props._id + props._id, user: props.email })
+                this.state.socket.emit('Marco', {id: props._id + props._id, caller: props.email});
+                this.updateInterview()
+            })
+        }
+    }
+
+    handleClick = (e, titleProps) => {
+        const { index } = titleProps
+        const { activeIndex } = this.state
+        const newIndex = activeIndex === index ? -1 : index
+    
+        this.setState({ activeIndex: newIndex })
+    }
+
+    handleVideoToggle = () => {
         var message = {
             color: 'yellow',
             type: 'system',
@@ -47,7 +97,7 @@ class InterviewPage extends Component {
         }
     }
 
-    updateHostCamInVR = () => {
+    handleHostCamInVRToggle = () => {
         var message = {
             color: 'yellow',
             type: 'system',
@@ -72,6 +122,16 @@ class InterviewPage extends Component {
 
     updateControllerMode = (type) => {
         this.setState({controllerMode: type})
+    }
+
+    updateInterview = () => {
+        if (!this.state.fetching) {
+            this.setState({fetching: true}) 
+            InterviewAPI.getInterview(this.props._id).then((response) => {
+                let interview = response.data
+                this.setState({interview, fetching: false, render: true})
+            })
+        }
     }
 
     updateHost = (newHost) => {
@@ -102,27 +162,6 @@ class InterviewPage extends Component {
         this.setState({messages: this.state.messages.concat([message])})
     }
 
-    componentWillUnmount() {
-        this.state.socket.disconnect()
-    }
-
-    componentDidMount() {
-        this.state.socket.emit('join', {id: this.props._id + this.props._id, user: this.props.email })
-        this.state.socket.emit('Marco', {id: this.props._id + this.props._id, caller: this.props.email});
-    }
-
-    componentWillReceiveProps(props) {
-        if (props._id !== this.props._id) {
-            this.setState({ messages: [],
-                            hostCamActive: false,
-                            vidChat: false })
-
-            this.state.socket.emit('leave')
-            this.state.socket.emit('join', {id: props._id + props._id, user: props.email })
-            this.state.socket.emit('Marco', {id: props._id + props._id, caller: props.email});
-        }
-    }
-
     handleParticipantStatusChange = (data) => {
         this.setState(state => {
             let statuses = state.participantStatuses;
@@ -139,31 +178,26 @@ class InterviewPage extends Component {
         return 1
     }
 
-    handleClick = (e, titleProps) => {
-        const { index } = titleProps
-        const { activeIndex } = this.state
-        const newIndex = activeIndex === index ? -1 : index
-    
-        this.setState({ activeIndex: newIndex })
-      }
-
 
     render() {
-        const { activeIndex, loading } = this.state
+        const { activeIndex, interview } = this.state
+        if (!this.state.render) {
+            return ''
+        }
 
         let videoToggle = this.state.vidChat ? (
             <VideoComponent interviewId={this.props._id} joined={true}/>) :
-            <AframeInterview loadedAssets={this.props.loadedAssets}
-                                updateInterviewCallback={this.props.updateInterviews}
-                                environment={this.props.loadedEnvironment}
+            <AframeInterview loadedAssets={interview.loadedAssets}
+                                updateInterviewCallback={this.updateInterview}
+                                environment={interview.loadedEnvironment}
                                 interviewId={this.props._id}
                                 controllerMode={this.state.controllerMode}
                                 user={this.props.email}
-                                host={this.props.email === this.props.host}
-                                hostCamInVR={this.props.hostCamInVR}
-                                updateHostCamInVR={this.updateHostCamInVR}
-                                hostName={this.props.host}/>
-
+                                socket={this.state.socket}
+                                host={this.props.email === interview.host}
+                                hostCamInVR={interview.hostCamInVR}
+                                updateHostCamInVR={this.handleHostCamInVRToggle}
+                                hostName={interview.host}/>
         return (
                 <Grid padded centered width={14}>
            
@@ -178,7 +212,7 @@ class InterviewPage extends Component {
                     <Grid.Row>
                         <Segment> 
                             <Header as='h3'>
-                                Presentation hosted by {this.props.host}
+                                Presentation hosted by {interview.host}
                             </Header>
                         </Segment>
 
@@ -192,11 +226,11 @@ class InterviewPage extends Component {
                             </Accordion.Title>
                             <Accordion.Content active={activeIndex === 0}>
                                 <Assets type="web" 
-                                    isHost={this.props.email === this.props.host} 
-                                    loadedAssets={this.props.loadedAssets} 
+                                    isHost={this.props.email === interview.host} 
+                                    loadedAssets={interview.loadedAssets} 
                                     interview={this.props._id} 
                                     socket={this.state.socket}
-                                    updateInterviewCallback={this.props.updateInterviews} />
+                                    updateInterviewCallback={this.updateInterview} />
                             </Accordion.Content>
 
                             {/* Environments */}
@@ -207,11 +241,11 @@ class InterviewPage extends Component {
                             </Header>
                             </Accordion.Title>
                             <Accordion.Content active={activeIndex === 1}>
-                                <Environments isHost={this.props.email === this.props.host} 
+                                <Environments isHost={this.props.email === interview.host} 
                                     socket={this.state.socket} 
-                                    environment={this.props.loadedEnvironment} 
+                                    environment={interview.loadedEnvironment} 
                                     interviewId={this.props._id} 
-                                    updateInterviewCallback={this.props.updateInterviews}/>
+                                    updateInterviewCallback={this.updateInterview}/>
                             </Accordion.Content>
 
                             {/* Participants */}
@@ -223,10 +257,10 @@ class InterviewPage extends Component {
                             </Accordion.Title>
                             <Accordion.Content active={activeIndex === 2}>
                                 <Participants updateHost={this.updateHost} 
-                                    isHost={this.props.email === this.props.host} 
-                                    participants={this.props.participants.concat(this.props.host)} 
+                                    isHost={this.props.email === interview.host} 
+                                    participants={interview.participants.concat(interview.host)} 
                                     socket={this.state.socket}
-                                    host={this.props.host}
+                                    host={interview.host}
                                     participantStatuses={this.state.participantStatuses}/>
                             </Accordion.Content>
 
@@ -238,14 +272,14 @@ class InterviewPage extends Component {
                                 </Header>
                             </Accordion.Title>
                             <Accordion.Content active={activeIndex === 3}>
-                                <Configuration isHost={this.props.email === this.props.host} 
+                                <Configuration isHost={this.props.email === interview.host} 
                                     socket={this.state.socket}
-                                    interview={this.props} 
-                                    updateInterviewCallback={this.props.updateInterviews} 
+                                    interview={this.state.interview} 
+                                    updateInterviewCallback={this.updateInterview} 
                                     updateControllerMode={this.updateControllerMode}
-                                    videoToggled={this.videoToggled}
-                                    updateHostCamInVR={this.updateHostCamInVR}
-                                    hostCamInVR={this.props.hostCamInVR}/>
+                                    videoToggled={this.handleVideoToggle}
+                                    updateHostCamInVR={this.handleHostCamInVRToggle}
+                                    hostCamInVR={interview.hostCamInVR}/>
                             </Accordion.Content>
                         </Accordion>
 

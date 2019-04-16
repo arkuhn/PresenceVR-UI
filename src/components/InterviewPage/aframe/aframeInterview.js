@@ -1,11 +1,11 @@
 import 'aframe';
+import 'networked-aframe';
 import 'aframe-environment-component';
 import 'aframe-extras';
 import 'aframe-physics-system';
 import { Entity, Scene } from 'aframe-react';
 import 'aframe-teleport-controls';
 import axios from 'axios';
-import 'networked-aframe';
 import React, { Component } from 'react';
 import 'super-hands';
 import Video from 'twilio-video';
@@ -38,8 +38,12 @@ class AframeInterview extends Component {
             loading: true,
             remoteMedia: false,
             host_cam_material: '',
-            user_audio: ''
+            user_audio: '',
+            disconnecting: false,
+            connecting: false
         });
+        this.connecting = false
+        this.disconnecting = false
         this.joinRoom = this.joinRoom.bind(this);
         this.roomJoined = this.roomJoined.bind(this);
         this.leaveRoom = this.leaveRoom.bind(this);
@@ -49,6 +53,19 @@ class AframeInterview extends Component {
     }
 
     componentDidMount() {
+        setTimeout(() => {
+            window.AFRAME.scenes[0].emit('connect');
+        }, 200)
+
+        document.body.addEventListener('clientDisconnected', function (evt) {
+            console.error('clientDisconnected event. clientId =', evt.detail.clientId);
+            this.props.updateInterviewCallback()
+          }.bind(this));
+        document.body.addEventListener('clientConnected', function (evt) {
+            console.error('clientConnected event. clientId =', evt.detail.clientId);
+            this.props.updateInterviewCallback()
+        }.bind(this));
+       
         let entity = document.querySelector('#cameraRig');
         if (entity) {
             entity.addEventListener('componentchanged', function (evt) {
@@ -59,6 +76,7 @@ class AframeInterview extends Component {
         }
 
         aframeUtils.registerSchemas()
+        this.renderAssets(this.props)
 
         safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
             let config = { headers: { Authorization: `${token}` } };
@@ -74,6 +92,18 @@ class AframeInterview extends Component {
         }).catch((error) => {
             console.log(error);
         });
+    }
+
+    componentWillReceiveProps(props) {
+        if (props.interviewId !== this.props.interviewId) {
+            if (this.state.hasJoinedRoom) {
+                this.leaveRoom()
+            }
+            if(props.hostCamInVR) {
+                this.joinRoom(props.interviewId)
+            }          
+        }
+        this.renderAssets(props)
     }
 
     renderAssets = (props) => {
@@ -233,32 +263,18 @@ class AframeInterview extends Component {
         this.detachTracks(tracks);
     }
 
-    componentWillMount() {
-        this.renderAssets(this.props)
-    }
 
-
-    componentWillReceiveProps(props) {
-        if (props.interviewId !== this.props.interviewId) {
-            console.error('INTERVIEW CHANGED') 
-            if (this.state.hasJoinedRoom) {
-                this.leaveRoom()
-            }
-            if(props.hostCamInVR) {
-                this.joinRoom(props.interviewId)
-            }
-        }
- 
-        this.renderAssets(props)
-    }
-
-    componentWillUnmount() {
-        console.error('DISMOUNT')
-    }
 
 
     render() { 
-        let aframeOptions = `serverURL: ${API_URL};app: PresenceVR; room: ${this.props.interviewId}; debug: true; adapter: easyRTC`
+        //let aframeOptions = `serverURL: ${API_URL};app: PresenceVR; room: ${this.props.interviewId}; debug: true; adapter: easyRTC`
+        let aframeOptions = {
+            serverURL: API_URL,
+            app: 'PresenceVR',
+            room: this.props.interviewId,
+            debug: true,
+            connectOnLoad: false
+        }
 
         let hostCam = (this.props.hostCamInVR) ? <a-box id="host-cam" material={this.state.host_cam_material} look-at="[camera]" position="0 2 0"></a-box> : '';
         return ( 
