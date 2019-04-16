@@ -66,7 +66,10 @@ class AframeInterview extends Component {
 
                 const { identity, token } = results.data;
                 this.setState({ identity, token });
-                this.joinRoom();
+
+                if (this.props.hostCamInVR) {
+                    this.joinRoom(this.props.interviewId)
+                }
             });
         }).catch((error) => {
             console.log(error);
@@ -96,7 +99,7 @@ class AframeInterview extends Component {
         return false;
     }
 
-    joinRoom() {
+    joinRoom(id) {
         /* if (!this.props.id.trim()) {
             this.setState({ roomaNameErr: true });
             return;
@@ -236,11 +239,21 @@ class AframeInterview extends Component {
 
 
     componentWillReceiveProps(props) {
+        if (props.interviewId !== this.props.interviewId) {
+            console.error('INTERVIEW CHANGED') 
+            if (this.state.hasJoinedRoom) {
+                this.leaveRoom()
+            }
+            if(props.hostCamInVR) {
+                this.joinRoom(props.interviewId)
+            }
+        }
+ 
         this.renderAssets(props)
     }
 
     componentWillUnmount() {
-        this.leaveRoom();
+        console.error('DISMOUNT')
     }
 
 
@@ -248,9 +261,9 @@ class AframeInterview extends Component {
         let aframeOptions = `serverURL: ${API_URL};app: PresenceVR; room: ${this.props.interviewId}; debug: true; adapter: easyRTC`
         let isHost = this.props.host;
 
-        console.log("HostCamToggle: " + this.props.hostCamToggled)
+        console.log("HostCamToggle: " + this.props.hostCamInVR)
 
-        let hostCam = (!isHost && this.props.hostCamToggled) ? <a-box id="host-cam" material={this.state.host_cam_material} look-at="[camera]" position="0 2 0"></a-box> : '';
+        let hostCam = (this.props.hostCamInVR) ? <a-box id="host-cam" material={this.state.host_cam_material} look-at="[camera]" position="0 2 0"></a-box> : '';
         return ( 
             <Scene className='aframeContainer' id="aframeContainer" embedded networked-scene={aframeOptions}>
                 <a-assets ref='assets' id="assetsSystem">

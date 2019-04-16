@@ -81,7 +81,7 @@ class Configuation extends Component {
                 <Header sub>
                 Presenter camera in VR
                 </Header>
-                <Checkbox toggle label="Presenter camera in VR" value="default" onChange={this.props.hostCamToggled}/>
+                <Checkbox toggle label="Presenter camera in VR" checked={this.props.hostCamInVR} onChange={this.props.updateHostCamInVR}/>
             </div>
         }
 

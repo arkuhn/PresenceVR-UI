@@ -24,8 +24,7 @@ class InterviewPage extends Component {
             upToDate: false,
             socket: openSocket(API_URL),
             controllerMode: 'raycaster',
-            participantStatuses: {},
-            hostCamActive: false
+            participantStatuses: {}
         }
         console.log(props)
         socketEvents.registerEventHandlers(this.state.socket, this.addMessage, this.handleParticipantStatusChange, this.getCurrentUser, this.getUserStatus, this.props.updateInterviews)
@@ -48,22 +47,27 @@ class InterviewPage extends Component {
         }
     }
 
-    hostCamToggled = () => {
-        console.error('===========')
+    updateHostCamInVR = () => {
         var message = {
             color: 'yellow',
             type: 'system',
             id: this.props._id + this.props._id
         }
+        let toggle;
         if(!this.state.hostCamActive){
             message.content = this.props.email + ' has turned on camera in VR'
-            this.state.socket.emit('message', message)
-            this.setState({hostCamActive: true});
+            toggle = true;
         } else {
             message.content = this.props.email + 'has turned off camera in VR'
-            this.state.socket.emit('message', message)
-            this.setState({hostCamActive: false});
+            toggle = false;
         }
+        InterviewAPI.patchInterview(this.props._id, 'hostCamInVR', toggle, 'replace')
+        .then(() => {
+            this.state.socket.emit('message', message)
+            this.state.socket.emit('update')
+            this.setState({hostCamActive: toggle});
+        })
+        
     }
 
     updateControllerMode = (type) => {
@@ -95,13 +99,6 @@ class InterviewPage extends Component {
     }
     
     addMessage = (message) => {
-        // TODO These should be tracked in Interview state in database
-        if (message.content.includes('turned on camera in VR') && message.author !== this.props.email) {
-            this.setState({hostCamActive: true})
-        } 
-        if (message.content.includes('turned off camera in VR') && message.author !== this.props.email) {
-            this.setState({hostCamActive: false})
-        } 
         this.setState({messages: this.state.messages.concat([message])})
     }
 
@@ -163,7 +160,8 @@ class InterviewPage extends Component {
                                 controllerMode={this.state.controllerMode}
                                 user={this.props.email}
                                 host={this.props.email === this.props.host}
-                                hostCamToggled={this.state.hostCamActive}
+                                hostCamInVR={this.props.hostCamInVR}
+                                updateHostCamInVR={this.updateHostCamInVR}
                                 hostName={this.props.host}/>
 
         return (
@@ -246,7 +244,8 @@ class InterviewPage extends Component {
                                     updateInterviewCallback={this.props.updateInterviews} 
                                     updateControllerMode={this.updateControllerMode}
                                     videoToggled={this.videoToggled}
-                                    hostCamToggled={this.hostCamToggled}/>
+                                    updateHostCamInVR={this.updateHostCamInVR}
+                                    hostCamInVR={this.props.hostCamInVR}/>
                             </Accordion.Content>
                         </Accordion>
 

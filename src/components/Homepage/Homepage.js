@@ -116,6 +116,7 @@ class Homepage extends Component {
                 loadedEnvironment={interview.loadedEnvironment}
                 host={interview.host}
                 email={this.state.user.email}
+                hostCamInVR={interview.hostCamInVR}
                 loadedAssets={interview.loadedAssets}
                 updateInterviews={this.updateInterviews}
             />
