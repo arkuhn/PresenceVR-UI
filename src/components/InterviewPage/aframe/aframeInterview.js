@@ -259,9 +259,6 @@ class AframeInterview extends Component {
 
     render() { 
         let aframeOptions = `serverURL: ${API_URL};app: PresenceVR; room: ${this.props.interviewId}; debug: true; adapter: easyRTC`
-        let isHost = this.props.host;
-
-        console.log("HostCamToggle: " + this.props.hostCamInVR)
 
         let hostCam = (this.props.hostCamInVR) ? <a-box id="host-cam" material={this.state.host_cam_material} look-at="[camera]" position="0 2 0"></a-box> : '';
         return ( 
