@@ -26,11 +26,11 @@ class Configuation extends Component {
                     time={this.props.interview.occursAtTime} 
                     details={this.props.interview.details} />
 
-                <CancelInterview goHome={this.props.goHome} id={this.props.interview._id} />
+                <CancelInterview socket={this.props.socket} goHome={this.props.goHome} id={this.props.interview._id} />
             </Button.Group>
                 
         } else {
-            interviewControls = <LeaveInterview socket={this.props.socket} id={this.props.interview._id} />
+            interviewControls = <LeaveInterview socket={this.props.socket} goHome={this.props.goHome} id={this.props.interview._id} />
         }
         return interviewControls;
     }
