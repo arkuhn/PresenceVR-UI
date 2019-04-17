@@ -31,7 +31,8 @@ class InterviewPage extends Component {
                 loadedEnvironment: 'default',
                 host: '',
                 loadedAssets: []
-            }
+            },
+            totalParticipants: []
         }
         
         socketEvents.registerEventHandlers(this.state.socket, this.addMessage, this.handleParticipantStatusChange, this.getCurrentUser, this.getUserStatus, this.updateInterview)
@@ -129,7 +130,10 @@ class InterviewPage extends Component {
             this.setState({fetching: true}) 
             InterviewAPI.getInterview(this.props._id).then((response) => {
                 let interview = response.data
-                this.setState({interview, fetching: false, render: true})
+                let total = interview.participants
+                total.unshift(interview.host)
+                let totalParticipants = total
+                this.setState({interview, totalParticipants,  fetching: false, render: true})
             })
         }
     }
@@ -180,10 +184,18 @@ class InterviewPage extends Component {
 
 
     render() {
-        const { activeIndex, interview } = this.state
+        const { activeIndex, interview, totalParticipants } = this.state
         if (!this.state.render) {
             return ''
         }
+
+        let menuHeight = '20vh';
+        let participantHeight = '60vh'
+        if (activeIndex === 0 || activeIndex === 1 || activeIndex === 2) {
+            menuHeight = '55vh';
+            participantHeight = '25vh'
+        }
+
 
         let videoToggle = this.state.vidChat ? (
             <VideoComponent interviewId={this.props._id} joined={true}/>) :
@@ -199,95 +211,103 @@ class InterviewPage extends Component {
                                 updateHostCamInVR={this.handleHostCamInVRToggle}
                                 hostName={interview.host}/>
         return (
-                <Grid padded centered width={14}>
+                <Grid centered width={14}>
            
                     <Grid.Column width={10}>
                         {/* Browser mode */}
-                        <Grid.Row style={{height: '90vh'}}>
+                        <Grid.Row style={{height: '65vh'}}>
                             {videoToggle}
                         </Grid.Row>
+
+                        <br />
+
+                        <Grid.Row style={{height: '30vh'}}>
+                            <Chat id={this.props._id + this.props._id} socket={this.state.socket} user={this.props.email} messages={this.state.messages}/>
+
+                        </Grid.Row>
+
                     </Grid.Column>
 
                     <Grid.Column width={4}>
-                    <Grid.Row>
+                    <Grid.Row style={{maxHeight: '90vh', height: '90vh'}}>
                         <Segment> 
                             <Header as='h3'>
                                 Presentation hosted by {interview.host}
                             </Header>
                         </Segment>
 
-                        <Accordion id='dropdown' styled>
-                            {/* Assets */}
-                            <Accordion.Title active={activeIndex === 0} index={0} onClick={this.handleClick}>
+                        <div style={{maxHeight: menuHeight}}>
+                            <Accordion  id='dropdown' styled>
+                                {/* Assets */}
+                                <Accordion.Title active={activeIndex === 0} index={0} onClick={this.handleClick}>
+                                    <Header as='h4'>
+                                        <Icon circular name='boxes' />
+                                        Assets
+                                    </Header>
+                                </Accordion.Title>
+                                <Accordion.Content active={activeIndex === 0}>
+                                    <Assets type="web" 
+                                        isHost={this.props.email === interview.host} 
+                                        loadedAssets={interview.loadedAssets} 
+                                        interview={this.props._id} 
+                                        socket={this.state.socket}
+                                        updateInterviewCallback={this.updateInterview} />
+                                </Accordion.Content>
+
+                                {/* Environments */}
+                                <Accordion.Title active={activeIndex === 1} index={1} onClick={this.handleClick}>
                                 <Header as='h4'>
-                                    <Icon circular name='boxes' />
-                                    Assets
+                                    <Icon circular name='image outline' />
+                                    Environments
                                 </Header>
-                            </Accordion.Title>
-                            <Accordion.Content active={activeIndex === 0}>
-                                <Assets type="web" 
-                                    isHost={this.props.email === interview.host} 
-                                    loadedAssets={interview.loadedAssets} 
-                                    interview={this.props._id} 
-                                    socket={this.state.socket}
-                                    updateInterviewCallback={this.updateInterview} />
-                            </Accordion.Content>
+                                </Accordion.Title>
+                                <Accordion.Content active={activeIndex === 1}>
+                                    <Environments isHost={this.props.email === interview.host} 
+                                        socket={this.state.socket} 
+                                        environment={interview.loadedEnvironment} 
+                                        interviewId={this.props._id} 
+                                        updateInterviewCallback={this.updateInterview}/>
+                                </Accordion.Content>
 
-                            {/* Environments */}
-                            <Accordion.Title active={activeIndex === 1} index={1} onClick={this.handleClick}>
-                            <Header as='h4'>
-                                <Icon circular name='image outline' />
-                                Environments
-                            </Header>
-                            </Accordion.Title>
-                            <Accordion.Content active={activeIndex === 1}>
-                                <Environments isHost={this.props.email === interview.host} 
-                                    socket={this.state.socket} 
-                                    environment={interview.loadedEnvironment} 
-                                    interviewId={this.props._id} 
-                                    updateInterviewCallback={this.updateInterview}/>
-                            </Accordion.Content>
 
-                            {/* Participants */}
-                            <Accordion.Title active={activeIndex === 2} index={2} onClick={this.handleClick}>
+                                {/* Config */}
+                                <Accordion.Title active={activeIndex === 2} index={2} onClick={this.handleClick}>
+                                    <Header as='h4'>
+                                        <Icon bordered circular name='settings' />
+                                        Configuration
+                                    </Header>
+                                </Accordion.Title>
+                                <Accordion.Content active={activeIndex === 2}>
+                                    <Configuration isHost={this.props.email === interview.host} 
+                                        goHome={this.props.goHome}
+                                        socket={this.state.socket}
+                                        interview={this.state.interview} 
+                                        updateInterviewCallback={this.updateInterview} 
+                                        updateControllerMode={this.updateControllerMode}
+                                        videoToggled={this.handleVideoToggle}
+                                        updateHostCamInVR={this.handleHostCamInVRToggle}
+                                        hostCamInVR={interview.hostCamInVR}/>
+                                </Accordion.Content>
+                            </Accordion>
+
+                        </div>
+
+
+                    <Segment style={{maxHeight: participantHeight, overflowY: 'auto'}}>
+                                     {/* Participants */}
                             <Header as='h4'>
                                 <Icon circular name='users' />
                                 Participants
                             </Header>
-                            </Accordion.Title>
-                            <Accordion.Content active={activeIndex === 2}>
-                                <Participants updateHost={this.updateHost} 
+                                <Participants updateHost={this.updateHost}
                                     isHost={this.props.email === interview.host} 
-                                    participants={interview.participants.concat(interview.host)} 
+                                    participants={totalParticipants} 
                                     socket={this.state.socket}
                                     host={interview.host}
                                     participantStatuses={this.state.participantStatuses}/>
-                            </Accordion.Content>
-
-                            {/* Config */}
-                            <Accordion.Title active={activeIndex === 3} index={3} onClick={this.handleClick}>
-                                <Header as='h4'>
-                                    <Icon bordered circular name='settings' />
-                                    Configuration
-                                </Header>
-                            </Accordion.Title>
-                            <Accordion.Content active={activeIndex === 3}>
-                                <Configuration isHost={this.props.email === interview.host} 
-                                    goHome={this.props.goHome}
-                                    socket={this.state.socket}
-                                    interview={this.state.interview} 
-                                    updateInterviewCallback={this.updateInterview} 
-                                    updateControllerMode={this.updateControllerMode}
-                                    videoToggled={this.handleVideoToggle}
-                                    updateHostCamInVR={this.handleHostCamInVRToggle}
-                                    hostCamInVR={interview.hostCamInVR}/>
-                            </Accordion.Content>
-                        </Accordion>
-
-                        <Segment basic />
-
-                        <Chat id={this.props._id + this.props._id} socket={this.state.socket} user={this.props.email} messages={this.state.messages}/>
+                        </Segment>
                     </Grid.Row>
+
                     </Grid.Column>
                 </Grid>
         );

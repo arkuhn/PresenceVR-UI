@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Checkbox, Form, Header, Popup, Icon } from 'semantic-ui-react';
+import { Checkbox, Form, Header, Popup, Icon, Container } from 'semantic-ui-react';
 import InterviewAPI from '../../../utils/InterviewAPI';
 
 class Environments extends Component {
@@ -24,17 +24,8 @@ class Environments extends Component {
     }
 
     render() {
-        const css = ` 
-        .EnvironmentsList {
-            height:250px;
-            overflow:scroll;
-            max-width: 100%;
-            overflow-x: hidden;
-        }
-        `
-
         return (
-            <div>
+            <Container textAlign='center'>
                 <Form>
                     <Form.Field>
                     <Checkbox
@@ -81,8 +72,7 @@ class Environments extends Component {
                     />
                     </Form.Field>
                 </Form>
-                <style>{css}</style>
-            </div>
+            </Container>
         );
     }
 }
