@@ -130,7 +130,7 @@ class InterviewPage extends Component {
             this.setState({fetching: true}) 
             InterviewAPI.getInterview(this.props._id).then((response) => {
                 let interview = response.data
-                let total = interview.participants
+                let total = interview.participants.slice()
                 total.unshift(interview.host)
                 let totalParticipants = total
                 this.setState({interview, totalParticipants,  fetching: false, render: true})
@@ -281,7 +281,7 @@ class InterviewPage extends Component {
                                     <Configuration isHost={this.props.email === interview.host} 
                                         goHome={this.props.goHome}
                                         socket={this.state.socket}
-                                        interview={this.state.interview} 
+                                        interview={interview} 
                                         updateInterviewCallback={this.updateInterview} 
                                         updateControllerMode={this.updateControllerMode}
                                         videoToggled={this.handleVideoToggle}
