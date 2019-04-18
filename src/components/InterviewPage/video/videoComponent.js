@@ -46,17 +46,22 @@ export default class VideoComponent extends Component {
     }
 
     joinRoom() {
-        /* if (!this.props.id.trim()) {
-            this.setState({ roomaNameErr: true });
-            return;
-        } */
-        console.log(this.props)
         console.log("Joining room '" + this.props.interviewId + "'...");
+        let numofparticipants = this.props.participants.length + 1;
+        let widthfortrack;
+        if (numofparticipants < 3) {
+            widthfortrack = 'calc(75%)';
+        }
+        else if (numofparticipants < 4) {
+            widthfortrack = 'calc(50%)';
+        }
+        else{
+            widthfortrack = 'calc(25%)';
+        }
+        
         let connectOptions = {
-            name: this.props.interviewId,
-            video: { width: 100 }
+            name: this.props.interviewId
         };
-
         if (this.state.previewTracks) {
             connectOptions.tracks = this.state.previewTracks;
         }
@@ -161,16 +166,11 @@ export default class VideoComponent extends Component {
                     </Dimmer>
                 </Segment>)
         }
-
-        var style = {
-            height: 480,
-            width: 690
-        }
         let showLocalTrack = this.state.localMediaAvailable ? (
             <div><div ref="localMedia" /></div>
         ) : '';
         return (
-                <Segment style={style}>
+                <Segment>
                     {showLocalTrack}
                     
                     <div className="flex-item" ref="remoteMedia" id="remote-media" />

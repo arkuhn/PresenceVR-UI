@@ -124,7 +124,7 @@ class Assets extends Component {
         var getFilter = {
             'image': 'image',
             'obj': 'application/octet-stream',
-            'video': 'video/mp4'
+            'video': 'video/mp4',
         }
 
         var filtertedAssets = this.state.assets.filter(asset => asset.filetype.includes(getFilter[type]))
