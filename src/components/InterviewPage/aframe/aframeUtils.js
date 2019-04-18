@@ -6,15 +6,16 @@ function getDimensions(loadedAsset){
     var varheight = loadedAsset.data.height
     var varwidth = loadedAsset.data.width
     var ratio = 0
+    //we will use the assumption that 394 px = 1 m for scaling
     if (varheight > varwidth){
         ratio = varwidth/varheight
-        varheight = 6
-        varwidth = 6 * ratio
+        varheight = varheight / 394
+        varwidth = varheight * ratio
     }
     else{
         ratio = varheight/varwidth
-        varheight = 6 * ratio
-        varwidth = 6 
+        varwidth = varwidth / 394
+        varheight = varwidth * ratio
     }
 
     return [varheight, varwidth]
@@ -42,7 +43,7 @@ function getData(loadedAssetIds) {
                             objectData.z =-3
                         }
                         
-                        if (loadedAsset.data.name.toLowerCase().includes(".obj") || loadedAsset.data.name.toLowerCase().includes(".mp4")){
+                        if (loadedAsset.data.name.toLowerCase().includes(".obj") || loadedAsset.data.name.toLowerCase().includes(".mp4") || loadedAsset.data.name.toLowerCase().includes(".flv")){
                             objectData.y = 1
                             objectData.z = -3
                         }
@@ -99,7 +100,7 @@ function renderData(assets, user)  {
                         </a-entity>
                     </a-entity>
         }
-        else if(asset.name.toLowerCase().includes(".mp4")){
+        else if(asset.name.toLowerCase().includes(".mp4") || asset.name.toLowerCase().includes(".flv")){
             options = `template: #vid-template; attachTemplateToLocal: false`
             entity = <a-entity key={index} id={`ent${asset.id}`} 
                         networked={options}

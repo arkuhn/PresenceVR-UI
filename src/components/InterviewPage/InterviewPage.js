@@ -198,7 +198,7 @@ class InterviewPage extends Component {
 
 
         let videoToggle = this.state.vidChat ? (
-            <VideoComponent interviewId={this.props._id} joined={true}/>) :
+            <VideoComponent interviewId={this.props._id} joined={true} participants={this.state.interview.participants}/>) :
             <AframeInterview loadedAssets={interview.loadedAssets}
                                 updateInterviewCallback={this.updateInterview}
                                 environment={interview.loadedEnvironment}
