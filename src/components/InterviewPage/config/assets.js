@@ -118,13 +118,15 @@ class Assets extends Component {
         var getIcon = {
             'image': 'image outline',
             'obj': 'box',
-            'video': 'video'
+            'video': 'video',
+            'application/zip': 'box'
         }
 
         var getFilter = {
             'image': 'image',
             'obj': 'application/octet-stream',
-            'video': 'video/mp4'
+            'video': 'video/mp4',
+            'application/zip': 'application/zip'
         }
 
         var filtertedAssets = this.state.assets.filter(asset => asset.filetype.includes(getFilter[type]))
@@ -195,6 +197,7 @@ class Assets extends Component {
                     </List.Header>
                     } content="The only supported mesh format is obj." />
                     {this.renderAssets('obj')}
+                    {this.renderAssets('application/zip')}
 
 
                     <Popup trigger= {

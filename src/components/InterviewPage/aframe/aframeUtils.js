@@ -42,7 +42,10 @@ function getData(loadedAssetIds) {
                             objectData.z =-3
                         }
                         
-                        if (loadedAsset.data.name.toLowerCase().includes(".obj") || loadedAsset.data.name.toLowerCase().includes(".mp4")){
+                        if (loadedAsset.data.name.toLowerCase().includes(".obj") ||
+                            loadedAsset.data.name.toLowerCase().includes(".mp4") ||
+                            loadedAsset.data.name.toLowerCase().includes(".zip")){
+
                             objectData.y = 1
                             objectData.z = -3
                         }
@@ -84,7 +87,7 @@ function renderData(assets, user)  {
                         </a-box>
                     </a-entity>
         }
-        else if (asset.name.toLowerCase().includes(".obj")){
+        else if (asset.name.toLowerCase().includes(".obj") || asset.name.toLowerCase().includes(".zip")){
             options = `template: #obj-template; attachTemplateToLocal: false`
             entity = <a-entity key={index} id={`ent${asset.id}`}
                         networked={options} 
