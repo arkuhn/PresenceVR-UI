@@ -13,6 +13,7 @@
     "aframe-react": "^4.4.0",
     "aframe-teleport-controls": "^0.3.1",
     "axios": "^0.18.0",
+    "cordova": "^9.0.0",
     "cordova-plugin-file": "^6.0.1",
     "easyrtc": "^1.1.0",
     "firebase": "^5.8.3",
