@@ -28,7 +28,8 @@
     "socket.io-client": "^2.2.0",
     "super-hands": "^3.0.0",
     "twilio": "^3.29.2",
-    "twilio-video": "^1.16.0"
+    "twilio-video": "^1.16.0",
+    "zip": "^1.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
