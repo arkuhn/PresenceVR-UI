@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Header, Icon, List, Modal, Popup } from 'semantic-ui-react';
+import { Button, Header, Icon, List, Modal, Popup, Container } from 'semantic-ui-react';
 
 
 class Participant extends Component {
@@ -110,22 +110,15 @@ class Participants extends Component {
     }
 
     render() {
-        const css = ` 
-        .ParticipantsList {
-            overflow-y:auto;
-            max-width: 100%;
-            max-height: 600px;
-            overflow-x: hidden;
-        }
-        `
+        
         return (
-            <div className="ParticipantsBox">
-            <List divided className="ParticipantsList">
-
-                {this.generateParticipants()}
-            </List>
-            <style>{css}</style>
-            </div>
+            <Container >
+                    <List divided className="ParticipantsList">
+                    {this.generateParticipants()}
+                    </List>
+            </Container>
+        
+        
         );
     }
 }

@@ -6,15 +6,16 @@ function getDimensions(loadedAsset){
     var varheight = loadedAsset.data.height
     var varwidth = loadedAsset.data.width
     var ratio = 0
+    //we will use the assumption that 394 px = 1 m for scaling
     if (varheight > varwidth){
         ratio = varwidth/varheight
-        varheight = 6
-        varwidth = 6 * ratio
+        varheight = varheight / 394
+        varwidth = varheight * ratio
     }
     else{
         ratio = varheight/varwidth
-        varheight = 6 * ratio
-        varwidth = 6 
+        varwidth = varwidth / 394
+        varheight = varwidth * ratio
     }
 
     return [varheight, varwidth]
@@ -42,7 +43,7 @@ function getData(loadedAssetIds) {
                             objectData.z =-3
                         }
                         
-                        if (loadedAsset.data.name.toLowerCase().includes(".obj") || loadedAsset.data.name.toLowerCase().includes(".mp4")){
+                        if (loadedAsset.data.name.toLowerCase().includes(".obj") || loadedAsset.data.name.toLowerCase().includes(".mp4") || loadedAsset.data.name.toLowerCase().includes(".flv")){
                             objectData.y = 1
                             objectData.z = -3
                         }
@@ -89,17 +90,17 @@ function renderData(assets, user)  {
             entity = <a-entity key={index} id={`ent${asset.id}`}
                         networked={options} 
                         position="0 0 0" rotation="0 0 0" scale="1 1 1">
-                        <a-obj-model    
+                        <a-entity    
                         static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable=""
-                            class="obj-model"
+                            class="obj-model-test"
                             position={`${asset.x} ${asset.y} ${asset.z}`}
                             rotation="0 0 0" 
                             scale="1 1 1" 
-                            src={`url(${asset.file})`}>
-                        </a-obj-model>
+                            obj-model={`obj: url(${asset.file})`}>
+                        </a-entity>
                     </a-entity>
         }
-        else if(asset.name.toLowerCase().includes(".mp4")){
+        else if(asset.name.toLowerCase().includes(".mp4") || asset.name.toLowerCase().includes(".flv")){
             options = `template: #vid-template; attachTemplateToLocal: false`
             entity = <a-entity key={index} id={`ent${asset.id}`} 
                         networked={options}
@@ -127,7 +128,7 @@ function renderData(assets, user)  {
 
 function registerSchemas() {
     let schemas = [{template: '#img-template', selector: '.img-box', properties: ['geometry', 'position', 'rotation', 'scale', "material"]},
-    {template: '#obj-template', selector: '.obj-model', properties: ['position', 'rotation', 'scale', "src"]},
+    {template: '#obj-template', selector: '.obj-model-test', properties: ['position', 'rotation', 'scale', 'obj-model']},
     {template: '#vid-template', selector: '.vid-box', properties: ['position', 'rotation', 'scale', "material"]}] 
 
     schemas.forEach((schema) => {
@@ -172,7 +173,7 @@ const cameraTemplate = `<template id="camera-template">
  
 const objTemplate = `<template id="obj-template">
                     <a-entity class="assets"  position="" rotation="" scale="">
-                        <a-obj-model class="obj-model"  position="" rotation="" scale="" src="" ></a-obj-model>
+                        <a-entity class="obj-model-test"  position="" rotation="" scale="" obj-model="" ></a-entity>
                     </a-entity> 
                     </template>`
 

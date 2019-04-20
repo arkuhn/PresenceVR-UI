@@ -41,7 +41,7 @@ class LoginPage extends Component {
                     <Grid.Column  width={4}>
                     <Header as='h1' textAlign='center'>
                         <Header.Content>
-                        PresenceVR
+                        <Image src="/images/presencevr2.jpg" />
                         <Header.Subheader>The future of virtual interviews and recruiting</Header.Subheader>
                         </Header.Content>
                     </Header>
@@ -71,10 +71,12 @@ class LoginPage extends Component {
                         <Grid.Column width={9 } floated='right'>
                             <Card fluid={true} >
                             <Card.Content>
-                                <Image src="/images/presencevr2.jpg" />
+                                <Image src="/images/vrimage.png" />
                                 <Card.Description>
                                     <span>
-                                    Welcome!
+                                    PresenceVR is a cross-platform WebVR application designed and developed for use in Interviewing 
+                                    and Recruiting. All the convenience of video/phone interviews, without losing any of the 
+                                    physical benefits of in-person interviews!
                                     </span>
                                 </Card.Description>
                                 </Card.Content>

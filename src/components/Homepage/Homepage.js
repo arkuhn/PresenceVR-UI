@@ -24,7 +24,8 @@ class Homepage extends Component {
             this.setState({
                 selectedInterview: <InterviewPage _id={name} 
                                         email={this.state.user.email}
-                                        updateInterviews={this.updateInterview}/>, 
+                                        updateInterviews={this.updateInterview}
+                                        goHome={this.returnHome}/>, 
                 activeItem: name})
         }
         this.setState({ activeItem: name })
@@ -32,6 +33,7 @@ class Homepage extends Component {
 
     returnHome = () => {
         this.setState({ activeItem: 'home'})
+        this.updateInterviews()
     }
 
     componentWillMount() {
