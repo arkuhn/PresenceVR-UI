@@ -3,6 +3,7 @@ import { Button, Checkbox, Form, Header, Popup, Radio, Container } from 'semanti
 import CancelInterview from "../../InterviewOperations/cancelInterview";
 import InterviewForm from "../../InterviewOperations/InterviewForm";
 import LeaveInterview from "../../InterviewOperations/leaveInterview";
+import {style} from '../../../utils/style'
 
 class Configuation extends Component {
     constructor(props) {
@@ -46,7 +47,7 @@ class Configuation extends Component {
     }
 
     getPhysicsControls = () => {
-        return <Form>
+        return <Form >
                     <Form.Field>
                     <Popup trigger={
                     <Radio
@@ -86,9 +87,9 @@ class Configuation extends Component {
         }
 
         return (
-            <Container>
+            <Container >
                 <Container textAlign='center'>
-                <Header sub>
+                <Header style={{ color: this.props.nightMode ? style.nmText: style.text}} sub>
                 Interview Options:
                 </Header>
                 {this.getInterviewControls()}
@@ -97,7 +98,7 @@ class Configuation extends Component {
                 <br />
    
                 <Container textAlign='center'>
-                <Header sub>
+                <Header style={{ color: this.props.nightMode ? style.nmText: style.text}} sub>
                 Grab Options:
                 </Header>
                 {this.getPhysicsControls()}
@@ -106,7 +107,7 @@ class Configuation extends Component {
                 <br />
 
                 <Container textAlign='center'>
-                <Header sub>
+                <Header style={{ color: this.props.nightMode ? style.nmText: style.text}} sub>
                 Video conferencing:
                 </Header>
                 <Checkbox toggle label="Enable Video Chat" value="default" onChange={this.props.videoToggled}/>
@@ -114,7 +115,7 @@ class Configuation extends Component {
 
                 <br />
 
-                <Container textAlign='center'>
+                <Container style={{ color: this.props.nightMode ? style.nmText: style.text}} textAlign='center'>
                 {presenterCam}
                 </Container>
 

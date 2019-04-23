@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Checkbox, Container, Dimmer, Icon, Input, List, Loader, Popup, Segment } from 'semantic-ui-react';
 import InterviewAPI from '../../../utils/InterviewAPI';
 import UploadAPI from '../../../utils/UploadAPI';
-
+import {style} from '../../../utils/style'
 
 class Asset extends Component {
     renderAsset = () => {
@@ -30,7 +30,7 @@ class Asset extends Component {
                 <List.Content floated='right'>
                     <Icon corner color='red' name='trash alternate outline' link onClick={this.deleteAsset} />
                 </List.Content>
-                <List.Content floated='left'>
+                <List.Content style={{ color: this.props.nightMode ? style.nmText: style.text}} floated='left'>
                     <Icon name={this.props.icon} />
                     <b>{this.props.name}</b> <br />
           
@@ -147,6 +147,7 @@ class Assets extends Component {
             }
             return (
                 <Asset 
+                nightMode={this.props.nightMode}
                     key={asset._id}
                     name={asset.name} 
                     socket={this.props.socket}
@@ -164,7 +165,7 @@ class Assets extends Component {
         return  <List divided>
                 <Popup trigger={
                     
-                    <List.Header as='h4'>
+                    <List.Header style={{ color: this.props.nightMode ? style.nmText: style.text}} as='h4'>
                         <Icon  name={getIcon[type]} />
                         {getTitle[type]}
                     </List.Header>
@@ -204,7 +205,7 @@ class Assets extends Component {
         }
 
         return (
-                <Container style={{maxHeight: '30vh', overflowY: 'auto'}} className="assetsList" textAlign='center'>
+                <Container style={{maxHeight: '30vh', overflowY: 'auto', backgroundColor: this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG }} className="assetsList" textAlign='center'>
                                         
                     {images}
 

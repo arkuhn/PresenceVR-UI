@@ -62,7 +62,7 @@ class Chat extends Component {
             }
             return (<List.Item key={index}>
                     <List.Content floated={floated}>
-                        <List.Header as='Header' floated={floated}> <Icon name='user circle' /> {message.author} </List.Header>
+                        <List.Header as='Header' style={{color: this.props.nightMode ? style.nmText: style.text}} floated={floated}> <Icon name='user circle' /> {message.author} </List.Header>
                     </List.Content>
                     <List.Content floated={floated}>
                     <div style={{'word-wrap': 'break-word'}}>
@@ -74,18 +74,10 @@ class Chat extends Component {
     }
  
   render() {
-    let bg = this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG + ' !important'
-    const css = ` 
-        .ChatBox {
-            overflow-y:auto;
-            max-width: 100%;
-            max-height: 160px;
-            height: 160px;
-            background-color: ${this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG + ' !important'};
-        }
-        ` 
     return (<div>
-        <Segment className='ChatBox' >
+        <Segment  style={{backgroundColor: this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG + ' !important', 
+                            maxWidth: '100%', maxHeight: '160px', height: '160px', overflowY: 'auto',
+                            color: this.props.nightMode ? style.nmText: style.text }} >
         <List  >
         {this.getMessages()}
         </List>
@@ -101,7 +93,6 @@ class Chat extends Component {
             label={<Button id='sendButton' icon='send' onClick={this.handleSend}/>}
         />
         
-        <style>{css}</style>
     </div>)
   }
 }

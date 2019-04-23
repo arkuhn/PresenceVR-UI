@@ -233,8 +233,8 @@ class InterviewPage extends Component {
 
                     <Grid.Column width={4}>
                     <Grid.Row style={{maxHeight: '90vh', height: '90vh'}}>
-                        <Segment> 
-                            <Header as='h3'>
+                        <Segment style={{backgroundColor: this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG + ' !important' }}> 
+                            <Header style={{color: this.props.nightMode ? style.nmText: style.text}}  as='h3'>
                                 Presentation hosted by {interview.host}
                             </Header>
                         </Segment>
@@ -248,7 +248,7 @@ class InterviewPage extends Component {
                                         Assets
                                     </Header>
                                 </Accordion.Title>
-                                <Accordion.Content  active={activeIndex === 0}>
+                                <Accordion.Content  style={{backgroundColor: this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG + ' !important' }} active={activeIndex === 0}>
                                     <Assets type="web" 
                                         isHost={this.props.email === interview.host} 
                                         loadedAssets={interview.loadedAssets} 
@@ -265,7 +265,7 @@ class InterviewPage extends Component {
                                     Environments
                                 </Header>
                                 </Accordion.Title>
-                                <Accordion.Content active={activeIndex === 1}>
+                                <Accordion.Content  style={{backgroundColor: this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG + ' !important' }} active={activeIndex === 1}>
                                     <Environments isHost={this.props.email === interview.host} 
                                         socket={this.state.socket} 
                                         environment={interview.loadedEnvironment} 
@@ -299,7 +299,7 @@ class InterviewPage extends Component {
                         </div>
 
 
-                    <Segment style={{maxHeight: participantHeight, overflowY: 'auto'}}>
+                    <Segment style={{maxHeight: participantHeight, overflowY: 'auto', backgroundColor: this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG + ' !important'}}>
                                      {/* Participants */}
                             <Header style={{ color: this.props.nightMode ? style.nmText: style.text}} as='h4'>
                                 <Icon circular name='users' />
@@ -311,7 +311,6 @@ class InterviewPage extends Component {
                                     socket={this.state.socket}
                                     nightMode={this.props.nightMode}
                                     host={interview.host}
-                                    style={{backgroundColor: this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG + ' !important' }}
                                     participantStatuses={this.state.participantStatuses}/>
                         </Segment>
                     </Grid.Row>

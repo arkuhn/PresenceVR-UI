@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Header, Icon, List, Modal, Popup, Container } from 'semantic-ui-react';
-
+import { style } from '../../utils/style'
 
 class Participant extends Component {
     constructor(props) {
@@ -67,9 +67,9 @@ class Participant extends Component {
             <List.Content floated='left'>
             <Icon name={icon} />
             </List.Content>
-                <List.Content floated='left'>
-                    <List.Header>{this.props.name}</List.Header>
-                    <List.Description>
+                <List.Content  floated='left'>
+                    <List.Header style={{ color: this.props.nightMode ? style.nmText: style.text + ' !important'}}>{this.props.name}</List.Header>
+                    <List.Description style={{ color: this.props.nightMode ? style.nmText: style.text + ' !important'}}>
                     Status: {this.props.status}
                     </List.Description>
                 </List.Content>
@@ -93,7 +93,7 @@ class Participants extends Component {
         return participants.map((participant, index) => {
             let status = this.props.participantStatuses[participant] ? this.props.participantStatuses[participant] : 0;
 
-            return <Participant key={index} isHost={this.props.isHost} host={this.props.host} updateHost={this.props.updateHost} name={participant} status={statuses[status]}/>
+            return <Participant nightMode={this.props.nightMode} key={index} isHost={this.props.isHost} host={this.props.host} updateHost={this.props.updateHost} name={participant} status={statuses[status]}/>
         })
     }
 
@@ -112,7 +112,7 @@ class Participants extends Component {
     render() {
         
         return (
-            <Container >
+            <Container style={{ color: this.props.nightMode ? style.nmText: style.text}} >
                     <List divided className="ParticipantsList">
                     {this.generateParticipants()}
                     </List>
