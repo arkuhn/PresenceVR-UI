@@ -75,7 +75,7 @@ class Chat extends Component {
  
   render() {
     return (<div>
-        <Segment  style={{backgroundColor: this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG + ' !important', 
+        <Segment  style={{backgroundColor: this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG  , 
                             maxWidth: '100%', maxHeight: '160px', height: '160px', overflowY: 'auto',
                             color: this.props.nightMode ? style.nmText: style.text }} >
         <List  >
@@ -86,7 +86,7 @@ class Chat extends Component {
         <Input fluid id='messageInput'
             name ='message' 
             value={this.state.message}
-            style={{backgroundColor: this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG + ' !important', color: this.props.nightMode ? style.nmText: style.text }}
+            style={{backgroundColor: this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG  , color: this.props.nightMode ? style.nmText: style.text }}
             onChange={this.handleFieldUpdate}
             placeholder='Write a message...'
             labelPosition='right'

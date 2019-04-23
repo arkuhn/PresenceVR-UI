@@ -47,7 +47,7 @@ class Configuation extends Component {
     }
 
     getPhysicsControls = () => {
-        return <Form >
+        return <Form>
                     <Form.Field>
                     <Popup trigger={
                     <Radio

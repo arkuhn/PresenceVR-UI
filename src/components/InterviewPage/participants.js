@@ -68,8 +68,8 @@ class Participant extends Component {
             <Icon name={icon} />
             </List.Content>
                 <List.Content  floated='left'>
-                    <List.Header style={{ color: this.props.nightMode ? style.nmText: style.text + ' !important'}}>{this.props.name}</List.Header>
-                    <List.Description style={{ color: this.props.nightMode ? style.nmText: style.text + ' !important'}}>
+                    <List.Header style={{ color: this.props.nightMode ? style.nmText: style.text}}>{this.props.name}</List.Header>
+                    <List.Description style={{ color: this.props.nightMode ? style.nmText: style.text }}>
                     Status: {this.props.status}
                     </List.Description>
                 </List.Content>
