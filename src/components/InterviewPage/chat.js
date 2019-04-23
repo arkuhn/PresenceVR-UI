@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import { Icon, Input, Message, List, Label, Segment, Button} from 'semantic-ui-react'
+import {style} from '../../utils/style'
 
 class Chat extends Component {
     constructor(props) {
@@ -73,17 +74,19 @@ class Chat extends Component {
     }
  
   render() {
+    let bg = this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG + ' !important'
     const css = ` 
         .ChatBox {
             overflow-y:auto;
             max-width: 100%;
             max-height: 160px;
             height: 160px;
+            background-color: ${this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG + ' !important'};
         }
         ` 
     return (<div>
         <Segment className='ChatBox' >
-        <List>
+        <List  >
         {this.getMessages()}
         </List>
         </Segment>
@@ -91,6 +94,7 @@ class Chat extends Component {
         <Input fluid id='messageInput'
             name ='message' 
             value={this.state.message}
+            style={{backgroundColor: this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG + ' !important', color: this.props.nightMode ? style.nmText: style.text }}
             onChange={this.handleFieldUpdate}
             placeholder='Write a message...'
             labelPosition='right'

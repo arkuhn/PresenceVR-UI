@@ -8,6 +8,7 @@ import InterviewPage from '../InterviewPage/InterviewPage';
 import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar";
 import './Homepage.css';
 import InterviewCard from "./interviewCard";
+import { style } from '../../utils/style'
 
 class Homepage extends Component {
     constructor(props) {
@@ -15,7 +16,8 @@ class Homepage extends Component {
         this.state = ({
             activeItem: 'home',
             interviews: [],
-            fetching: false
+            fetching: false,
+            nightMode: false
         })
     }
 
@@ -23,6 +25,7 @@ class Homepage extends Component {
         if (name !== 'home') {
             this.setState({
                 selectedInterview: <InterviewPage _id={name} 
+                                        nightMode={this.state.nightMode}
                                         email={this.state.user.email}
                                         updateInterviews={this.updateInterview}
                                         goHome={this.returnHome}/>, 
@@ -40,9 +43,19 @@ class Homepage extends Component {
         this.setState({loading: true})
         // Bind the variable to the instance of the class.
         this.authFirebaseListener = firebaseAuth.onAuthStateChanged((user) => {
-            this.setState({ user }, () => { this.updateInterviews() });
+            this.setState({ user, loading: false}, () => { 
+                if (user) {
+                    this.updateInterviews() 
+                }
+            });
         })
         
+    }
+
+    setNightMode = () => {
+        let {nightMode} = this.state
+        this.setState({nightMode: !nightMode, 
+            selectedInterview: React.cloneElement( this.state.selectedInterview, {nightMode: !nightMode})})
     }
 
     updateInterviews = () => {
@@ -63,6 +76,7 @@ class Homepage extends Component {
         
         interviews.forEach((interview, index) => {
             let content= <InterviewCard participants={interview.participants} 
+                            nightMode={this.state.nightMode}
                             details={interview.details}
                             date={interview.occursOnDate} 
                             time={interview.occursAtTime}
@@ -86,22 +100,27 @@ class Homepage extends Component {
     }
 
     render() {
+            let {loading, user, nightMode, activeItem, returnHome, selectedInterview } = this.state
             if (this.state.loading) {
                 return <Dimmer active>
                             <Loader />
                         </Dimmer>
             }
-            if (!this.state.loading && !this.state.user) {
+            if (!loading && !user) {
                 return <Redirect to='/'/>
             }
-            const style= {
+            const interviewStyle= {
                 height: '38vh',
                 overflow: 'auto',
                 scrollbarWidth: 'none'
             }
+            let color = style.background
+            if (nightMode){
+                color = style.nmBackground
+            }
 
             let selectedItem;
-            if (this.state.activeItem === 'home') {
+            if (activeItem === 'home') {
                 selectedItem = <Grid width={14}>
                                 <Grid.Column width={5} />
                                 <Grid.Column width={9}>
@@ -121,28 +140,29 @@ class Homepage extends Component {
                                 </Grid.Column>
                                 </Grid>
             }
-            if (this.state.activeItem !== 'home') {
-                selectedItem = this.state.selectedInterview
+            if (activeItem !== 'home') {
+                selectedItem = selectedInterview
             }   
 
             return (
-                <div className="Homepage">
-                <PresenceVRNavBar goHome={this.returnHome} email={this.state.user.email}/>
+                <div style={{backgroundColor: color, scrollbarWidth: 'none !important'}} className="Homepage">
+                <PresenceVRNavBar setNightMode={this.setNightMode} nightMode={nightMode} goHome={this.returnHome} email={user.email}/>
                 <br/>
                 <Grid padded>
                     <Grid.Column style={{scrollbarWidth: 'none'}}width={2}>
                         <Grid.Row>
-                            <Menu  className="interviewList" pointing   vertical >
+                            <Menu className="interviewList" style={{backgroundColor: nightMode ? style.nmSecondaryBG: style.secondaryBG }} pointing   vertical >
                                 <Menu.Header as='h4'> 
-                                    <Header style={{paddingTop: '10px'}} textAlign='center'>
+                                    <Header style={{paddingTop: '10px', color: nightMode ? style.nmText: style.text}} textAlign='center' >
                                         Your Presentations 
                                     </Header>
                                 </Menu.Header>
                                 
-                                <Menu.Menu style={style}>
+                                <Menu.Menu style={interviewStyle}>
                                     {this.renderInterviews('host')}
                                 </Menu.Menu>
-                                <InterviewForm updateInterviewListCallback={this.updateInterviews} type='create'/>
+
+                                <InterviewForm nightMode={nightMode} updateInterviewListCallback={this.updateInterviews} type='create'/>
                             </Menu>
                         </Grid.Row>
 
@@ -151,13 +171,13 @@ class Homepage extends Component {
                         </Grid.Row>
 
                         <Grid.Row>
-                            <Menu  className="interviewList" pointing   vertical >
+                            <Menu  className="interviewList" style={{backgroundColor: nightMode ? style.nmSecondaryBG: style.secondaryBG }} pointing   vertical >
                                 <Menu.Header as='h4'> 
-                                    <Header style={{paddingTop: '10px'}} textAlign='center'>
+                                    <Header style={{paddingTop: '10px', color: nightMode ? style.nmText: style.text}} textAlign='center'>
                                         Shared With You 
                                     </Header>
                                 </Menu.Header>
-                                <Menu.Menu style={style}>
+                                <Menu.Menu style={interviewStyle}>
                                     {this.renderInterviews('participant')}
                                 </Menu.Menu>
                             </Menu>

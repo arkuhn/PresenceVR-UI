@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Card } from 'semantic-ui-react';
+import {style } from '../../utils/style'
 
 class InterviewCard extends Component {
 
@@ -12,7 +13,7 @@ class InterviewCard extends Component {
             raised = true
         }
 
-        return (<Card fluid color={color} raised={raised} className="interviewCard" centered>
+        return (<Card fluid color={color} style={{backgroundColor: this.props.nightMode ? style.nmThirdBG : style.secondaryBG }} raised={raised} className="interviewCard" centered>
                 <Card.Content textAlign='left'>
                     <Card.Header> {this.props.details} </Card.Header>
                     <Card.Meta> {this.props.date} : {this.props.time} </Card.Meta>

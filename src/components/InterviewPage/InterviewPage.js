@@ -13,6 +13,8 @@ import Environments from "./config/environments";
 import './InterviewPage.css';
 import Participants from "./participants";
 import VideoComponent from "./video/videoComponent";
+import {style} from '../../utils/style'
+
 
 class InterviewPage extends Component {
     constructor(props) {
@@ -184,6 +186,7 @@ class InterviewPage extends Component {
 
 
     render() {
+        console.error(this.props.nightMode, '=========')
         const { activeIndex, interview, totalParticipants } = this.state
         if (!this.state.render) {
             return ''
@@ -222,7 +225,7 @@ class InterviewPage extends Component {
                         <br />
 
                         <Grid.Row style={{height: '30vh'}}>
-                            <Chat id={this.props._id + this.props._id} socket={this.state.socket} user={this.props.email} messages={this.state.messages}/>
+                            <Chat id={this.props._id + this.props._id} nightMode={this.props.nightMode} socket={this.state.socket} user={this.props.email} messages={this.state.messages}/>
 
                         </Grid.Row>
 
@@ -237,26 +240,27 @@ class InterviewPage extends Component {
                         </Segment>
 
                         <div style={{maxHeight: menuHeight}}>
-                            <Accordion  id='dropdown' styled>
+                            <Accordion id='dropdown' styled>
                                 {/* Assets */}
-                                <Accordion.Title active={activeIndex === 0} index={0} onClick={this.handleClick}>
-                                    <Header as='h4'>
+                                <Accordion.Title style={{backgroundColor: this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG + ' !important' }} active={activeIndex === 0} index={0} onClick={this.handleClick}>
+                                    <Header style={{ color: this.props.nightMode ? style.nmText: style.text}} as='h4'>
                                         <Icon circular name='boxes' />
                                         Assets
                                     </Header>
                                 </Accordion.Title>
-                                <Accordion.Content active={activeIndex === 0}>
+                                <Accordion.Content  active={activeIndex === 0}>
                                     <Assets type="web" 
                                         isHost={this.props.email === interview.host} 
                                         loadedAssets={interview.loadedAssets} 
                                         interview={this.props._id} 
+                                        nightMode={this.props.nightMode}
                                         socket={this.state.socket}
                                         updateInterviewCallback={this.updateInterview} />
                                 </Accordion.Content>
 
                                 {/* Environments */}
-                                <Accordion.Title active={activeIndex === 1} index={1} onClick={this.handleClick}>
-                                <Header as='h4'>
+                                <Accordion.Title  style={{backgroundColor: this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG + ' !important' }} active={activeIndex === 1} index={1} onClick={this.handleClick}>
+                                <Header style={{ color: this.props.nightMode ? style.nmText: style.text}} as='h4'>
                                     <Icon circular name='image outline' />
                                     Environments
                                 </Header>
@@ -265,23 +269,25 @@ class InterviewPage extends Component {
                                     <Environments isHost={this.props.email === interview.host} 
                                         socket={this.state.socket} 
                                         environment={interview.loadedEnvironment} 
+                                        nightMode={this.props.nightMode}
                                         interviewId={this.props._id} 
                                         updateInterviewCallback={this.updateInterview}/>
                                 </Accordion.Content>
 
 
                                 {/* Config */}
-                                <Accordion.Title active={activeIndex === 2} index={2} onClick={this.handleClick}>
-                                    <Header as='h4'>
+                                <Accordion.Title  style={{backgroundColor: this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG + ' !important' }} active={activeIndex === 2} index={2} onClick={this.handleClick}>
+                                    <Header style={{ color: this.props.nightMode ? style.nmText: style.text}} as='h4'>
                                         <Icon bordered circular name='settings' />
                                         Configuration
                                     </Header>
                                 </Accordion.Title>
-                                <Accordion.Content active={activeIndex === 2}>
+                                <Accordion.Content  style={{backgroundColor: this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG + ' !important' }} active={activeIndex === 2}>
                                     <Configuration isHost={this.props.email === interview.host} 
                                         goHome={this.props.goHome}
                                         socket={this.state.socket}
                                         interview={interview} 
+                                        nightMode={this.props.nightMode}
                                         updateInterviewCallback={this.updateInterview} 
                                         updateControllerMode={this.updateControllerMode}
                                         videoToggled={this.handleVideoToggle}
@@ -295,7 +301,7 @@ class InterviewPage extends Component {
 
                     <Segment style={{maxHeight: participantHeight, overflowY: 'auto'}}>
                                      {/* Participants */}
-                            <Header as='h4'>
+                            <Header style={{ color: this.props.nightMode ? style.nmText: style.text}} as='h4'>
                                 <Icon circular name='users' />
                                 Participants
                             </Header>
@@ -303,7 +309,9 @@ class InterviewPage extends Component {
                                     isHost={this.props.email === interview.host} 
                                     participants={totalParticipants} 
                                     socket={this.state.socket}
+                                    nightMode={this.props.nightMode}
                                     host={interview.host}
+                                    style={{backgroundColor: this.props.nightMode ? style.nmSecondaryBG: style.secondaryBG + ' !important' }}
                                     participantStatuses={this.state.participantStatuses}/>
                         </Segment>
                     </Grid.Row>

@@ -3,6 +3,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { Button, Dropdown, Header, Icon, List, Menu, Modal } from 'semantic-ui-react';
 import { firebaseAuth, logout } from '../../utils/firebase';
 import './PresenceVRNavBar.css';
+import {style} from '../../utils/style'
 
 class PresenceVRNavBar extends Component {
 
@@ -14,7 +15,7 @@ class PresenceVRNavBar extends Component {
 
     accountButton () {
         return (
-            <Modal trigger={ <Menu.Item icon='user' /> } closeIcon>
+            <Modal trigger={ <Menu.Item style={{color: this.props.nightMode ? style.nmText : style.text}} icon='user' /> } closeIcon>
                 <Header icon='user outline' content='Account information' />
                 <Modal.Content>
                     <List>
@@ -35,9 +36,18 @@ class PresenceVRNavBar extends Component {
         );
     }
 
+    nightModeButton = () => {
+        let icon = 'moon'
+        if (this.props.nightMode) {
+            icon = 'sun'
+        }
+        return <Menu.Item icon={icon} style={{color: this.props.nightMode ? style.nmText : style.text}} onClick={this.props.setNightMode} >
+        </Menu.Item>
+    }
+
     helpButton () {
         return (
-            <Modal trigger={ <Menu.Item icon='help circle'/> } closeIcon>
+            <Modal trigger={ <Menu.Item style={{color: this.props.nightMode ? style.nmText : style.text}} icon='help circle'/> } closeIcon>
                 <Header icon='question circle' content='Help' />
                 <Modal.Content>
                     <p>
@@ -52,9 +62,11 @@ class PresenceVRNavBar extends Component {
 
         return (
             <div className="PresenceVRNavBar" >
-                <Menu style={{height: '10vp'}} pointing secondary >
+                <Menu style={{height: '10vp', backgroundColor: this.props.nightMode ? style.nmSecondaryBG : style.secondaryBG }} pointing secondary >
                         
-                    <Menu.Item onClick={this.props.goHome}name='PresenceVR' icon='home' position={'left'} />
+                    <Menu.Item style={{color: this.props.nightMode ? style.nmText : style.text}} onClick={this.props.goHome}name='PresenceVR' icon='home' position={'left'} />
+
+                    {this.nightModeButton()}
                     
                     {this.helpButton()}
                         

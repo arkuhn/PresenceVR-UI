@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Header, Input, List, Modal, Icon } from 'semantic-ui-react';
 import InterviewAPI from '../../utils/InterviewAPI';
+import {style} from '../../utils/style'
 
 class InterviewForm extends React.Component {
     constructor(props) {
@@ -84,9 +85,9 @@ class InterviewForm extends React.Component {
 
     getTrigger() {
         if (this.props.type === 'create') {
-            return <Button attached='bottom' basic   onClick={this.handleOpen}  > <Icon name='pencil' /> New Presentation </Button>
+            return <Button attached='bottom' style={{backgroundColor: this.props.nightMode ? style.nmThirdBG : style.secondaryBG }}  onClick={this.handleOpen}  > <Icon name='pencil' /> New Presentation </Button>
         } else {
-            return <Button active basic color='grey' onClick={this.handleOpen}  >Edit</Button>
+            return <Button active basic color='grey' style={{backgroundColor: this.props.nightMode ? style.nmThirdBG  : style.secondaryBG}} onClick={this.handleOpen}  > Edit</Button>
         }
     } 
 
