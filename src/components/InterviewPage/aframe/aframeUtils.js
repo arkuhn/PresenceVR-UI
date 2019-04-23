@@ -1,6 +1,8 @@
 import React from 'react';
-
 import UploadAPI from '../../../utils/UploadAPI';
+
+var JSZip = require("jszip");
+var fs = require("fs");
 
 function getDimensions(loadedAsset){
     var varheight = loadedAsset.data.height
@@ -87,7 +89,7 @@ function renderData(assets, user)  {
                         </a-box>
                     </a-entity>
         }
-        else if (asset.name.toLowerCase().includes(".obj") || asset.name.toLowerCase().includes(".zip")){
+        else if (asset.name.toLowerCase().includes(".obj")){
             options = `template: #obj-template; attachTemplateToLocal: false`
             entity = <a-entity key={index} id={`ent${asset.id}`}
                         networked={options} 
@@ -118,6 +120,11 @@ function renderData(assets, user)  {
                         </a-video>
                     </a-entity>
         }
+        else if (asset.name.toLowerCase().includes(".zip")){
+            unpackZip(asset, () => {
+
+            });
+        }
         if (entity && asset.owner === user) {
             //Create entity that links to template and source
             entities.push( entity )
@@ -126,6 +133,17 @@ function renderData(assets, user)  {
              
    })
    return {entities}
+}
+
+function unpackZip(zip_asset, callback) {
+    // read a zip file
+    fs.readFile(zip_asset.file, function(err, data) {
+        if (err) throw err;
+        console.log(data);
+        JSZip.loadAsync(data).then(function (zip) {
+            console.log(zip);
+        });
+    });
 }
 
 function registerSchemas() {
