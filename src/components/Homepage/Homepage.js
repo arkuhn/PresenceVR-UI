@@ -54,8 +54,13 @@ class Homepage extends Component {
 
     setNightMode = () => {
         let {nightMode} = this.state
-        this.setState({nightMode: !nightMode, 
-            selectedInterview: React.cloneElement( this.state.selectedInterview, {nightMode: !nightMode})})
+        if (this.state.selectedInterview) {
+            this.setState({nightMode: !nightMode, 
+                selectedInterview: React.cloneElement( this.state.selectedInterview, {nightMode: !nightMode})})
+        } else {
+            this.setState({nightMode: !nightMode})
+        }
+
     }
 
     updateInterviews = () => {
