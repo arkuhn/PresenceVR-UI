@@ -73,9 +73,10 @@ function renderData(assets, user)  {
             options = `template: #img-template; attachTemplateToLocal: false`
             entity = <a-entity key={index} id={`ent${asset.id}`} 
                         networked={options}
-                        position="0 0 0" rotation="0 0 0" scale="1 1 1">
+                        position="0 0 0" rotation="0 0 0" scale="1 1 1"
+                        hoverable="" grabbable="" stretchable="" draggable="">
                         <a-box 
-                        static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable=""
+                        static-body="shape: box"
                             class="img-box"  
                             position={`${asset.x} ${asset.y} ${asset.z}`}
                             rotation="0 0 0" 
