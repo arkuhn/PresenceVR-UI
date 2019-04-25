@@ -115,8 +115,8 @@ class AframeInterview extends Component {
             if (!equal) {
                 this.setState({fetching: true, loadedAssets: props.loadedAssets})
                 Promise.all(aframeUtils.getData(props.loadedAssets)).then((data) => {
-                    var {entities} = aframeUtils.renderData(data, this.props.user)
-                    this.setState({entities, fetching:false})
+                    var {entities, lights} = aframeUtils.renderData(data, this.props.user)
+                    this.setState({entities, lights, fetching:false})
                 })
             }
         }
@@ -291,6 +291,8 @@ class AframeInterview extends Component {
                 </a-assets>
 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
+
+                {this.state.lights}
 
                 {this.state.entities}
                 {hostCam}
