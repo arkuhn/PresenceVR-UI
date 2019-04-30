@@ -60,8 +60,7 @@ export default class VideoComponent extends Component {
         }
         
         let connectOptions = {
-            name: this.props.interviewId,
-            video: {width: widthfortrack}
+            name: this.props.interviewId
         };
         if (this.state.previewTracks) {
             connectOptions.tracks = this.state.previewTracks;
@@ -171,7 +170,7 @@ export default class VideoComponent extends Component {
             <div><div ref="localMedia" /></div>
         ) : '';
         return (
-                <Segment>
+                <Segment style={{height: '65vh', maxHeight:'65vh', overflowY: 'scroll'}} > 
                     {showLocalTrack}
                     
                     <div className="flex-item" ref="remoteMedia" id="remote-media" />
