@@ -292,6 +292,8 @@ class InterviewPage extends Component {
 
                         </div>
 
+                </Grid.Row>
+                <Grid.Row style={{'margin-top': '10px'}}>
 
                     <Segment style={{maxHeight: participantHeight, overflowY: 'auto'}}>
                                      {/* Participants */}
