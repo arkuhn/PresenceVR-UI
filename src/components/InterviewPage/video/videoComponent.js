@@ -49,18 +49,19 @@ export default class VideoComponent extends Component {
         console.log("Joining room '" + this.props.interviewId + "'...");
         let numofparticipants = this.props.participants.length + 1;
         let widthfortrack;
-        if (numofparticipants < 3) {
-            widthfortrack = 'calc(75%)';
+        if (numofparticipants < 2) {
+            widthfortrack = 690;
         }
         else if (numofparticipants < 4) {
-            widthfortrack = 'calc(50%)';
+            widthfortrack = 345;
         }
         else{
-            widthfortrack = 'calc(25%)';
+            widthfortrack = 230;
         }
         
         let connectOptions = {
-            name: this.props.interviewId
+            name: this.props.interviewId,
+            video: {width: widthfortrack}
         };
         if (this.state.previewTracks) {
             connectOptions.tracks = this.state.previewTracks;
