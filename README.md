@@ -38,7 +38,7 @@ If the server is deployed somewhere (google app engine for instance), the link s
 
 ### Firebase
 
-- To configure the firebase settings for the app you must first have a firebase project set up. Learn how to do this in `./docs/firebase.md`
+- To configure the firebase settings for the app you must first have a firebase project set up. Learn how to do this in the [firebase setup guide](./docs/firebase.md)
 
 - Create a Firebase configuration in  `./src/config/firebase.config.js` . This will be used for hosting and authorization. It should have the following format:
 
