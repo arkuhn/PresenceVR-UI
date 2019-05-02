@@ -73,7 +73,7 @@ If the server is deployed somewhere (google app engine for instance), the link s
 
 ### npm start
 
-This will run a local development server in your shell. It will be available in the browser at `http://localhost:8080`
+This will run a local development server in your shell. It will be available in the browser at `http://localhost:3000`
 
 ### npm build
 
