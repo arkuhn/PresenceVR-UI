@@ -18,10 +18,10 @@ Firebase is used for authentication and hosting. Go to http://console.firebase.g
 - Extract your configuration settings.
 
   1. Go to the authentication tab in the left pane
-     ![](C:/Users/ak101/Documents/SeniorProject/PresenceVR-UI/docs/authentication.JPG)
+     ![](./authentication.JPG)
 
   2. Go to the 'web setup' of your project at the top right of the page
-     ![](C:/Users/ak101/Documents/SeniorProject/PresenceVR-UI/docs/websetup.JPG)
+     ![](./websetup.JPG)
 
   3. The popup will contain the configuration you need for `src/config/firebase.config.js`. The data should look like this:
 
@@ -44,12 +44,12 @@ By default, firebase keeps all deployments for rolling back. This can get expens
 
 1. Click on the hosting tab under the project overview
 
-   ![hosting](C:\Users\ak101\Documents\SeniorProject\PresenceVR-UI\docs\hosting.JPG)
+   ![hosting](./hosting.JPG)
 
 2. Click on the  settings button next to deployments and then click 'Version History Settings'
 
-   ![hosting2](C:\Users\ak101\Documents\SeniorProject\PresenceVR-UI\docs\hosting2.JPG)
+   ![hosting2](./hosting2.JPG)
 
 3. Change the version amount to 1
 
-![hosting3](C:\Users\ak101\Documents\SeniorProject\PresenceVR-UI\docs\hosting3.JPG)
+![hosting3](./hosting3.JPG)
