@@ -1,5 +1,5 @@
 # Docs
-### - [How to create a firebase app](./docs/firebase.md)
+### - [Firebase setup](./docs/firebase.md)
 ### - [Feature map](./docs/FeatureMap.md)
 
 
