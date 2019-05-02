@@ -229,14 +229,13 @@ class InterviewPage extends Component {
                     </Grid.Column>
 
                     <Grid.Column width={4}>
-                    <Grid.Row style={{maxHeight: '90vh', height: '90vh'}}>
+                    <Grid.Row style={{maxHeight: '95vh', height: '95vh', overflowY: 'scroll'}}>
                         <Segment> 
                             <Header as='h3'>
                                 Presentation hosted by {interview.host}
                             </Header>
                         </Segment>
 
-                        <div style={{maxHeight: menuHeight}}>
                             <Accordion  id='dropdown' styled>
                                 {/* Assets */}
                                 <Accordion.Title active={activeIndex === 0} index={0} onClick={this.handleClick}>
@@ -290,10 +289,7 @@ class InterviewPage extends Component {
                                 </Accordion.Content>
                             </Accordion>
 
-                        </div>
-
-
-                    <Segment style={{maxHeight: participantHeight, overflowY: 'auto'}}>
+                            <Segment style={{maxHeight: '35vh', overflowY: 'auto'}}>
                                      {/* Participants */}
                             <Header as='h4'>
                                 <Icon circular name='users' />
@@ -306,7 +302,9 @@ class InterviewPage extends Component {
                                     host={interview.host}
                                     participantStatuses={this.state.participantStatuses}/>
                         </Segment>
-                    </Grid.Row>
+
+                </Grid.Row>
+      
 
                     </Grid.Column>
                 </Grid>

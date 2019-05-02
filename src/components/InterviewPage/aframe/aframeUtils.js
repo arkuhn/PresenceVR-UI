@@ -39,7 +39,7 @@ function getData(loadedAssetIds) {
                             var [h, w] = getDimensions(loadedAsset)
                             objectData.height = h
                             objectData.width = w
-                            objectData.y = (objectData.height/2)
+                            objectData.y = (objectData.height/4)
                             objectData.z =-3
                         }
                         
@@ -62,6 +62,7 @@ function getData(loadedAssetIds) {
 */
 function renderData(assets, user)  {
    var entities = [];
+   var lights = []
    assets.forEach((asset, index) => {
         if (!asset) { return }
         //Create a 'source' (texture to be used) in the <a-assets> system
@@ -73,9 +74,9 @@ function renderData(assets, user)  {
             options = `template: #img-template; attachTemplateToLocal: false`
             entity = <a-entity key={index} id={`ent${asset.id}`} 
                         networked={options}
-                        position="0 0 0" rotation="0 0 0" scale="1 1 1">
+                        position={`${asset.x} ${asset.y} ${asset.z}`} rotation="0 0 0" scale="1 1 1">
                         <a-box 
-                        static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable=""
+                        static-body="shape: box"
                             class="img-box"  
                             position={`${asset.x} ${asset.y} ${asset.z}`}
                             rotation="0 0 0" 
@@ -89,7 +90,7 @@ function renderData(assets, user)  {
             options = `template: #obj-template; attachTemplateToLocal: false`
             entity = <a-entity key={index} id={`ent${asset.id}`}
                         networked={options} 
-                        position="0 0 0" rotation="0 0 0" scale="1 1 1">
+                        position={`${asset.x} ${asset.y} ${asset.z}`} rotation="0 0 0" scale="1 1 1">
                         <a-entity    
                         static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable=""
                             class="obj-model-test"
@@ -104,7 +105,7 @@ function renderData(assets, user)  {
             options = `template: #vid-template; attachTemplateToLocal: false`
             entity = <a-entity key={index} id={`ent${asset.id}`} 
                         networked={options}
-                        position="0 0 0" rotation="0 0 0" scale="3 3 3">
+                        position={`${asset.x} ${asset.y} ${asset.z}`} rotation="0 0 0" scale="1 1 1">
                         <a-video 
                             static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable=""
                             class="vid-box"
@@ -116,6 +117,8 @@ function renderData(assets, user)  {
                         </a-video>
                     </a-entity>
         }
+        lights.push(<a-light type="point" intensity=".3" color="white" position={`${asset.x} ${10} ${asset.z * -6}`}/>)
+    
         if (entity && asset.owner === user) {
             //Create entity that links to template and source
             entities.push( entity )
@@ -123,7 +126,7 @@ function renderData(assets, user)  {
  
              
    })
-   return {entities}
+   return {entities, lights}
 }
 
 function registerSchemas() {

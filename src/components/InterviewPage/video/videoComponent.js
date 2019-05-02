@@ -49,14 +49,14 @@ export default class VideoComponent extends Component {
         console.log("Joining room '" + this.props.interviewId + "'...");
         let numofparticipants = this.props.participants.length + 1;
         let widthfortrack;
-        if (numofparticipants < 3) {
-            widthfortrack = 'calc(75%)';
+        if (numofparticipants < 2) {
+            widthfortrack = 690;
         }
         else if (numofparticipants < 4) {
-            widthfortrack = 'calc(50%)';
+            widthfortrack = 345;
         }
         else{
-            widthfortrack = 'calc(25%)';
+            widthfortrack = 230;
         }
         
         let connectOptions = {
@@ -170,7 +170,7 @@ export default class VideoComponent extends Component {
             <div><div ref="localMedia" /></div>
         ) : '';
         return (
-                <Segment>
+                <Segment style={{height: '65vh', maxHeight:'65vh', overflowY: 'scroll'}} > 
                     {showLocalTrack}
                     
                     <div className="flex-item" ref="remoteMedia" id="remote-media" />

@@ -38,7 +38,7 @@ class AframeInterview extends Component {
             loading: true,
             remoteMedia: false,
             host_cam_material: '',
-            user_audio: '',
+            audio_material: '',
             disconnecting: false,
             connecting: false
         });
@@ -103,6 +103,10 @@ class AframeInterview extends Component {
                 this.joinRoom(props.interviewId)
             }          
         }
+
+        if(props.hostCamInVR !== this.props.hostCamInVR) {
+            this.joinRoom(props.interviewId)
+        }      
         this.renderAssets(props)
     }
 
@@ -115,8 +119,8 @@ class AframeInterview extends Component {
             if (!equal) {
                 this.setState({fetching: true, loadedAssets: props.loadedAssets})
                 Promise.all(aframeUtils.getData(props.loadedAssets)).then((data) => {
-                    var {entities} = aframeUtils.renderData(data, this.props.user)
-                    this.setState({entities, fetching:false})
+                    var {entities, lights} = aframeUtils.renderData(data, this.props.user)
+                    this.setState({entities, lights, fetching:false})
                 })
             }
         }
@@ -151,6 +155,7 @@ class AframeInterview extends Component {
 
     attachTracks(tracks, container) {
         tracks.forEach(track => {
+
             container.appendChild(track.attach());
             if(track.kind === "video") {
                 this.attachIdToVideoTag();
@@ -195,9 +200,11 @@ class AframeInterview extends Component {
         }
 
         room.participants.forEach(participant => {
-            console.log("already in Room '" + participant.identity + "'");
-            var previewContainer = this.refs.remoteMedia;
-            this.attachParticipantsTracks(participant, previewContainer);
+            if(this.isHostVideoTrack(participant)) {
+                console.log("already in Room '" + participant.identity + "'");
+                var previewContainer = this.refs.remoteMedia;
+                this.attachParticipantsTracks(participant, previewContainer);
+            }
         });
 
         room.on('participantConnected', participant => {
@@ -276,7 +283,7 @@ class AframeInterview extends Component {
             connectOnLoad: false
         }
 
-        let hostCam = (this.props.hostCamInVR) ? <a-box id="host-cam" material={this.state.host_cam_material} look-at="[camera]" position="0 2 0"></a-box> : '';
+        let hostCam = (this.props.hostCamInVR && !this.props.host) ? <a-box id="host-cam" material={this.state.host_cam_material} scale=".25 .18 .001" position=".2 -.15 -.25"></a-box> : '';
         return ( 
             <Scene className='aframeContainer' id="aframeContainer" embedded networked-scene={aframeOptions}>
                 <a-assets ref='assets' id="assetsSystem">
@@ -292,15 +299,18 @@ class AframeInterview extends Component {
 
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
 
+                {this.state.lights}
+
                 {this.state.entities}
-                {hostCam}
 
                 <Entity id="cameraRig" networked="template:#camera-template;attachTemplateToLocal:false;" position={this.state.position}  rotation="">
                     <Entity id="head" networked="template:#avatar-template;attachTemplateToLocal:false;" 
                         camera 
                         wasd-controls 
                         look-controls 
-                    />
+                    >
+                    {hostCam}
+                    </Entity>
                     <Entity id='right-hand' 
                         laser-controls 
                         super-hands={{colliderEvent: 'raycaster-intersection', colliderEventProperty: 'els', colliderEndEvent: 'raycaster-intersection-cleared', colliderEndEventProperty: 'clearedEls'}}
