@@ -11,8 +11,7 @@
 
 3. CD into the folder and install the dependencies
 
-   `cd PresenceVR-UI`
-   `npm install`
+   `cd PresenceVR-UI && npm install`
 
 4.  Install firebase-tools (this will be used later for deployment)
    `npm install -g firebase-tools`
