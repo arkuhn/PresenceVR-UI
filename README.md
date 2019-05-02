@@ -10,7 +10,7 @@
 1. Clone the repository from GitHub
    `git clone https://github.com/arkuhn/PresenceVR-UI.git`
 
-2. Install Nodejs 6.9 from [here](<https://nodejs.org/en/download/>).
+2. Install Nodejs 10.15 LTS from [here](<https://nodejs.org/en/download/>).
 
    TIP: Use nvm to manage versions of node and npm on your machine.
 
