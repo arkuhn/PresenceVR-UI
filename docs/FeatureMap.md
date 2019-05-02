@@ -26,17 +26,45 @@
 #### Libraries:
 - Networked-Aframe
 - Twilio
-- 
 
 ### VR
 
 #### Current State:
+- Users can render uploaded assets into the VR space (.png, .jpeg, .obj, .mp4 supported)
+- User Avatars
+- Users can interact in the VR space with or without a headset (Browser Mode vs. VR Mode)
+- 4 Enviroments to choose from
+- Fully dynamic; Asset rendering, environment rendering all done without reloading the page
+- basic wasd controls for users outside VR
+- Asset Manipulation (Position, Scaling)
+- User movement (teleportation)
 
 #### Known Issues:
+- 3D Objects render without textures (.mtl files not supported)
+- Limited file types supported for rendering in VR
+- Rotation not implemented
+- no custom environments (only using Aframe defaults)
+- Avatars very basic (and creepy)
+- Asset placement is very basic (custom placement not implemented)
+- Deleted assets don't unrender automatically
+- Quickly unrendering and rerendering assets creates race conditions (invalid image textures will appear)
+- Some environments require double click to load (Tron, Japan)
+- Dynamic spawn points (spawning on top of each other causes issues with teleportation)
 
 #### Files:
+- aframeInterview.js
+- aframeUtils.js
+- assets.js
+- uploads.js
 
 #### Libraries:
+- AFrame
+- aframe-react
+- aframe-environment-component
+- aframe-extras
+- aframe-physics-system
+- aframe-teleport-controls
+- super-hands
 
 ### Conferencing (Webcam)
 
