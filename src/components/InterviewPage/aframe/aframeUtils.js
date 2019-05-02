@@ -76,7 +76,7 @@ function renderData(assets, user)  {
                         networked={options}
                         position={`${asset.x} ${asset.y} ${asset.z}`} rotation="0 0 0" scale="1 1 1">
                         <a-box 
-                        static-body="shape: box"
+                        static-body="shape: box" hoverable="" grabbable="" stretchable="" draggable=""
                             class="img-box"  
                             position={`${asset.x} ${asset.y} ${asset.z}`}
                             rotation="0 0 0" 
