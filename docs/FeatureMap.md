@@ -69,22 +69,42 @@
 ### Conferencing (Webcam)
 
 #### Current State:
+- Toggle to enable webcam chat
+- Webcam conferencing between one to many users
+- Audio supported
+- Local Cam feed visible to see your own cam feed
+- Video component unmounts when leaving page
 
 #### Known Issues:
+- Find an alternative solution to twilio
+- Webcam video resizing does not work
+- Twilio servers cost money to support
+- Twilio isn't very flexible/easily customizable
 
 #### Files:
+- videoComponent.js
+- aframeInterview.js
 
 #### Libraries:
+- Twilio
 
 ### Conferencing (States)
 
 #### Current State:
+- Realtime updatable state for entering/exiting interview room
+- State changes logged in chat
 
 #### Known Issues:
+- Detailed state changes not implemented (In VR, In video conference, etc.)
 
 #### Files:
+- interviewPage.js
+- socketEvents.js
+
 
 #### Libraries:
+- React
+- OpenSocket
 
 ### Conferencing (Chat)
 
