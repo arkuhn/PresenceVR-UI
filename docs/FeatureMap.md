@@ -109,11 +109,40 @@
 ### Conferencing (Chat)
 
 #### Current State:
+- realtime chat with one to many users inside interview
+- logs state with color coded entries
 
 #### Known Issues:
+- Chat is not persisted after leaving page
+- Errors not logged in chat
 
 #### Files:
+- chat.js
+- interviewPage.js
 
 #### Libraries:
+- none
 
 ## Future Goals
+
+- ‘In-game’ VR user interface 
+-- Render/Remove Assets
+-- Change environment
+-- Handoff host privileges
+-- Add video playback options (play, pause, stop, mute)
+- Implement VR whiteboard experience
+- Custom 3D environments
+-- Office Room
+-- Whiteboard Room
+- Improved VR Avatars (Humanlike)
+-- Joint simulation
+-- Realistic Movement
+- Better support for 3D Objects
+-- Uploading
+-- Interaction
+- Performance Optimizations
+-- GPU acceleration
+-- Asset caching 
+- Improved range of file support uploaded into VR (.gif, .webm, .flv, .MTL, etc.)
+- Improving performance of cross-platform experience (improved mobile VR experience)
+
