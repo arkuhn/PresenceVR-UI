@@ -66,16 +66,22 @@ class Participant extends Component {
 
 
     render() {
+
+        // If the current user is the host and we are creating a component for a different participant (not the host),
+        // attach a button the host can press to transfer host privileges.
         let hostFunctions;
         if (this.props.isHost && this.props.name !== this.props.host) {
             hostFunctions = <List.Content floated='right'>
                                 {this.makeHostModal()}
                             </List.Content>
         }
+
+        // Use a different icon if the current user is the host
         let icon = 'user circle'
         if (this.props.host === this.props.name) {
             icon = 'chess queen'
         }
+
         return (
             <List.Item >
             <List.Content floated='left'>
