@@ -18,6 +18,7 @@ class InterviewPage extends Component {
         super(props);
         this.state = {
             vidChat: false,
+            inVR: false,
             messages: [],
             socket: openSocket(API_URL),
             controllerMode: 'raycaster',
@@ -110,6 +111,7 @@ class InterviewPage extends Component {
         }, () => {
             // Once the state is flipped, tell other clients
             this.state.socket.emit('message', message)
+            this.state.socket.emit('Marco', {id: this.props._id + this.props._id, caller: this.props.email});
         })
     }
 
@@ -231,10 +233,39 @@ class InterviewPage extends Component {
         });
     }
 
+    /*
+    Callback to update the state of whether this user is in VR mode (headset) or not.
+    */
+    handleVRModeUpdate = (inVR) => {
+        this.setState({inVR: inVR});
+    }
+
+
+    /*
+    Get the current status of the user.
+    The status values are:
+        0 = offline
+        1 = online
+        2 = online and in VR mode
+        3 = online and in Video Conferencing mode
+    */
     getUserStatus = () => {
         // TODO: standardize what each status value means
-        // TODO: check for VR/Video chat mode
-        return 1
+
+        // If they are in VR mode
+        if(this.state.inVR) {
+            return 2;
+        }
+
+        // If they are in Video Conferencing mode
+        else if(this.state.vidChat) {
+            return 3;
+        }
+
+        // Otherwise, they are just online
+        else {
+            return 1;
+        }
     }
 
     render() {
@@ -261,7 +292,8 @@ class InterviewPage extends Component {
                                 host={this.props.email === interview.host}
                                 hostCamInVR={interview.hostCamInVR}
                                 updateHostCamInVR={this.handleHostCamInVRToggle}
-                                hostName={interview.host}/>
+                                hostName={interview.host}
+                                handleVRModeUpdate={this.handleVRModeUpdate}/>
         return (
                 <Grid centered width={14}>
            
