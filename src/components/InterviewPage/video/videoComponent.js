@@ -51,7 +51,6 @@ export default class VideoComponent extends Component {
     joinRoom = () =>  {
         console.log("Joining room '" + this.props.interviewId + "'...");
         let numofparticipants = this.props.participants.length + 1;
-        let widthfortrack;
         if (numofparticipants < 2) {
             widthfortrack = 690;
         }
@@ -194,6 +193,7 @@ export default class VideoComponent extends Component {
                     </Dimmer>
                 </Segment>)
         }
+        //If you allow your webcam and have a webcam your local camera feed will show
         let showLocalTrack = this.state.localMediaAvailable ? (
             <div><div ref="localMedia" /></div>
         ) : '';
