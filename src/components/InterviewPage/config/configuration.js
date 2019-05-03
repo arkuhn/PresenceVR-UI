@@ -6,17 +6,27 @@ import LeaveInterview from "../../InterviewOperations/leaveInterview";
 
 class Configuation extends Component {
     constructor(props) {
-        super(props)
-        this.state = {value: 'raycaster'}
+        super(props);
+        this.state = {value: 'raycaster'};
     }
 
+    /**
+     * Handles change to physics engine
+     */
     handleChange = (e, { value }) => {
-        this.setState({ value })
-        this.props.updateControllerMode(value)
+        this.setState({ value });
+        //updates controller to use new physics engine
+        this.props.updateControllerMode(value);
     }
 
+    /**
+     * Gives control configurations
+     * If host, gives edit and delete functionality
+     * If not host, only gives leave functionality
+     */
     getInterviewControls = () => {
         let interviewControls;
+        //checks for host; only host can edit interviews
         if (this.props.isHost) {
             interviewControls = 
             <Button.Group>
@@ -29,22 +39,33 @@ class Configuation extends Component {
                 <CancelInterview socket={this.props.socket} goHome={this.props.goHome} id={this.props.interview._id} />
             </Button.Group>
                 
+        //everyone else can only leave their interviews
         } else {
             interviewControls = <LeaveInterview socket={this.props.socket} goHome={this.props.goHome} id={this.props.interview._id} />
         }
         return interviewControls;
     }
 
+    /**
+     * Shows help text when hovered over
+     */
     getPopOutContent = () => {
         let popupContent;
+        //gives host actions
         if (this.props.isHost) {
-            popupContent = 'As the host you can edit or delete the interview.'
+            popupContent = 'As the host you can edit or delete the interview.';
+        //gives participant actions
         } else {
-            popupContent = 'As a particpant you may leave the interview.'
+            popupContent = 'As a particpant you may leave the interview.';
         }
         return popupContent;
     }
 
+    /**
+     * Function for physics form
+     * allows user to choose their physics engine
+     * TODO: make this work, still buggy
+     */
     getPhysicsControls = () => {
         return <Form>
                     <Form.Field>
@@ -73,9 +94,13 @@ class Configuation extends Component {
     }
 
 
+    /**
+     * Renders configuration section on interview page
+     */
     render() {
 
-        let presenterCam = ''
+        let presenterCam = '';
+        //if host, show toggle for presenter cam
         if (this.props.isHost) {
             presenterCam = <div>
                 <Header sub>
