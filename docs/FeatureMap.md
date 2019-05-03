@@ -7,14 +7,15 @@
 #### Current State:
 - One to many participants inside an interview
 - Assets can be uploaded and shared across users within the VR space
-- User and object positoning is tracked and shared across users
-- Object manipulation is tracked and shared across users (Scaling)
+- Users in VR with remotes (ie. Vive or Oculus) can move and scale assets
+- User and object positoning, scale, and rotation are tracked and shared across users
 - Presenter Webcam stream visible in VR space to non presenter users
 
 #### Known Issues:
 - Leaving the page creates ghost avatars
-- Avatar heights when using/not using headset are not the same.
+- Avatar heights when using/not using headset are not the same
 - Networked-Aframe no longer supported by the creator
+  - Networked-Aframe has been picked up by Mozilla -> PresenceVR should migrate to their version
 - Audio Twilio Track doesn't unmount when leaving the page
 - Webcam Twilio track doesn't unmount when leaving the page
 - Twilio track asks for webcam feed for all users in VR, even when not broadcasting
@@ -138,8 +139,8 @@
 - Joint simulation
 - Realistic Movement
 #### Better support for 3D Objects
-- Uploading
-- Interaction
+- Uploading models with textures, animations, and scripts
+- More Interaction Options
 #### Performance Optimizations
 - GPU acceleration
 - Asset caching
