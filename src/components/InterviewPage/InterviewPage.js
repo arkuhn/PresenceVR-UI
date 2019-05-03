@@ -179,28 +179,29 @@ class InterviewPage extends Component {
     */
     updateHost = (newHost) => {
         // Build new participants array which excludes the new host and includes the old host
-        const newParticipants = (this.props.participants).filter(participant => participant !== newHost)
-        newParticipants.push(this.props.host)
-        let newParString = newParticipants.join() 
-
-        // Patch the backend with new list of participants
-        return InterviewAPI.updateInterview( {participants: newParString}, this.props._id)
-                .then((response) => {
-                    // One participants are updated, pass host to the new person.
-                    // This has to happen AFTER the participants update since only the host can patch interviews
-                    return InterviewAPI.updateInterview( {host: newHost}, this.props._id)
-                })
-                .then(() => {
-                    // Drop a message in syslog and update all connected clients
-                    var message = {
-                        color: 'yellow',
-                        type: 'system',
-                        content: newHost + ' has become the host.',
-                        id: this.props._id + this.props._id
-                    }
-                    this.state.socket.emit('message', message)
-                    return this.state.socket.emit('update')
-                })
+            const newParticipants = (this.state.interview.participants).filter(participant => participant !== newHost)
+            newParticipants.push(this.state.interview.host)
+            let newParString = newParticipants.join() 
+    
+            // Patch the backend with new list of participants
+            return InterviewAPI.updateInterview( {participants: newParString}, this.props._id)
+                    .then((response) => {
+                        // One participants are updated, pass host to the new person.
+                        // This has to happen AFTER the participants update since only the host can patch interviews
+                        return InterviewAPI.updateInterview( {host: newHost}, this.props._id)
+                    })
+                    .then(() => {
+                        // Drop a message in syslog and update all connected clients
+                        var message = {
+                            color: 'yellow',
+                            type: 'system',
+                            content: newHost + ' has become the host.',
+                            id: this.props._id + this.props._id
+                        }
+                        this.state.socket.emit('message', message)
+                        return this.state.socket.emit('update')
+                    })
+        
     }
 
     /*
