@@ -44,12 +44,6 @@ class AframeInterview extends Component {
         });
         this.connecting = false
         this.disconnecting = false
-        this.joinRoom = this.joinRoom.bind(this);
-        this.roomJoined = this.roomJoined.bind(this);
-        this.leaveRoom = this.leaveRoom.bind(this);
-        this.detachTracks = this.detachTracks.bind(this) ;
-        this.detachParticipantTracks = this.detachParticipantTracks.bind(this);
-        this.isHostVideoTrack = this.isHostVideoTrack.bind(this);
     }
 
     componentDidMount() {
@@ -127,7 +121,7 @@ class AframeInterview extends Component {
         }
     }
 
-    isHostVideoTrack(participant) {
+    isHostVideoTrack = (participant) => {
         if(participant.identity === this.props.hostName){
             return true;
         }
@@ -137,7 +131,7 @@ class AframeInterview extends Component {
     /*
         Called when you enter the Twilio room/ Toggle the video in vr on
     */
-    joinRoom(id) {
+    joinRoom = (id) => {
         console.log(this.props)
         console.log("Joining room '" + this.props.interviewId + "'VR...");
         let connectOptions = {
@@ -156,7 +150,7 @@ class AframeInterview extends Component {
     /*
         attaches selected stream to aframe assets
     */
-    attachTracks(tracks, container) {
+    attachTracks = (tracks, container) => {
         tracks.forEach(track => {
 
             container.appendChild(track.attach());
@@ -183,7 +177,7 @@ class AframeInterview extends Component {
         this.setState({audio_material: "src: #user_audio"});
     }
 
-    attachParticipantsTracks(participant, container) {
+    attachParticipantsTracks = (participant, container) => {
         var tracks = Array.from(participant.tracks.values());
         console.log("tracks: " + tracks);
         this.attachTracks(tracks, container);
@@ -192,7 +186,7 @@ class AframeInterview extends Component {
     /*
         Handles the events when joining a Twilio room
     */
-    roomJoined(room) {
+    roomJoined = (room) => {
         console.log("Joined as '" + this.state.identity + "'");
         this.setState({
             activateRoom: room,
@@ -267,7 +261,7 @@ class AframeInterview extends Component {
     /*
         handles leaving the room
     */
-    leaveRoom() {
+    leaveRoom = () => {
         this.state.activateRoom.disconnect();
         this.setState({ hasJoinedRoom: false, localMediaAvailable: false });
     }
@@ -275,7 +269,7 @@ class AframeInterview extends Component {
     /*
         handles removing audio and video streams
     */
-    detachTracks(tracks) {
+    detachTracks = (tracks) => {
         tracks.forEach(tracks => {
             tracks.detach().forEach(detachedElement => {
                 detachedElement.remove();
@@ -286,7 +280,7 @@ class AframeInterview extends Component {
     /*
         handles removing participant audio and video streams
     */
-    detachParticipantTracks(participant) {
+    detachParticipantTracks = (participant) => {
         var tracks = Array.from(participant.tracks.values());
         this.detachTracks(tracks);
     }

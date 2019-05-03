@@ -20,14 +20,9 @@ export default class VideoComponent extends Component {
             activateRoom: null,
             loading: true
         };
-        this.joinRoom = this.joinRoom.bind(this);
-        this.roomJoined = this.roomJoined.bind(this);
-        this.leaveRoom = this.leaveRoom.bind(this);
-        this.detachTracks = this.detachTracks.bind(this) ;
-        this.detachParticipantTracks = this.detachParticipantTracks.bind(this);
     }
 
-    componentDidMount() {
+    componentDidMount = () => {
         return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
             let config = { headers: { Authorization: `${token}` } }
             //returns Twilio to use vid chat
@@ -42,14 +37,14 @@ export default class VideoComponent extends Component {
         });
     }
 
-    componentWillUnmount() {
+    componentWillUnmount = () =>  {
         this.leaveRoom()
     }
 
     /*
         Called when you enter the Twilio room/ Toggle the video chat on
     */
-    joinRoom() {
+    joinRoom = () =>  {
         console.log("Joining room '" + this.props.interviewId + "'...");
         let numofparticipants = this.props.participants.length + 1;
         let widthfortrack;
@@ -78,7 +73,7 @@ export default class VideoComponent extends Component {
     /*
         attaches selected stream to div
     */
-    attachTracks(tracks, container) {
+    attachTracks = (tracks, container) => {
         tracks.forEach(track => {
             container.appendChild(track.attach());
         });
@@ -87,7 +82,7 @@ export default class VideoComponent extends Component {
     /*
         Attaches participants audio and video streams to the remoteMedia div
     */
-    attachParticipantsTracks(participant, container) {
+    attachParticipantsTracks = (participant, container) => {
         var tracks = Array.from(participant.tracks.values());
         this.attachTracks(tracks, container);
     }
@@ -95,7 +90,7 @@ export default class VideoComponent extends Component {
     /*
         Handles the events when joining a Twilio room
     */
-    roomJoined(room) {
+    roomJoined = (room) => {
         console.log("Joined as '" + this.state.identity + "'");
         this.setState({
             activateRoom: room,
@@ -157,7 +152,7 @@ export default class VideoComponent extends Component {
     /*
         handles leaving the room
     */
-    leaveRoom() {
+    leaveRoom = () => {
         this.state.activateRoom.disconnect();
         this.setState({ hasJoinedRoom: false, localMediaAvailable: false });
     }
@@ -165,7 +160,7 @@ export default class VideoComponent extends Component {
     /*
         handles removing audio and video streams
     */
-    detachTracks(tracks) {
+    detachTracks = (tracks) =>{
         tracks.forEach(tracks => {
             tracks.detach().forEach(detachedElement => {
                 detachedElement.remove();
@@ -176,7 +171,7 @@ export default class VideoComponent extends Component {
     /*
         handles removing participant audio and video streams
     */
-    detachParticipantTracks(participant) {
+    detachParticipantTracks = (participant) => {
         var tracks = Array.from(participant.tracks.values());
         this.detachTracks(tracks);
     }
