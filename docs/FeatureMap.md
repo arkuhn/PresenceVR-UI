@@ -7,14 +7,15 @@
 #### Current State:
 - One to many participants inside an interview
 - Assets can be uploaded and shared across users within the VR space
-- User and object positoning is tracked and shared across users
-- Object manipulation is tracked and shared across users (Scaling)
+- Users in VR with remotes (ie. Vive or Oculus) can move and scale assets
+- User and object positoning, scale, and rotation are tracked and shared across users
 - Presenter Webcam stream visible in VR space to non presenter users
 
 #### Known Issues:
 - Leaving the page creates ghost avatars
-- Avatar heights when using/not using headset are not the same.
+- Avatar heights when using/not using headset are not the same
 - Networked-Aframe no longer supported by the creator
+  - Networked-Aframe has been picked up by Mozilla -> PresenceVR should migrate to their version
 - Audio Twilio Track doesn't unmount when leaving the page
 - Webcam Twilio track doesn't unmount when leaving the page
 - Twilio track asks for webcam feed for all users in VR, even when not broadcasting
@@ -109,11 +110,40 @@
 ### Conferencing (Chat)
 
 #### Current State:
+- realtime chat with one to many users inside interview
+- logs state with color coded entries
 
 #### Known Issues:
+- Chat is not persisted after leaving page
+- Errors not logged in chat
 
 #### Files:
+- chat.js
+- interviewPage.js
 
 #### Libraries:
+- none
 
 ## Future Goals
+
+#### ‘In-game’ VR user interface
+- Render/Remove Assets
+- Change environment
+- Handoff host privileges
+- Add video playback options (play, pause, stop, mute)
+#### Implement VR whiteboard experience
+#### Custom 3D environments
+- Office Room
+- Whiteboard Room
+#### Improved VR Avatars (Humanlike)
+- Joint simulation
+- Realistic Movement
+#### Better support for 3D Objects
+- Uploading models with textures, animations, and scripts
+- More Interaction Options
+#### Performance Optimizations
+- GPU acceleration
+- Asset caching
+#### Improved range of file support uploaded into VR (.gif, .webm, .flv, .MTL, etc.)
+#### Improving performance of cross-platform experience (improved mobile VR experience)
+

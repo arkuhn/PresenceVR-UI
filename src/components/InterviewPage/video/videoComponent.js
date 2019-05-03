@@ -30,6 +30,7 @@ export default class VideoComponent extends Component {
     componentDidMount() {
         return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
             let config = { headers: { Authorization: `${token}` } }
+            //returns Twilio to use vid chat
             axios.get(API_URL + '/api/token', config).then(results => {
 
                 const { identity, token } = results.data;
@@ -45,6 +46,9 @@ export default class VideoComponent extends Component {
         this.leaveRoom()
     }
 
+    /*
+        Called when you enter the Twilio room/ Toggle the video chat on
+    */
     joinRoom() {
         console.log("Joining room '" + this.props.interviewId + "'...");
         let numofparticipants = this.props.participants.length + 1;
@@ -71,17 +75,26 @@ export default class VideoComponent extends Component {
         });
     }
 
+    /*
+        attaches selected stream to div
+    */
     attachTracks(tracks, container) {
         tracks.forEach(track => {
             container.appendChild(track.attach());
         });
     }
 
+    /*
+        Attaches participants audio and video streams to the remoteMedia div
+    */
     attachParticipantsTracks(participant, container) {
         var tracks = Array.from(participant.tracks.values());
         this.attachTracks(tracks, container);
     }
 
+    /*
+        Handles the events when joining a Twilio room
+    */
     roomJoined(room) {
         console.log("Joined as '" + this.state.identity + "'");
         this.setState({
@@ -91,37 +104,44 @@ export default class VideoComponent extends Component {
             loading: false
         });
 
+        //Allows you to stream local webcam feed
         var previewContainer = this.refs.localMedia;
         if (!previewContainer.querySelector('video')) {
             this.attachParticipantsTracks(room.localParticipant, previewContainer);
         }
 
+        //Attaches streams of each participant already in the room
         room.participants.forEach(participant => {
             console.log("already in Room '" + participant.identity + "'");
             var previewContainer = this.refs.remoteMedia;
             this.attachParticipantsTracks(participant, previewContainer);
         });
 
+        //When a participant joins your room
         room.on('participantConnected', participant => {
             console.log("Joining '" + participant.identity + "'");
         });
 
+        //when an audio or video stream is added
         room.on('trackSubscribed', (track, participant) => {
             console.log(participant.identity + ' added track: ' + track.kind);
             var previewContainer = this.refs.remoteMedia;
             this.attachTracks([track], previewContainer);
         });
 
+        //when an audio or video stream is removed
         room.on('trackUnsubscribed', (track, participant) => {
             console.log(participant.identity + ' removed track: ' + track.kind);
             this.detachTracks([track]);
         });
 
+        //when a participant leaves the room
         room.on('participantDisconnected', participant => {
             console.log("Participant '" + participant.identity + "' left the room");
             this.detachParticipantTracks(participant);
         });
 
+        //when you leave the room
         room.on('disconnected', () => {
             if (this.state.previewTracks) {
                 this.state.previewTracks.forEach(track => {
@@ -134,11 +154,17 @@ export default class VideoComponent extends Component {
         });
     }
 
+    /*
+        handles leaving the room
+    */
     leaveRoom() {
         this.state.activateRoom.disconnect();
         this.setState({ hasJoinedRoom: false, localMediaAvailable: false });
     }
 
+    /*
+        handles removing audio and video streams
+    */
     detachTracks(tracks) {
         tracks.forEach(tracks => {
             tracks.detach().forEach(detachedElement => {
@@ -147,6 +173,9 @@ export default class VideoComponent extends Component {
         });
     }
 
+    /*
+        handles removing participant audio and video streams
+    */
     detachParticipantTracks(participant) {
         var tracks = Array.from(participant.tracks.values());
         this.detachTracks(tracks);

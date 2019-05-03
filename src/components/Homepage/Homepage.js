@@ -20,6 +20,9 @@ class Homepage extends Component {
         })
     }
 
+    /*
+        Generates an InterviewPage from the selected interview and joins an interview room
+    */
     handleItemClick = (e, { name }) => {
         if (name !== 'home') {
             this.setState({
@@ -49,6 +52,9 @@ class Homepage extends Component {
         
     }
 
+    /*
+        Updates the interview list when an interview is added, changed or removed
+    */
     updateInterviews = () => {
             InterviewAPI.getAllInterviews(this.state.user.email).then((interviews) => {
                 let interviewData;
@@ -61,6 +67,9 @@ class Homepage extends Component {
         this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
     }
 
+    /*
+        generates an interview card when an interview is created
+    */
     renderInterviews = (type) => {
         const { activeItem, user, interviews} = this.state
         let renderInterviews = []

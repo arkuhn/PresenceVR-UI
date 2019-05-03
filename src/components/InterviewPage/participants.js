@@ -2,33 +2,50 @@ import React, { Component } from 'react';
 import { Button, Header, Icon, List, Modal, Popup, Container } from 'semantic-ui-react';
 
 
+/*
+Component representing a single participant on the interview page and their associated operations.
+*/
 class Participant extends Component {
     constructor(props) {
         super(props);
         this.state = {
-                      modalOpen: false};
-    
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleCancel = this.handleCancel.bind(this);
-        this.handleOpen = this.handleOpen.bind(this);
+            modalOpen: false // Used to track whether the makeHostModal is open or not.
+        };
     }
 
+
+    /*
+    Function called when the user submits the makeHostModal.
+    Call updateHost callback, wait till it returns, then close the modal.
+    */
     handleSubmit = (event) => {
         this.props.updateHost(this.props.name).then(() => {
-            this.setState({ modalOpen: false })
             this.setState({ modalOpen: false })
             event.preventDefault();
         })
     }
 
+
+    /*
+    Function called when the makeHostModal is opened
+    */
     handleOpen = (event) => {
         this.setState({ modalOpen: true })
     }
 
+
+    /*
+    Function called when the makeHostModal is closed
+    */
     handleCancel = (event) => {
         this.setState({ modalOpen: false })
     }
 
+
+    /*
+    This modal pops up when the user attempts to hand over host privileges.
+    It informs them that only the new host will have the ability to undo this operation.
+    */
     makeHostModal = () => {
         return (<Modal basic size='small' open={this.state.modalOpen} onClose={this.handleCancel} trigger={ 
             <Icon corner color='green' onClick={this.handleOpen} name='chess queen' circular link />
@@ -47,9 +64,6 @@ class Participant extends Component {
         </Modal>)
     }
 
-    removeFromInterview = () => {
-
-    }
 
     render() {
         let hostFunctions;
@@ -80,39 +94,51 @@ class Participant extends Component {
 }
 
 
+/*
+Component handling the organization of all the participants on the interview page.
+*/
 class Participants extends Component {
-    generateParticipants() {
+
+    /*
+    Create and return a list containing a participant component for each participant in this interview.
+    */
+    generateParticipants = () => {
+
+        // JSX elements representing valid participant statuses. The participant status is an integer and is used to index into the statuses list.
+        // TODO: Add statuses for "Online in VR" and "Online in Video Conferencing"
         const statuses = [
             <span>&#160;Offline <Icon color='red' size='small' name='circle thin' /></span>,
             <span>&#160;Online <Icon color='green' size='small' name='circle thin' /></span>
             ];
-        let participants = this.props.participants
-        if (participants.length === 0) {
+
+        // Get all the participants in this interview. If there are none, return default text for this component.
+        let participants = this.props.participants;
+        if (participants && participants.length === 0) {
             return <p> No particpants added!</p>
         }
+
+        // For each participant in the interview, create a Participant component.
         return participants.map((participant, index) => {
+
+            // participantStatuses is a dictionary mapping participant emails to their status.
+            // A participant either has a status or is not present in the dictionary in which case we consider them offline.
             let status = this.props.participantStatuses[participant] ? this.props.participantStatuses[participant] : 0;
 
-            return <Participant key={index} isHost={this.props.isHost} host={this.props.host} updateHost={this.props.updateHost} name={participant} status={statuses[status]}/>
-        })
+            return <Participant key={index}  // Each component needs a unique key
+                                isHost={this.props.isHost}  // Whether or not the current use is the host
+                                host={this.props.host}  // Email of the host
+                                updateHost={this.props.updateHost}  // Callback to update the current host
+                                name={participant}  // Email of the current participant
+                                status={statuses[status]}  // Integer representign the users current status
+                                />
+        });
     }
 
-    getPopUp = () => {
-        if (this.props.isHost) {
-            return 'You, the host, may remove participants, or pass host to another particpant in the interview.'
-        }
-        else if (!this.props.isHost) {
-            return 'As a participant you cannot modify who is in the interview or who has hosting permissions.'
-        }
-        else {
-            return 'You should not be here'
-        }
-    }
 
     render() {
         
         return (
-            <Container >
+            <Container>
                     <List divided className="ParticipantsList">
                     {this.generateParticipants()}
                     </List>

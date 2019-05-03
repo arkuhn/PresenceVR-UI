@@ -7,7 +7,7 @@ const registerEventHandlers = (socket, addMessage, handleParticipantStatusChange
         });
         handleParticipantStatusChange({
             user: data.user,
-            status: 1  // TODO: Standardize this to mean offline
+            status: 1  // TODO: Standardize this to mean online
         });
         console.log(data);
     });
