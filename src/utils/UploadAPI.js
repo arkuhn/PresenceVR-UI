@@ -31,8 +31,8 @@ Send a get request to get the database entries for all uploads owned by the curr
 function getUploads() {
     return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
         let config = {headers: {Authorization: `${token}`}};
-        return axios.get(API_URL + `/api/uploads`
-        , config).then((response) => {
+        return axios.get(API_URL + `/api/uploads`,
+            config).then((response) => {
             console.log('Got all uploads for host response');
             console.log(response);
             return response;
@@ -68,7 +68,7 @@ function getUpload(id) {
         let config = {headers: {Authorization: `${token}`}};
         return axios.get(API_URL + `/api/uploads/${id}`,
             config).then((response) => {
-            console.log('Got  upload for host response');
+            console.log('Got upload for host response');
             console.log(response);
             return response; 
         }).catch((error) => {
