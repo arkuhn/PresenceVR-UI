@@ -80,6 +80,7 @@ class AframeInterview extends Component {
 
         safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
             let config = { headers: { Authorization: `${token}` } };
+            //returns Twilio token for vidchat in VR
             axios.get(API_URL + '/api/token', config).then(results => {
 
                 const { identity, token } = results.data;
@@ -129,11 +130,10 @@ class AframeInterview extends Component {
         return false;
     }
 
+    /*
+        Called when you enter the Twilio room/ Toggle the video in vr on
+    */
     joinRoom(id) {
-        /* if (!this.props.id.trim()) {
-            this.setState({ roomaNameErr: true });
-            return;
-        } */
         console.log(this.props)
         console.log("Joining room '" + this.props.interviewId + "'VR...");
         let connectOptions = {
@@ -149,6 +149,9 @@ class AframeInterview extends Component {
         });
     }
 
+    /*
+        attaches selected stream to aframe assets
+    */
     attachTracks(tracks, container) {
         tracks.forEach(track => {
             container.appendChild(track.attach());
@@ -181,6 +184,9 @@ class AframeInterview extends Component {
         this.attachTracks(tracks, container);
     }
 
+    /*
+        Handles the events when joining a Twilio room
+    */
     roomJoined(room) {
         console.log("Joined as '" + this.state.identity + "'");
         this.setState({
@@ -194,16 +200,19 @@ class AframeInterview extends Component {
             });
         }
 
+        //Attaches streams of each participant already in the room
         room.participants.forEach(participant => {
             console.log("already in Room '" + participant.identity + "'");
             var previewContainer = this.refs.remoteMedia;
             this.attachParticipantsTracks(participant, previewContainer);
         });
 
+        //When a participant joins your room
         room.on('participantConnected', participant => {
             console.log("Joining '" + participant.identity + "'");
         });
 
+        //when an audio or video stream is added
         room.on('trackSubscribed', (track, participant) => {
             console.log(participant.identity + ' added track: ' + track.kind);
             var assetContainer = this.refs.assets;
@@ -219,6 +228,7 @@ class AframeInterview extends Component {
 
         });
 
+        //when an audio or video stream is removed
         room.on('trackUnsubscribed', (track, participant) => {
             console.log(participant.identity + ' removed track: ' + track.kind);
             this.detachTracks([track]);
@@ -227,11 +237,13 @@ class AframeInterview extends Component {
             });
         });
 
+        //when a participant leaves the room
         room.on('participantDisconnected', participant => {
             console.log("Participant '" + participant.identity + "' left the room");
             this.detachParticipantTracks(participant);
         });
 
+        //when you leave the room
         room.on('disconnected', () => {
             if (this.state.previewTracks) {
                 this.state.previewTracks.forEach(track => {
@@ -245,11 +257,17 @@ class AframeInterview extends Component {
         });
     }
 
+    /*
+        handles leaving the room
+    */
     leaveRoom() {
         this.state.activateRoom.disconnect();
         this.setState({ hasJoinedRoom: false, localMediaAvailable: false });
     }
 
+    /*
+        handles removing audio and video streams
+    */
     detachTracks(tracks) {
         tracks.forEach(tracks => {
             tracks.detach().forEach(detachedElement => {
@@ -258,16 +276,15 @@ class AframeInterview extends Component {
         });
     }
 
+    /*
+        handles removing participant audio and video streams
+    */
     detachParticipantTracks(participant) {
         var tracks = Array.from(participant.tracks.values());
         this.detachTracks(tracks);
     }
 
-
-
-
     render() { 
-        //let aframeOptions = `serverURL: ${API_URL};app: PresenceVR; room: ${this.props.interviewId}; debug: true; adapter: easyRTC`
         let aframeOptions = {
             serverURL: API_URL,
             app: 'PresenceVR',
