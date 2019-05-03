@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 import { Accordion, Grid, Header, Icon, Segment } from 'semantic-ui-react';
 import openSocket from 'socket.io-client';
 import { API_URL } from '../../config/api.config';
@@ -35,23 +34,24 @@ class InterviewPage extends Component {
             totalParticipants: []
         }
         
+        // Pass the connected socket to a file that registers all event handlers and passes them response functions.
         socketEvents.registerEventHandlers(this.state.socket, this.addMessage, this.handleParticipantStatusChange, this.getCurrentUser, this.getUserStatus, this.updateInterview)
     }
 
     componentWillMount() {
-        console.error('IP MOUNTING')
+        //Join socket room on mount
         this.state.socket.emit('join', {id: this.props._id + this.props._id, user: this.props.email })
         this.state.socket.emit('Marco', {id: this.props._id + this.props._id, caller: this.props.email});
-        this.updateInterview()
+        this.updateInterview() // Get the interview from the server
     }
 
     componentWillUnmount() {
-        console.error('IP UN MOUNTING')
+        //Disconnect our socket on unmount
         this.state.socket.emit('leave')
     }
 
     componentWillReceiveProps(props) {
-        console.error('IP PROPS NEW')
+        //If the interview has changed, reset the state 
         if (props._id !== this.props._id) {
             this.setState({render: false,
                             messages: [],
@@ -65,88 +65,133 @@ class InterviewPage extends Component {
                                 loadedAssets: []
                             }
             }, ()=> {
-                this.state.socket.emit('leave')
+                // Leave the old socket and rejoin with the new interview ID
+                this.state.socket.emit('leave') 
+                /*
+                TODO: Use only one socket through easyrtc/NAF connection. 
+                At the moment, we use our own websocket which is why the id is (id + id)
+                */
                 this.state.socket.emit('join', {id: props._id + props._id, user: props.email })
                 this.state.socket.emit('Marco', {id: props._id + props._id, caller: props.email});
-                this.updateInterview()
+                this.updateInterview() // Get the new interview
             })
         }
     }
 
+    /*
+    Generic handle click/active index state updater taken from SemanticUIReact Docs
+    */
     handleClick = (e, titleProps) => {
         const { index } = titleProps
         const { activeIndex } = this.state
         const newIndex = activeIndex === index ? -1 : index
-    
         this.setState({ activeIndex: newIndex })
     }
 
+    /*
+    When a client hits the toggle, send a message to all other clients for the sys log
+    */
     handleVideoToggle = () => {
         var message = {
             color: 'yellow',
             type: 'system',
             id: this.props._id + this.props._id
         }
-        if(!this.state.vidChat){
-            message.content = this.props.email + ' has entered video chat mode'
-            this.state.socket.emit('message', message)
-            this.setState({vidChat: true});
-        } else {
-            message.content = this.props.email + ' has left video chat mode'
-            this.state.socket.emit('message', message)
-            this.setState({vidChat: false});
-        }
-    }
 
-    handleHostCamInVRToggle = () => {
-        var message = {
-            color: 'yellow',
-            type: 'system',
-            id: this.props._id + this.props._id
-        }
-        let toggle;
-        if(!this.state.hostCamActive){
-            message.content = this.props.email + ' has turned on camera in VR'
-            toggle = true;
-        } else {
-            message.content = this.props.email + 'has turned off camera in VR'
-            toggle = false;
-        }
-        InterviewAPI.patchInterview(this.props._id, 'hostCamInVR', toggle, 'replace')
-        .then(() => {
+        this.setState(function(state, props) {
+            if (!state.vidChat) {
+                message.content = this.props.email + ' has entered video chat mode'
+            }
+            else {
+                message.content = this.props.email + ' has left video chat mode'
+            }
+            // Flip the status of vidChat
+            return {vidChat: !state.vidChat}
+        }, () => {
+            // Once the state is flipped, tell other clients
             this.state.socket.emit('message', message)
-            this.state.socket.emit('update')
-            this.setState({hostCamActive: toggle});
         })
-        
     }
 
+   /*
+    Callback for when the host client clicks show cam in VR
+   */
+   handleHostCamInVRToggle = () => {
+    var message = {
+        color: 'yellow',
+        type: 'system',
+        id: this.props._id + this.props._id
+    }
+
+    var state = this.state;
+
+    if (!state.hostCamActive) {
+        message.content = this.props.email + ' has turned on camera in VR'
+    }
+    else {
+        message.content = this.props.email + 'has turned off camera in VR'
+    }
+    
+    /*
+    1. update the backend interview with hostCam on or off
+    2. update the state
+    3. tell other clients we have updated
+    */
+    InterviewAPI.patchInterview(this.props._id, 'hostCamInVR', !state.hostCamActive, 'replace')
+        .then(() => {
+            //TODO: this should only happen on a 200
+            this.setState((state, props) => ({
+                hostCamActive: !state.hostCamActive
+            }), () => {
+                this.state.socket.emit('update')
+                this.state.socket.emit('message', message)
+            });        
+        })
+    }
+
+    /*
+    Callback for config to update physics mode passed into aframeInterview
+    */
     updateControllerMode = (type) => {
         this.setState({controllerMode: type})
     }
 
+    /*
+    If we aren't already updating the interview, get fresh data from the backend. 
+    */
     updateInterview = () => {
         if (!this.state.fetching) {
-            this.setState({fetching: true}) 
-            InterviewAPI.getInterview(this.props._id).then((response) => {
-                let interview = response.data
-                let total = interview.participants.slice()
-                total.unshift(interview.host)
-                let totalParticipants = total
-                this.setState({interview, totalParticipants,  fetching: false, render: true})
-            })
+            this.setState({fetching: true}, () => {
+                InterviewAPI.getInterview(this.props._id).then((response) => {
+                    let interview = response.data
+                    // Total participants = list of participants + host
+                    let total = interview.participants.slice()
+                    total.unshift(interview.host) // Unshift puts host at index 0
+                    let totalParticipants = total
+                    this.setState({interview, totalParticipants,  fetching: false, render: true})
+                })
+            })    
         }
     }
 
+    /*
+    Callback when host passes permissions to a partcipant.
+    */
     updateHost = (newHost) => {
+        // Build new participants array which excludes the new host and includes the old host
         const newParticipants = (this.props.participants).filter(participant => participant !== newHost)
         newParticipants.push(this.props.host)
         let newParString = newParticipants.join() 
+
+        // Patch the backend with new list of participants
         return InterviewAPI.updateInterview( {participants: newParString}, this.props._id)
                 .then((response) => {
+                    // One participants are updated, pass host to the new person.
+                    // This has to happen AFTER the participants update since only the host can patch interviews
                     return InterviewAPI.updateInterview( {host: newHost}, this.props._id)
                 })
                 .then(() => {
+                    // Drop a message in syslog and update all connected clients
                     var message = {
                         color: 'yellow',
                         type: 'system',
@@ -158,14 +203,23 @@ class InterviewPage extends Component {
                 })
     }
 
+    /*
+    Callback for sockets to get the current user
+    */
     getCurrentUser = () => {
         return this.props.email;
     }
     
+    /*
+    Callback for sockets to add and render a message
+    */
     addMessage = (message) => {
         this.setState({messages: this.state.messages.concat([message])})
     }
 
+    /*
+    Callback for sockets when a status update comes in
+    */
     handleParticipantStatusChange = (data) => {
         this.setState(state => {
             let statuses = state.participantStatuses;
@@ -182,21 +236,18 @@ class InterviewPage extends Component {
         return 1
     }
 
-
     render() {
         const { activeIndex, interview, totalParticipants } = this.state
+        /*
+        This is used to force a remount when the interview changes. 
+        We originally only passed props to update interviews, but this revealed
+        race conditions in the NAF and Twilio connect/disconnect code.
+        */
         if (!this.state.render) {
             return ''
         }
 
-        let menuHeight = '20vh';
-        let participantHeight = '60vh'
-        if (activeIndex === 0 || activeIndex === 1 || activeIndex === 2) {
-            menuHeight = '55vh';
-            participantHeight = '25vh'
-        }
-
-
+        // If video toggle is on, show VideoComponent, otherwise show Aframe
         let videoToggle = this.state.vidChat ? (
             <VideoComponent interviewId={this.props._id} joined={true} participants={this.state.interview.participants}/>) :
             <AframeInterview loadedAssets={interview.loadedAssets}
@@ -213,6 +264,7 @@ class InterviewPage extends Component {
         return (
                 <Grid centered width={14}>
            
+                    {/* Center column (aframe + chat) */}
                     <Grid.Column width={10}>
                         {/* Browser mode */}
                         <Grid.Row style={{height: '65vh'}}>
@@ -228,6 +280,7 @@ class InterviewPage extends Component {
 
                     </Grid.Column>
 
+                    {/* Right column (host, assets/envs/config, particpants) */}
                     <Grid.Column width={4}>
                     <Grid.Row style={{maxHeight: '95vh', height: '95vh', overflowY: 'scroll'}}>
                         <Segment> 

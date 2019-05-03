@@ -44,19 +44,15 @@ class AframeInterview extends Component {
         });
         this.connecting = false
         this.disconnecting = false
-        this.joinRoom = this.joinRoom.bind(this);
-        this.roomJoined = this.roomJoined.bind(this);
-        this.leaveRoom = this.leaveRoom.bind(this);
-        this.detachTracks = this.detachTracks.bind(this) ;
-        this.detachParticipantTracks = this.detachParticipantTracks.bind(this);
-        this.isHostVideoTrack = this.isHostVideoTrack.bind(this);
     }
 
     componentDidMount() {
+        // TODO: networked aframe connect has race conditions, this stall helps fix them
         setTimeout(() => {
             window.AFRAME.scenes[0].emit('connect');
         }, 200)
 
+        // Refresh interviews when people connect and disconnect to keep fresh state
         document.body.addEventListener('clientDisconnected', function (evt) {
             console.error('clientDisconnected event. clientId =', evt.detail.clientId);
             this.props.updateInterviewCallback()
@@ -66,6 +62,7 @@ class AframeInterview extends Component {
             this.props.updateInterviewCallback()
         }.bind(this));
        
+        // Track the players position moves
         let entity = document.querySelector('#cameraRig');
         if (entity) {
             entity.addEventListener('componentchanged', function (evt) {
@@ -75,9 +72,13 @@ class AframeInterview extends Component {
               }.bind(this));
         }
 
+        // Register all the networked aframe schemas, more on this in the NAF docs
         aframeUtils.registerSchemas()
+
+        // Render all assets passed in through props
         this.renderAssets(this.props)
 
+        // Get twillio token and join webcam room if toggle is on
         safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
             let config = { headers: { Authorization: `${token}` } };
             axios.get(API_URL + '/api/token', config).then(results => {
@@ -95,6 +96,7 @@ class AframeInterview extends Component {
     }
 
     componentWillReceiveProps(props) {
+        // If the interview has changed leave twillio room
         if (props.interviewId !== this.props.interviewId) {
             if (this.state.hasJoinedRoom) {
                 this.leaveRoom()
@@ -104,20 +106,28 @@ class AframeInterview extends Component {
             }          
         }
 
+        // If they turned on camera in VR, join twillo room
         if(props.hostCamInVR !== this.props.hostCamInVR) {
             this.joinRoom(props.interviewId)
-        }      
+        }  
+        
+        // Render new assets
         this.renderAssets(props)
     }
 
+    /*
+    Get assets from the server and render them if we aren't already doing so.
+    */
     renderAssets = (props) => {
         if (!this.state.fetching){
+            // If loadedAssets hasn't changed, don't bother rerendering
             let equal = jsonEqual(props.loadedAssets, this.state.loadedAssets) 
             if ( equal  )  {
                 return
             }
             if (!equal) {
                 this.setState({fetching: true, loadedAssets: props.loadedAssets})
+                //Get metadata about all assets then turn into JSX and render
                 Promise.all(aframeUtils.getData(props.loadedAssets)).then((data) => {
                     var {entities, lights} = aframeUtils.renderData(data, this.props.user)
                     this.setState({entities, lights, fetching:false})
@@ -126,6 +136,9 @@ class AframeInterview extends Component {
         }
     }
 
+    /* 
+    Utility function to only show the host/presenter cam in VR 
+    */
     isHostVideoTrack(participant) {
         if(participant.identity === this.props.hostName){
             return true;
@@ -133,7 +146,8 @@ class AframeInterview extends Component {
         return false;
     }
 
-    joinRoom(id) {
+    
+    joinRoom = (id) => {
         /* if (!this.props.id.trim()) {
             this.setState({ roomaNameErr: true });
             return;
@@ -153,7 +167,7 @@ class AframeInterview extends Component {
         });
     }
 
-    attachTracks(tracks, container) {
+    attachTracks = (tracks, container) => {
         tracks.forEach(track => {
 
             container.appendChild(track.attach());
@@ -180,13 +194,13 @@ class AframeInterview extends Component {
         this.setState({audio_material: "src: #user_audio"});
     }
 
-    attachParticipantsTracks(participant, container) {
+    attachParticipantsTracks = (participant, container) => {
         var tracks = Array.from(participant.tracks.values());
         console.log("tracks: " + tracks);
         this.attachTracks(tracks, container);
     }
 
-    roomJoined(room) {
+    roomJoined = (room) => {
         console.log("Joined as '" + this.state.identity + "'");
         this.setState({
             activateRoom: room,
@@ -252,12 +266,12 @@ class AframeInterview extends Component {
         });
     }
 
-    leaveRoom() {
+    leaveRoom = () => {
         this.state.activateRoom.disconnect();
         this.setState({ hasJoinedRoom: false, localMediaAvailable: false });
     }
 
-    detachTracks(tracks) {
+    detachTracks = (tracks) => {
         tracks.forEach(tracks => {
             tracks.detach().forEach(detachedElement => {
                 detachedElement.remove();
@@ -265,7 +279,7 @@ class AframeInterview extends Component {
         });
     }
 
-    detachParticipantTracks(participant) {
+    detachParticipantTracks= (participant) => {
         var tracks = Array.from(participant.tracks.values());
         this.detachTracks(tracks);
     }
@@ -274,7 +288,6 @@ class AframeInterview extends Component {
 
 
     render() { 
-        //let aframeOptions = `serverURL: ${API_URL};app: PresenceVR; room: ${this.props.interviewId}; debug: true; adapter: easyRTC`
         let aframeOptions = {
             serverURL: API_URL,
             app: 'PresenceVR',
@@ -283,6 +296,7 @@ class AframeInterview extends Component {
             connectOnLoad: false
         }
 
+        // If toggle is on, show host cam
         let hostCam = (this.props.hostCamInVR && !this.props.host) ? <a-box id="host-cam" material={this.state.host_cam_material} scale=".25 .18 .001" position=".2 -.15 -.25"></a-box> : '';
         return ( 
             <Scene className='aframeContainer' id="aframeContainer" embedded networked-scene={aframeOptions}>
@@ -297,12 +311,16 @@ class AframeInterview extends Component {
                     <div ref="remoteMedia" id="remote-media" playsInline />
                 </a-assets>
 
+                {/* Generic aframe environment library */}
                 <Entity environment={{preset: this.props.environment, dressingAmount: 500}}></Entity>
 
+                {/* At the moment, one light is rendered per entity*/}
                 {this.state.lights}
 
+                {/* All loaded assets in their rendered form */}
                 {this.state.entities}
 
+                {/*Player entity*/}
                 <Entity id="cameraRig" networked="template:#camera-template;attachTemplateToLocal:false;" position={this.state.position}  rotation="">
                     <Entity id="head" networked="template:#avatar-template;attachTemplateToLocal:false;" 
                         camera 

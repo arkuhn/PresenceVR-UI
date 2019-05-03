@@ -1,11 +1,11 @@
 import React from 'react';
-
 import UploadAPI from '../../../utils/UploadAPI';
 
 function getDimensions(loadedAsset){
     var varheight = loadedAsset.data.height
     var varwidth = loadedAsset.data.width
     var ratio = 0
+
     //we will use the assumption that 394 px = 1 m for scaling
     if (varheight > varwidth){
         ratio = varwidth/varheight
@@ -21,7 +21,11 @@ function getDimensions(loadedAsset){
     return [varheight, varwidth]
 }
 
-
+/*
+Hit the server for loaded asset ID to get metadata. Also build the URL that the asset is hosted at. 
+Once we have the metadata + the URL the asset is statically hosted at, return an object with both to
+turn into JSX later.
+*/
 function getData(loadedAssetIds) {
     return loadedAssetIds.map((loadedAssetId, index) => { 
         return Promise.all([UploadAPI.getUpload(loadedAssetId), UploadAPI.getUploadFileURL(loadedAssetId)])
@@ -58,16 +62,15 @@ function getData(loadedAssetIds) {
 
 
 
-/* Turn each assets data into its respective JSX
+/*
+Take the metadata + file URLs and turn them into JSX. 
 */
 function renderData(assets, user)  {
    var entities = [];
    var lights = []
    assets.forEach((asset, index) => {
         if (!asset) { return }
-        //Create a 'source' (texture to be used) in the <a-assets> system
-        
-
+        // For every asset build an asset and options. Each asset is boxed by an entity for the sake of NAF.
         let entity;
         let options;
         if (asset.name.toLowerCase().includes(".jpg") || asset.name.toLowerCase().includes(".png")){
@@ -117,23 +120,28 @@ function renderData(assets, user)  {
                         </a-video>
                     </a-entity>
         }
+
+        // Add the moment, add one light per entity. TODO: this gets too bright with 3+ entities
         lights.push(<a-light type="point" intensity=".3" color="white" position={`${asset.x} ${10} ${asset.z * -6}`}/>)
     
+        // Only the owner draws their assets.
         if (entity && asset.owner === user) {
             //Create entity that links to template and source
             entities.push( entity )
         }
- 
-             
    })
    return {entities, lights}
 }
 
+/*
+Register schemas with window.NAF so that we can track all properities on the sub-entities (a-box, a-entity, a-video)
+*/
 function registerSchemas() {
     let schemas = [{template: '#img-template', selector: '.img-box', properties: ['geometry', 'position', 'rotation', 'scale', "material"]},
     {template: '#obj-template', selector: '.obj-model-test', properties: ['position', 'rotation', 'scale', 'obj-model']},
     {template: '#vid-template', selector: '.vid-box', properties: ['position', 'rotation', 'scale', "material"]}] 
 
+    //This builds schemas dynamically based on the list above. Check NAF github or NPM docs for more details on what this looks like unrolled
     schemas.forEach((schema) => {
         let components = schema.properties.map((property) => {
         return {
@@ -149,6 +157,7 @@ function registerSchemas() {
     })
 }
 
+// The template for the player. At the moment, hands are not tracked.
 const avatarTemplate = `<template id="avatar-template"> 
                         <a-entity class="avatar"> 
                             <a-sphere class="head"color="#5985ff"scale="0.45 0.5 0.4"random-color></a-sphere> 
@@ -163,23 +172,27 @@ const avatarTemplate = `<template id="avatar-template">
                         </a-entity> 
                         </template>`
 
+// Template for image assets
 const imgTemplate = `<template id="img-template">
                         <a-entity class="assets" position="" rotation="" scale="">
                             <a-box class="img-box" geometry="" position="" rotation="" scale="" material="" ></a-box>
                         </a-entity> 
                      </template>`
 
+// Template for the camera rig
 const cameraTemplate = `<template id="camera-template">
                             <a-entity class="cameraRig">
                             </a-entity>
                         </template>`
- 
+
+// Template for object assets
 const objTemplate = `<template id="obj-template">
                     <a-entity class="assets"  position="" rotation="" scale="">
                         <a-entity class="obj-model-test"  position="" rotation="" scale="" obj-model="" ></a-entity>
                     </a-entity> 
                     </template>`
 
+// Template for video assets
 const vidTemplate = `<template id="vid-template">
                     <a-entity class="assets" position="" rotation="" scale="">
                         <a-video class="vid-box" position="" rotation="" scale="" material="" ></video>
