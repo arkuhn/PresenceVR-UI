@@ -105,6 +105,7 @@ class Participants extends Component {
     generateParticipants = () => {
 
         // JSX elements representing valid participant statuses. The participant status is an integer and is used to index into the statuses list.
+        // TODO: Add statuses for "Online in VR" and "Online in Video Conferencing"
         const statuses = [
             <span>&#160;Offline <Icon color='red' size='small' name='circle thin' /></span>,
             <span>&#160;Online <Icon color='green' size='small' name='circle thin' /></span>
