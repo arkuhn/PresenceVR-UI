@@ -9,13 +9,10 @@ class Participant extends Component {
     constructor(props) {
         super(props);
         this.state = {
-                      modalOpen: false // Used to track whether the makeHostModal is open or not.
-                  };
-    
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleCancel = this.handleCancel.bind(this);
-        this.handleOpen = this.handleOpen.bind(this);
+            modalOpen: false // Used to track whether the makeHostModal is open or not.
+        };
     }
+
 
     /*
     Function called when the user submits the makeHostModal
@@ -23,10 +20,10 @@ class Participant extends Component {
     handleSubmit = (event) => {
         this.props.updateHost(this.props.name).then(() => {
             this.setState({ modalOpen: false })
-            this.setState({ modalOpen: false })
             event.preventDefault();
         })
     }
+
 
     /*
     Function called when the makeHostModal is opened
@@ -35,12 +32,14 @@ class Participant extends Component {
         this.setState({ modalOpen: true })
     }
 
+
     /*
     Function called when the makeHostModal is closed
     */
     handleCancel = (event) => {
         this.setState({ modalOpen: false })
     }
+
 
     /*
     This modal pops up when the user attempts to hand over host privileges.
@@ -64,9 +63,6 @@ class Participant extends Component {
         </Modal>)
     }
 
-    removeFromInterview = () => {
-
-    }
 
     render() {
         let hostFunctions;
@@ -105,7 +101,7 @@ class Participants extends Component {
     /*
     Create and return a list containing a participant component for each participant in this interview.
     */
-    generateParticipants() {
+    generateParticipants = () => {
 
         // JSX elements representing valid participant statuses. The participant status is an integer and is used to index into the statuses list.
         const statuses = [
@@ -114,9 +110,8 @@ class Participants extends Component {
             ];
 
         // Get all the participants in this interview. If there are none, return default text for this component.
-        // TODO: Check to ensure participants is not null.
         let participants = this.props.participants;
-        if (participants.length === 0) {
+        if (participants && participants.length === 0) {
             return <p> No particpants added!</p>
         }
 
@@ -137,22 +132,11 @@ class Participants extends Component {
         });
     }
 
-    getPopUp = () => {
-        if (this.props.isHost) {
-            return 'You, the host, may remove participants, or pass host to another particpant in the interview.'
-        }
-        else if (!this.props.isHost) {
-            return 'As a participant you cannot modify who is in the interview or who has hosting permissions.'
-        }
-        else {
-            return 'You should not be here'
-        }
-    }
 
     render() {
         
         return (
-            <Container >
+            <Container>
                     <List divided className="ParticipantsList">
                     {this.generateParticipants()}
                     </List>
