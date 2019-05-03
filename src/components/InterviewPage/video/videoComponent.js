@@ -6,11 +6,14 @@ import { API_URL } from "../../../config/api.config";
 import { safeGetUser } from '../../../utils/firebase';
 import './videoInterview.css';
 
-
+/*
+    TODO: Find an alternative to Twilio that doesn't cost money and doesnt hinder VR performance
+    Disclaimer: Make sure prensenter cam in VR is turned off before switching to videochat. Will break the video chat
+*/
 
 export default class VideoComponent extends Component {
     constructor(props) {
-        super();
+        super(props);
         this.state = {
             identity: null,
             roomNameErr: false,
@@ -43,6 +46,7 @@ export default class VideoComponent extends Component {
 
     /*
         Called when you enter the Twilio room/ Toggle the video chat on
+        TODO: Dynamiv video heights that scale as more people enter room
     */
     joinRoom = () =>  {
         console.log("Joining room '" + this.props.interviewId + "'...");

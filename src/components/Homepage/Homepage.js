@@ -9,6 +9,11 @@ import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar";
 import './Homepage.css';
 import InterviewCard from "./interviewCard";
 
+/*
+    TODO: Hide sidebar when there are no interviews
+    TODO: Rename Interviews to Presentation
+*/
+
 class Homepage extends Component {
     constructor(props) {
         super(props);

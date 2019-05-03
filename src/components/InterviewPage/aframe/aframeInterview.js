@@ -184,7 +184,10 @@ class AframeInterview extends Component {
     }
 
     /*
-        Handles the events when joining a Twilio room
+        Handles the events when joining a Twilio 
+        TODO: Dismount Audio and Video Tracks when leaving interview page
+        TODO: get rid of webcam enable pop up when stream is not being used
+        TODO: Find alternative to Twilio
     */
     roomJoined = (room) => {
         console.log("Joined as '" + this.state.identity + "'");
