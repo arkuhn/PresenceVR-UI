@@ -15,7 +15,8 @@ class Participant extends Component {
 
 
     /*
-    Function called when the user submits the makeHostModal
+    Function called when the user submits the makeHostModal.
+    Call updateHost callback, wait till it returns, then close the modal.
     */
     handleSubmit = (event) => {
         this.props.updateHost(this.props.name).then(() => {
