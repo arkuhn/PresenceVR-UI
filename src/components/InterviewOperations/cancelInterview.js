@@ -8,29 +8,39 @@ class CancelInterview extends React.Component {
         this.state = {
                       id: props.id,
                       modalOpen: false};
-    
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleCancel = this.handleCancel.bind(this);
-        this.handleOpen = this.handleOpen.bind(this);
     }
 
-    handleSubmit(event) {
+    /**
+     * handler for deleting interviews
+     */
+    handleSubmit = (event) => {
         InterviewAPI.deleteInterview(this.props.id)
         .then(() => {
-            this.props.goHome()
+            //redirects client to home page
+            this.props.goHome();
         });
-        this.setState({ modalOpen: false })
+        this.setState({ modalOpen: false });
+        //prevents the default of
         event.preventDefault();
     }
 
-    handleOpen(event) {
-        this.setState({ modalOpen: true })
+    /**
+     * Handler for opening the delete form
+     */
+    handleOpen = (event) => {
+        this.setState({ modalOpen: true });
     }
 
-    handleCancel(event) {
-        this.setState({ modalOpen: false })
+    /**
+     * Handler for closing the delete form
+     */
+    handleCancel = (event) => {
+        this.setState({ modalOpen: false });
     }
 
+    /**
+     * Renders the delete form
+     */
     render() {
         return (
             <Modal basic size='small' open={this.state.modalOpen} onClose={this.handleCancel} trigger={ 
@@ -46,7 +56,7 @@ class CancelInterview extends React.Component {
                 </Button>
             </Modal.Content>
             </Modal>
-        )
+        );
     }
 }
 
