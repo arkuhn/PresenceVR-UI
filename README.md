@@ -1,150 +1,109 @@
-## Dependencies
-
-To run the application:
-
-- [Node v6.9](https://nodejs.org/download/release/v6.16.0/) and NPM (comes bundled with Node)
-
-To deploy the application:
-
-- firebase-tools
-  - Install with `npm install -g firebase-tools`
+# Docs
+### - [Firebase setup](./docs/firebase.md)
+### - [Feature map](./docs/FeatureMap.md)
 
 
+# Quick Start
 
-## Quick Start Guide
+## Install
 
-1. Clone or download the repo
+1. Clone the repository from GitHub
+   `git clone https://github.com/arkuhn/PresenceVR-UI.git`
 
-2. Drop the provided config files (*api.config.js* and *firebase.config.js*) in the ''**src/configs/**'' directory
+2. Install Nodejs 10.15 LTS from [here](<https://nodejs.org/en/download/>).
 
-3. Run 
+   TIP: Use nvm to manage versions of node and npm on your machine.
 
-   ```
-   npm install
-   npm run build
-   npm run deploy
-   ```
+3. CD into the folder and install the dependencies
 
-4. Navigate to one of the following URLs (depending on which config files you used)
+   `cd PresenceVR-UI && npm install`
 
-   Development: https://presencevr-dev.firebaseapp.com
+4.  Install firebase-tools (this will be used later for deployment)
+   `npm install -g firebase-tools`
 
-   Production: https://presence-vr.firebaseapp.com
+   
 
+## Configure
 
+### API
 
-# <u>Development Guide (*from scratch*)</u>
+The API config is the URL that the front end will point to for server calls. This file exists inside of `./src/config/api.config.js` . 
 
-## Getting Started
+For local development (when the backend is running on the same machine) this file should look like this:
+`export const API_URL = "http://localhost:8080" `
 
-### 1. Install
+If the server is deployed somewhere (google app engine for instance), the link should be updated.
 
-Get the dependencies listed at the top of this file. I recommend using NVM on Linux to manage node versions. 
+`export const API_URL = "https://[google app engine ID].appspot.com"`
 
-- Clone the repo
+### Firebase
 
-- Install node packages
+- To configure the firebase settings for the app you must first have a firebase project set up. Learn how to do this in the [firebase setup guide](./docs/firebase.md)
 
-  - `cd` into the repo and run `npm install`
+- Create a Firebase configuration in  `./src/config/firebase.config.js` . This will be used for hosting and authorization. It should have the following format:
 
-    ​
+  ```
+  export const config = {
+      apiKey: "",
+      authDomain: "",
+      databaseURL: "",
+      projectId: "",
+      storageBucket: "",
+      messagingSenderId: ""
+  }
+  ```
 
-### 2. Make a Firebase project
+- Run `firebase login`. Then, to get the project name you can run `firebase list`. Create a `firebase.rc` file inside of the root folder (on the the same level as `src`, `docs`, etc then put the name of your project  in the following format:
 
-Firebase is used for authentication and hosting. Go to http://console.firebase.google.com, sign in and create a new project. 
+  ```
+  {
+    "projects": {
+      "default": "[project name]"
+    }
+  }
+  ```
 
-You must do two things:
+  
 
-- Enable Google sign in
+- There is also a `firebase.json` file in the root. You do not need to configure this, but it is important that this baseline configuration is used (especially no-caching) for deployment to work properly. 
 
-  - Go to the authentication tab in the left pane
-  - Click on the 'Sign-in method' tab
-  - Click 'Enable' next to Google log-in
+  
 
-- Extract your configuration settings.
+## Develop
 
-  - Go to the authentication tab in the left pane
-    ![](C:/Users/ak101/Documents/SeniorProject/PresenceVR-UI/docs/authentication.JPG)
+### npm start
 
-  - Go to the 'web setup' of your project at the top right of the page
-    ![](C:/Users/ak101/Documents/SeniorProject/PresenceVR-UI/docs/websetup.JPG)
+This will run a local development server in your shell. It will be available in the browser at `http://localhost:3000`
 
-  - Copy and paste the provided config string into a 'firebase.config.js' file under ''**/src/configs/**''. It should look like this:
+### npm build
 
-    ```
-    export const config = {
-        apiKey: "YOUR DATA",
-        authDomain: "YOUR DATA",
-        databaseURL: "YOUR DATA",
-        projectId: "YOUR DATA",
-        storageBucket: "YOUR DATA",
-        messagingSenderId: "YOUR DATA"
-      };
-    ```
+This will produce a production ready build of the static assets in the build folder.
 
+### npm run deploy
 
+This is an alias for `npm build && firebase use default && firebase deploy`
 
-### 3. Configure
-
-#### Server:
-
-You can configure the server in **'src/config/api.config.js'** This API configuration is 			simply the address and port of the server. In development mode it should look like this:
-
-`export const API_URL = 'http://localhost:8080`
-
-When deployed, this URL should point to your server.
-
-`export const API_URL = 'https://your-server's-url.com`
-
-**->DO NOT INCLUDE A TRAILING '/'**<-
-
-
-
-#### Firebase:
-
-You should already have **'src/config/firebase.config.js'** completed from the last section. Now do the following 
-
-1. Run `firebase login`
-2. Run `firebase list` and copy and paste your project ID into **'.firebaserc'** at the root of the project.
-3. You are now configured for deployments!
+- The firebase default command ensures that you are pointing to the right project based on the `.firebaserc` file.  
 
 Original firebase + react deploy documentation [here](https://facebook.github.io/create-react-app/docs/deployment#firebase-https-firebasegooglecom).
 
 
 
-## Now what?
+## Deploy
 
-### `npm install`
+Once you have configured the application, deploying is as easy as running `npm run deploy`. 
 
-Installs all front end dependencies to /node_modules/
+- You must be logged in to firebase-tools CLI for this to work (`firebase login`)
 
-### `npm start`
-
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run deploy`
-
-This is an alias to `firebase deploy` . This deploys whatever is in your build directory.
-
-Note: You must be logged in to deploy a project. ( run: `firebase login`)
+Once the command finishes, the URL you can see the app deployed at is in the terminal output.
 
 
 
 
+
+
+
+### 
 
 ## Learn More
 

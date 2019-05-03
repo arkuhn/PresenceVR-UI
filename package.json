@@ -35,9 +35,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "firebase use default && firebase deploy"
+    "deploy": "npm run build && firebase use default && firebase deploy"
   },
-  "proxy": "http://localhost:8080",
   "eslintConfig": {
     "extends": "react-app"
   },

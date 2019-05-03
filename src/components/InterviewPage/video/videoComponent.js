@@ -50,13 +50,22 @@ export default class VideoComponent extends Component {
         Called when you enter the Twilio room/ Toggle the video chat on
     */
     joinRoom() {
-        console.log(this.props)
         console.log("Joining room '" + this.props.interviewId + "'...");
+        let numofparticipants = this.props.participants.length + 1;
+        let widthfortrack;
+        if (numofparticipants < 2) {
+            widthfortrack = 690;
+        }
+        else if (numofparticipants < 4) {
+            widthfortrack = 345;
+        }
+        else{
+            widthfortrack = 230;
+        }
+        
         let connectOptions = {
-            name: this.props.interviewId,
-            video: { width: 100 }
+            name: this.props.interviewId
         };
-
         if (this.state.previewTracks) {
             connectOptions.tracks = this.state.previewTracks;
         }
@@ -186,16 +195,11 @@ export default class VideoComponent extends Component {
                     </Dimmer>
                 </Segment>)
         }
-
-        var style = {
-            height: 480,
-            width: 690
-        }
         let showLocalTrack = this.state.localMediaAvailable ? (
             <div><div ref="localMedia" /></div>
         ) : '';
         return (
-                <Segment style={style}>
+                <Segment style={{height: '65vh', maxHeight:'65vh', overflowY: 'scroll'}} > 
                     {showLocalTrack}
                     
                     <div className="flex-item" ref="remoteMedia" id="remote-media" />

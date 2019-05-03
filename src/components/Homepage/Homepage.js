@@ -15,7 +15,8 @@ class Homepage extends Component {
         this.state = ({
             activeItem: 'home',
             interviews: [],
-            fetching: false
+            fetching: false,
+            error: false
         })
     }
 
@@ -27,7 +28,8 @@ class Homepage extends Component {
             this.setState({
                 selectedInterview: <InterviewPage _id={name} 
                                         email={this.state.user.email}
-                                        updateInterviews={this.updateInterview}/>, 
+                                        updateInterviews={this.updateInterview}
+                                        goHome={this.returnHome}/>, 
                 activeItem: name})
         }
         this.setState({ activeItem: name })
@@ -35,13 +37,17 @@ class Homepage extends Component {
 
     returnHome = () => {
         this.setState({ activeItem: 'home'})
+        this.updateInterviews()
     }
 
     componentWillMount() {
         this.setState({loading: true})
         // Bind the variable to the instance of the class.
         this.authFirebaseListener = firebaseAuth.onAuthStateChanged((user) => {
-            this.setState({ user }, () => { this.updateInterviews() });
+            if (!user) {
+                return this.setState({error: true})
+            }
+            this.setState({ user, loading: false }, () => { this.updateInterviews() });
         })
         
     }
@@ -53,7 +59,7 @@ class Homepage extends Component {
             InterviewAPI.getAllInterviews(this.state.user.email).then((interviews) => {
                 let interviewData;
                 interviews ? interviewData = interviews.data : interviewData = []
-                this.setState({loading: false, interviews:interviewData})
+                this.setState({ interviews:interviewData})
             });
     }
 
@@ -93,12 +99,15 @@ class Homepage extends Component {
     }
 
     render() {
+            if (this.state.error) {
+                return <Redirect to='/'/>
+            }
             if (this.state.loading) {
                 return <Dimmer active>
                             <Loader />
                         </Dimmer>
             }
-            if (!this.state.loading && !this.state.user) {
+            if (!this.state.loading && !this.state.user ) {
                 return <Redirect to='/'/>
             }
             const style= {

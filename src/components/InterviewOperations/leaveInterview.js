@@ -20,8 +20,7 @@ class LeaveInterview extends React.Component {
             this.setState({ modalOpen: false });
             if (this.props.socket) {
                 this.props.socket.emit('update')
-            } else {
-                window.location.reload()
+                this.props.goHome()
             }
         })
     }
