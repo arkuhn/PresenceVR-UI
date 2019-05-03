@@ -10,7 +10,7 @@ import React, { Component } from 'react';
 import 'super-hands';
 import Video from 'twilio-video';
 import { API_URL } from '../../../config/api.config';
-import { safeGetUser } from '../../../utils/firebase'
+import { safeGetUser } from '../../../utils/firebase';
 import aframeUtils from './aframeUtils';
 
 function jsonEqual(a,b) {
@@ -53,24 +53,24 @@ class AframeInterview extends Component {
 
         document.body.addEventListener('clientDisconnected', function (evt) {
             console.error('clientDisconnected event. clientId =', evt.detail.clientId);
-            this.props.updateInterviewCallback()
+            this.props.updateInterviewCallback();
           }.bind(this));
         document.body.addEventListener('clientConnected', function (evt) {
             console.error('clientConnected event. clientId =', evt.detail.clientId);
-            this.props.updateInterviewCallback()
+            this.props.updateInterviewCallback();
         }.bind(this));
        
         let entity = document.querySelector('#cameraRig');
         if (entity) {
             entity.addEventListener('componentchanged', function (evt) {
                 if (evt.detail.name === 'position') {
-                  this.setState({position: evt.target.getAttribute('position') })
+                  this.setState({position: evt.target.getAttribute('position') });
                 }
               }.bind(this));
         }
 
-        aframeUtils.registerSchemas()
-        this.renderAssets(this.props)
+        aframeUtils.registerSchemas();
+        this.renderAssets(this.props);
 
         safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
             let config = { headers: { Authorization: `${token}` } };
@@ -81,7 +81,7 @@ class AframeInterview extends Component {
                 this.setState({ identity, token });
 
                 if (this.props.hostCamInVR) {
-                    this.joinRoom(this.props.interviewId)
+                    this.joinRoom(this.props.interviewId);
                 }
             });
         }).catch((error) => {
@@ -92,17 +92,17 @@ class AframeInterview extends Component {
     componentWillReceiveProps(props) {
         if (props.interviewId !== this.props.interviewId) {
             if (this.state.hasJoinedRoom) {
-                this.leaveRoom()
+                this.leaveRoom();
             }
             if(props.hostCamInVR) {
-                this.joinRoom(props.interviewId)
+                this.joinRoom(props.interviewId);
             }          
         }
 
         if(props.hostCamInVR !== this.props.hostCamInVR) {
-            this.joinRoom(props.interviewId)
+            this.joinRoom(props.interviewId);
         }      
-        this.renderAssets(props)
+        this.renderAssets(props);
     }
 
     renderAssets = (props) => {

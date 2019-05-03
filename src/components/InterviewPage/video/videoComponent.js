@@ -30,7 +30,7 @@ export default class VideoComponent extends Component {
 
                 const { identity, token } = results.data;
                 this.setState({ identity, token });
-                this.joinRoom()
+                this.joinRoom();
             });
         }).catch((error) => {
             console.log(error);
@@ -38,7 +38,7 @@ export default class VideoComponent extends Component {
     }
 
     componentWillUnmount = () =>  {
-        this.leaveRoom()
+        this.leaveRoom();
     }
 
     /*
