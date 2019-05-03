@@ -72,16 +72,11 @@ class AframeInterview extends Component {
               }.bind(this));
         }
 
-<<<<<<< HEAD
         // Register all the networked aframe schemas, more on this in the NAF docs
         aframeUtils.registerSchemas()
 
         // Render all assets passed in through props
         this.renderAssets(this.props)
-=======
-        aframeUtils.registerSchemas();
-        this.renderAssets(this.props);
->>>>>>> master
 
         // Get twillio token and join webcam room if toggle is on
         safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
@@ -114,17 +109,11 @@ class AframeInterview extends Component {
 
         // If they turned on camera in VR, join twillo room
         if(props.hostCamInVR !== this.props.hostCamInVR) {
-<<<<<<< HEAD
             this.joinRoom(props.interviewId)
         }  
         
         // Render new assets
         this.renderAssets(props)
-=======
-            this.joinRoom(props.interviewId);
-        }      
-        this.renderAssets(props);
->>>>>>> master
     }
 
     /*
@@ -148,14 +137,10 @@ class AframeInterview extends Component {
         }
     }
 
-<<<<<<< HEAD
     /* 
     Utility function to only show the host/presenter cam in VR 
     */
     isHostVideoTrack(participant) {
-=======
-    isHostVideoTrack = (participant) => {
->>>>>>> master
         if(participant.identity === this.props.hostName){
             return true;
         }
@@ -165,11 +150,7 @@ class AframeInterview extends Component {
     /*
         Called when you enter the Twilio room/ Toggle the video in vr on
     */
-<<<<<<< HEAD
-   joinRoom = (id) => {
-=======
     joinRoom = (id) => {
->>>>>>> master
         console.log(this.props)
         console.log("Joining room '" + this.props.interviewId + "'VR...");
         let connectOptions = {
@@ -189,11 +170,7 @@ class AframeInterview extends Component {
     /*
         attaches selected stream to aframe assets
     */
-<<<<<<< HEAD
    attachTracks = (tracks, container) => {
-=======
-    attachTracks = (tracks, container) => {
->>>>>>> master
         tracks.forEach(track => {
 
             container.appendChild(track.attach());
@@ -228,18 +205,12 @@ class AframeInterview extends Component {
 
     
     /*
-<<<<<<< HEAD
-    Handles the events when joining a Twilio room
-    */
-   roomJoined = (room) => {
-=======
         Handles the events when joining a Twilio 
         TODO: Dismount Audio and Video Tracks when leaving interview page
         TODO: get rid of webcam enable pop up when stream is not being used
         TODO: Find alternative to Twilio
     */
     roomJoined = (room) => {
->>>>>>> master
         console.log("Joined as '" + this.state.identity + "'");
         this.setState({
             activateRoom: room,
@@ -336,11 +307,7 @@ class AframeInterview extends Component {
     /*
     handles removing participant audio and video streams
     */
-<<<<<<< HEAD
-    detachParticipantTracks= (participant) => {
-=======
     detachParticipantTracks = (participant) => {
->>>>>>> master
         var tracks = Array.from(participant.tracks.values());
         this.detachTracks(tracks);
     }
