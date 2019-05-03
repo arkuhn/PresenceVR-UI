@@ -50,16 +50,6 @@ export default class VideoComponent extends Component {
     */
     joinRoom = () =>  {
         console.log("Joining room '" + this.props.interviewId + "'...");
-        let numofparticipants = this.props.participants.length + 1;
-        if (numofparticipants < 2) {
-            widthfortrack = 690;
-        }
-        else if (numofparticipants < 4) {
-            widthfortrack = 345;
-        }
-        else{
-            widthfortrack = 230;
-        }
         
         let connectOptions = {
             name: this.props.interviewId

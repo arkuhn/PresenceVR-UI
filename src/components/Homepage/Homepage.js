@@ -136,7 +136,12 @@ class Homepage extends Component {
                                         </Card.Description>
                                         </Card.Content>
                                         <Card.Content extra={true}>
-                                            A R.I.T Career Services project
+                                            An R.I.T Career Services project <br />
+                                        </Card.Content>
+                                        <Card.Content extra={true}>
+                                            Developed by Jonathan Ding, Adam Kuhn, Austin Wolf, William Estey <br />
+                                            Sponsored by Jim Bondi <br />
+                                            Coached by Doctor Christian Newman
                                         </Card.Content>
                                     </Card>
                                 </Grid.Column>
