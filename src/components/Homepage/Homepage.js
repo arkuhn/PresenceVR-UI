@@ -9,6 +9,11 @@ import PresenceVRNavBar from "../PresenceVRNavBar/PresenceVRNavBar";
 import './Homepage.css';
 import InterviewCard from "./interviewCard";
 
+/*
+    TODO: Hide sidebar when there are no interviews
+    TODO: Rename Interviews to Presentation
+*/
+
 class Homepage extends Component {
     constructor(props) {
         super(props);
@@ -32,20 +37,20 @@ class Homepage extends Component {
                                         goHome={this.returnHome}/>, 
                 activeItem: name})
         }
-        this.setState({ activeItem: name })
+        this.setState({ activeItem: name });
     }
 
     returnHome = () => {
-        this.setState({ activeItem: 'home'})
-        this.updateInterviews()
+        this.setState({ activeItem: 'home'});
+        this.updateInterviews();
     }
 
     componentWillMount() {
-        this.setState({loading: true})
+        this.setState({loading: true});
         // Bind the variable to the instance of the class.
         this.authFirebaseListener = firebaseAuth.onAuthStateChanged((user) => {
             if (!user) {
-                return this.setState({error: true})
+                return this.setState({error: true});
             }
             this.setState({ user, loading: false }, () => { this.updateInterviews() });
         })
@@ -58,21 +63,21 @@ class Homepage extends Component {
     updateInterviews = () => {
             InterviewAPI.getAllInterviews(this.state.user.email).then((interviews) => {
                 let interviewData;
-                interviews ? interviewData = interviews.data : interviewData = []
-                this.setState({ interviews:interviewData})
+                interviews ? interviewData = interviews.data : interviewData = [];
+                this.setState({ interviews:interviewData});
             });
     }
 
     componentWillUnmount() {
-        this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
+        this.authFirebaseListener && this.authFirebaseListener(); // Unlisten it by calling it as a function
     }
 
     /*
         generates an interview card when an interview is created
     */
     renderInterviews = (type) => {
-        const { activeItem, user, interviews} = this.state
-        let renderInterviews = []
+        const { activeItem, user, interviews} = this.state;
+        let renderInterviews = [];
         
         interviews.forEach((interview, index) => {
             let content= <InterviewCard participants={interview.participants} 
@@ -85,30 +90,30 @@ class Homepage extends Component {
                             id={interview._id}
                             updateInterviewListCallback={this.updateInterviews}
                             host={false} 
-                            key={index}/>
+                            key={index}/>;
 
-            let query = interview.host !== user.email
+            let query = interview.host !== user.email;
             if (type === 'host') {
-                query = interview.host === user.email
+                query = interview.host === user.email;
             }
             if(query) {
-                renderInterviews.push(<Menu.Item content={content} id="interviewItem" name={interview._id} active={activeItem === interview._id} onClick={this.handleItemClick} />)
+                renderInterviews.push(<Menu.Item content={content} id="interviewItem" name={interview._id} active={activeItem === interview._id} onClick={this.handleItemClick} />);
             }
         })
-        return renderInterviews
+        return renderInterviews;
     }
 
     render() {
             if (this.state.error) {
-                return <Redirect to='/'/>
+                return <Redirect to='/'/>;
             }
             if (this.state.loading) {
                 return <Dimmer active>
                             <Loader />
-                        </Dimmer>
+                        </Dimmer>;
             }
             if (!this.state.loading && !this.state.user ) {
-                return <Redirect to='/'/>
+                return <Redirect to='/'/>;
             }
             const style= {
                 height: '38vh',
@@ -131,14 +136,19 @@ class Homepage extends Component {
                                         </Card.Description>
                                         </Card.Content>
                                         <Card.Content extra={true}>
-                                            A R.I.T Career Services project
+                                            An R.I.T Career Services project <br />
+                                        </Card.Content>
+                                        <Card.Content extra={true}>
+                                            Developed by Jonathan Ding, Adam Kuhn, Austin Wolf, William Estey <br />
+                                            Sponsored by Jim Bondi <br />
+                                            Coached by Doctor Christian Newman
                                         </Card.Content>
                                     </Card>
                                 </Grid.Column>
-                                </Grid>
+                                </Grid>;
             }
             if (this.state.activeItem !== 'home') {
-                selectedItem = this.state.selectedInterview
+                selectedItem = this.state.selectedInterview;
             }   
 
             return (

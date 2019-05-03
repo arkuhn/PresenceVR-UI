@@ -10,7 +10,7 @@ import React, { Component } from 'react';
 import 'super-hands';
 import Video from 'twilio-video';
 import { API_URL } from '../../../config/api.config';
-import { safeGetUser } from '../../../utils/firebase'
+import { safeGetUser } from '../../../utils/firebase';
 import aframeUtils from './aframeUtils';
 
 function jsonEqual(a,b) {
@@ -68,11 +68,11 @@ class AframeInterview extends Component {
         // Refresh interviews when people connect and disconnect to keep fresh state
         document.body.addEventListener('clientDisconnected', function (evt) {
             console.error('clientDisconnected event. clientId =', evt.detail.clientId);
-            this.props.updateInterviewCallback()
+            this.props.updateInterviewCallback();
           }.bind(this));
         document.body.addEventListener('clientConnected', function (evt) {
             console.error('clientConnected event. clientId =', evt.detail.clientId);
-            this.props.updateInterviewCallback()
+            this.props.updateInterviewCallback();
         }.bind(this));
        
         // Track the players position moves
@@ -80,7 +80,7 @@ class AframeInterview extends Component {
         if (entity) {
             entity.addEventListener('componentchanged', function (evt) {
                 if (evt.detail.name === 'position') {
-                  this.setState({position: evt.target.getAttribute('position') })
+                  this.setState({position: evt.target.getAttribute('position') });
                 }
               }.bind(this));
         }
@@ -101,7 +101,7 @@ class AframeInterview extends Component {
                 this.setState({ identity, token });
 
                 if (this.props.hostCamInVR) {
-                    this.joinRoom(this.props.interviewId)
+                    this.joinRoom(this.props.interviewId);
                 }
             });
         }).catch((error) => {
@@ -113,10 +113,10 @@ class AframeInterview extends Component {
         // If the interview has changed leave twillio room
         if (props.interviewId !== this.props.interviewId) {
             if (this.state.hasJoinedRoom) {
-                this.leaveRoom()
+                this.leaveRoom();
             }
             if(props.hostCamInVR) {
-                this.joinRoom(props.interviewId)
+                this.joinRoom(props.interviewId);
             }          
         }
 
@@ -163,7 +163,7 @@ class AframeInterview extends Component {
     /*
         Called when you enter the Twilio room/ Toggle the video in vr on
     */
-   joinRoom = (id) => {
+    joinRoom = (id) => {
         console.log(this.props)
         console.log("Joining room '" + this.props.interviewId + "'VR...");
         let connectOptions = {
@@ -218,9 +218,12 @@ class AframeInterview extends Component {
 
     
     /*
-    Handles the events when joining a Twilio room
+        Handles the events when joining a Twilio 
+        TODO: Dismount Audio and Video Tracks when leaving interview page
+        TODO: get rid of webcam enable pop up when stream is not being used
+        TODO: Find alternative to Twilio
     */
-   roomJoined = (room) => {
+    roomJoined = (room) => {
         console.log("Joined as '" + this.state.identity + "'");
         this.setState({
             activateRoom: room,
@@ -317,7 +320,7 @@ class AframeInterview extends Component {
     /*
     handles removing participant audio and video streams
     */
-    detachParticipantTracks= (participant) => {
+    detachParticipantTracks = (participant) => {
         var tracks = Array.from(participant.tracks.values());
         this.detachTracks(tracks);
     }

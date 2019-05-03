@@ -6,11 +6,14 @@ import { API_URL } from "../../../config/api.config";
 import { safeGetUser } from '../../../utils/firebase';
 import './videoInterview.css';
 
-
+/*
+    TODO: Find an alternative to Twilio that doesn't cost money and doesnt hinder VR performance
+    Disclaimer: Make sure prensenter cam in VR is turned off before switching to videochat. Will break the video chat
+*/
 
 export default class VideoComponent extends Component {
     constructor(props) {
-        super();
+        super(props);
         this.state = {
             identity: null,
             roomNameErr: false,
@@ -20,14 +23,9 @@ export default class VideoComponent extends Component {
             activateRoom: null,
             loading: true
         };
-        this.joinRoom = this.joinRoom.bind(this);
-        this.roomJoined = this.roomJoined.bind(this);
-        this.leaveRoom = this.leaveRoom.bind(this);
-        this.detachTracks = this.detachTracks.bind(this) ;
-        this.detachParticipantTracks = this.detachParticipantTracks.bind(this);
     }
 
-    componentDidMount() {
+    componentDidMount = () => {
         return safeGetUser().then((user) => user.getIdToken(true)).then((token) => {
             let config = { headers: { Authorization: `${token}` } }
             //returns Twilio to use vid chat
@@ -35,33 +33,23 @@ export default class VideoComponent extends Component {
 
                 const { identity, token } = results.data;
                 this.setState({ identity, token });
-                this.joinRoom()
+                this.joinRoom();
             });
         }).catch((error) => {
             console.log(error);
         });
     }
 
-    componentWillUnmount() {
-        this.leaveRoom()
+    componentWillUnmount = () =>  {
+        this.leaveRoom();
     }
 
     /*
         Called when you enter the Twilio room/ Toggle the video chat on
+        TODO: Dynamiv video heights that scale as more people enter room
     */
-    joinRoom() {
+    joinRoom = () =>  {
         console.log("Joining room '" + this.props.interviewId + "'...");
-        let numofparticipants = this.props.participants.length + 1;
-        let widthfortrack;
-        if (numofparticipants < 2) {
-            widthfortrack = 690;
-        }
-        else if (numofparticipants < 4) {
-            widthfortrack = 345;
-        }
-        else{
-            widthfortrack = 230;
-        }
         
         let connectOptions = {
             name: this.props.interviewId
@@ -78,7 +66,7 @@ export default class VideoComponent extends Component {
     /*
         attaches selected stream to div
     */
-    attachTracks(tracks, container) {
+    attachTracks = (tracks, container) => {
         tracks.forEach(track => {
             container.appendChild(track.attach());
         });
@@ -87,7 +75,7 @@ export default class VideoComponent extends Component {
     /*
         Attaches participants audio and video streams to the remoteMedia div
     */
-    attachParticipantsTracks(participant, container) {
+    attachParticipantsTracks = (participant, container) => {
         var tracks = Array.from(participant.tracks.values());
         this.attachTracks(tracks, container);
     }
@@ -95,7 +83,7 @@ export default class VideoComponent extends Component {
     /*
         Handles the events when joining a Twilio room
     */
-    roomJoined(room) {
+    roomJoined = (room) => {
         console.log("Joined as '" + this.state.identity + "'");
         this.setState({
             activateRoom: room,
@@ -157,7 +145,7 @@ export default class VideoComponent extends Component {
     /*
         handles leaving the room
     */
-    leaveRoom() {
+    leaveRoom = () => {
         this.state.activateRoom.disconnect();
         this.setState({ hasJoinedRoom: false, localMediaAvailable: false });
     }
@@ -165,7 +153,7 @@ export default class VideoComponent extends Component {
     /*
         handles removing audio and video streams
     */
-    detachTracks(tracks) {
+    detachTracks = (tracks) =>{
         tracks.forEach(tracks => {
             tracks.detach().forEach(detachedElement => {
                 detachedElement.remove();
@@ -176,7 +164,7 @@ export default class VideoComponent extends Component {
     /*
         handles removing participant audio and video streams
     */
-    detachParticipantTracks(participant) {
+    detachParticipantTracks = (participant) => {
         var tracks = Array.from(participant.tracks.values());
         this.detachTracks(tracks);
     }
@@ -195,6 +183,7 @@ export default class VideoComponent extends Component {
                     </Dimmer>
                 </Segment>)
         }
+        //If you allow your webcam and have a webcam your local camera feed will show
         let showLocalTrack = this.state.localMediaAvailable ? (
             <div><div ref="localMedia" /></div>
         ) : '';
