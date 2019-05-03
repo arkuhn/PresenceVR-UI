@@ -2,17 +2,24 @@ import React, { Component } from 'react';
 import { Button, Header, Icon, List, Modal, Popup, Container } from 'semantic-ui-react';
 
 
+/*
+Class representing a single participant on the interview page and their associated operations.
+*/
 class Participant extends Component {
     constructor(props) {
         super(props);
         this.state = {
-                      modalOpen: false};
+                      modalOpen: false // Used to track whether the makeHostModel is open or not.
+                  };
     
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleOpen = this.handleOpen.bind(this);
     }
 
+    /*
+    Function called when the user submits the 
+    */
     handleSubmit = (event) => {
         this.props.updateHost(this.props.name).then(() => {
             this.setState({ modalOpen: false })
