@@ -9,30 +9,41 @@ class LeaveInterview extends React.Component {
         this.state = {
                       id: props.id,
                       modalOpen: false};
-    
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleCancel = this.handleCancel.bind(this);
-        this.handleOpen = this.handleOpen.bind(this);
     }
 
-    handleSubmit() {
+    /**
+     * Handler for submitting leave request to interview
+     */
+    handleSubmit = () => {
         InterviewAPI.patchInterview(this.props.id, 'participants', firebaseAuth.currentUser.email, 'remove').then(() => {
             this.setState({ modalOpen: false });
+            //check for other clients connected to this interview
             if (this.props.socket) {
-                this.props.socket.emit('update')
-                this.props.goHome()
+                //update all clients
+                this.props.socket.emit('update');
+                //go to home page
+                this.props.goHome();
             }
         })
     }
 
-    handleOpen() {
-        this.setState({ modalOpen: true })
+    /**
+     * Handler for opening form
+     */
+    handleOpen = () => {
+        this.setState({ modalOpen: true });
     }
 
-    handleCancel() {
-        this.setState({ modalOpen: false })
+    /**
+     * Handler for closing form
+     */
+    handleCancel = () => {
+        this.setState({ modalOpen: false });
     }
 
+    /**
+     * Renders check leave form
+     */
     render() {
         return (
             <Modal basic size='small' open={this.state.modalOpen} onClose={this.handleCancel} trigger={ 
@@ -48,7 +59,7 @@ class LeaveInterview extends React.Component {
                 </Button>
             </Modal.Content>
             </Modal>
-        )
+        );
     }
 }
 

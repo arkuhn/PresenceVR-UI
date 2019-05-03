@@ -5,11 +5,14 @@ import InterviewAPI from '../../utils/InterviewAPI';
 class InterviewForm extends React.Component {
     constructor(props) {
         super(props)
+        //checks for create trigger
         if (this.props.type === 'create') {
             this.icon = 'alternate calendar outline'
+            //positive button becomes create
             this.positiveButtonName = 'Create Interview'
             this.negativeButtonName = 'Cancel Create'
             this.title = 'Create an Interview'
+            //date is set from the start, but all other values are blank
             this.state = {dateValue: props.date,
                 timeValue: '',
                 participantsValue: '',
@@ -17,11 +20,14 @@ class InterviewForm extends React.Component {
                 modalOpen: false};
         }
 
+        //checks for edit trigger
         if (this.props.type === 'edit') {
-            this.icon = 'pencil'
-            this.positiveButtonName = 'Edit Interview'
-            this.negativeButtonName = 'Cancel Edit'
-            this.title = 'Edit an Interview'
+            this.icon = 'pencil';
+            //positive button becomes edit
+            this.positiveButtonName = 'Edit Interview';
+            this.negativeButtonName = 'Cancel Edit';
+            this.title = 'Edit an Interview';
+            //values are prefilled to stored content
             this.state = {
                 dateValue: props.date,
                 timeValue: props.time,
@@ -29,67 +35,90 @@ class InterviewForm extends React.Component {
                 detailsValue: props.details,
                 id: props.id,
                 modalOpen: false
-            }
+            };
         }
-        
-        this.handleFieldUpdate = this.handleFieldUpdate.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleClose = this.handleClose.bind(this);
-        this.handleOpen = this.handleOpen.bind(this);
+
     }
 
-    handleFieldUpdate(event) {
+    /** 
+     * Sets appropriate field of interview to the value of
+     * field being updated
+     */
+    handleFieldUpdate = (event) => {
         this.setState({
             [event.target.name]: event.target.value
-        })
+        });
     }
   
-    handleSubmit(event) {
+    /**
+     * handler for submitting full form
+     */
+    handleSubmit = (event) => {
         let data = {
             details: this.state.detailsValue,
             occursOnDate: this.state.dateValue,
             occursAtTime: this.state.timeValue,
             participants: this.state.participantsValue
-        }
+        };
 
+        //checks trigger for create
         if (this.props.type === 'create') {
             InterviewAPI.createInterview(data).then(() =>{ 
                 if (this.props.socket) {
-                    this.props.socket.emit('update')
+                    //updates all clients
+                    this.props.socket.emit('update');
                 } else {
-                    this.props.updateInterviewListCallback()
+                    //if no socket, updates just this client
+                    this.props.updateInterviewListCallback();
                 }
-            })
+            });
+        //if trigger is not set to create, it must be edit
         } else {
             InterviewAPI.updateInterview(data, this.state.id).then(() => {
+                //check for socket
                 if (this.props.socket) {
-                    this.props.socket.emit('update')
+                    //update all clients
+                    this.props.socket.emit('update');
                 } else {
-                    this.props.updateInterviewListCallback()
+                    //update just this client
+                    this.props.updateInterviewListCallback();
                 }
             })
         }
-        this.setState({ modalOpen: false })
+        this.setState({ modalOpen: false });
         
         event.preventDefault();
     }
 
-    handleClose(event) {
-        this.setState({ modalOpen: false })
+    /**
+     * Handler for closing form
+     */
+
+    handleClose = (event) => {
+        this.setState({ modalOpen: false });
     }
 
-    handleOpen(event) {
-        this.setState({ modalOpen: true })
+    /** 
+     * Handler for opening form
+     */
+    handleOpen = (event) => {
+        this.setState({ modalOpen: true });
     }
 
-    getTrigger() {
+    /**
+     * Checks trigger for edit button or create button
+     */
+    getTrigger = () => {
         if (this.props.type === 'create') {
-            return <Button attached='bottom' basic   onClick={this.handleOpen}  > <Icon name='pencil' /> New Presentation </Button>
+            return <Button attached='bottom' basic   onClick={this.handleOpen}  > <Icon name='pencil' /> New Presentation </Button>;
         } else {
-            return <Button active basic color='grey' onClick={this.handleOpen}  >Edit</Button>
+            return <Button active basic color='grey' onClick={this.handleOpen}  >Edit</Button>;
         }
     } 
 
+    /**
+     * Renders interview form
+     */
     render() {
         return (
             <Modal size='small' open={this.state.modalOpen} onClose={this.handleCancel} trigger={this.getTrigger()} >
