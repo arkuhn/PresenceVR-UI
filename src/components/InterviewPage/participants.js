@@ -113,9 +113,9 @@ class Participants extends Component {
         // JSX elements representing valid participant statuses. The participant status is an integer and is used to index into the statuses list.
         const statuses = [
             <span>&#160;Offline <Icon color='red' size='small' name='circle thin' /></span>,
-            <span>&#160;Online <Icon color='green' size='small' name='circle thin' /></span>,
-            <span>&#160;Online <Icon color='green' size='small' name='circle thin' /> VR</span>,
-            <span>&#160;Online <Icon color='green' size='small' name='circle thin' /> VC</span>,
+            <span>&#160;Online <Icon color='green' size='small' name='circle thin' /><Icon size='small' name='desktop' />Browser</span>,
+            <span>&#160;Online <Icon color='green' size='small' name='circle thin' /><Icon size='small' name='simplybuilt' />VR</span>,
+            <span>&#160;Online <Icon color='green' size='small' name='circle thin' /><Icon size='small' name='video camera' />Webcam</span>,
             ];
 
         // Get all the participants in this interview. If there are none, return default text for this component.

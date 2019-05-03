@@ -49,17 +49,13 @@ class AframeInterview extends Component {
     componentWillMount() {
         // Create event listeners to track if this user is in VR mode or not
         window.addEventListener('enter-vr', e => {
-            if (window.AFRAME.utils.device.checkHeadsetConnected() || window.AFRAME.utils.device.isMobile()) { 
-                // Update state to show they are in VR mode
-                this.props.handleVRModeUpdate(true);
-            }
+            // Update state to show they are in VR mode
+            this.props.handleVRModeUpdate(true);
         });
 
         window.addEventListener('exit-vr', e => {
-            if (window.AFRAME.utils.device.checkHeadsetConnected() || window.AFRAME.utils.device.isMobile()) { 
-                // Update state to show they are not in VR mode
-                this.props.handleVRModeUpdate(false);
-            }
+            // Update state to show they are not in VR mode
+            this.props.handleVRModeUpdate(false);
         });
     }
 

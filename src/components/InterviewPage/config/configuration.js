@@ -134,7 +134,7 @@ class Configuation extends Component {
                 <Header sub>
                 Video conferencing:
                 </Header>
-                <Checkbox toggle label="Enable Video Chat" value="default" onChange={this.props.videoToggled}/>
+                <Checkbox toggle label="Enable Webcam Mode" value="default" onChange={this.props.videoToggled}/>
                 </Container>
 
                 <br />

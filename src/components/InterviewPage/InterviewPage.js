@@ -235,9 +235,12 @@ class InterviewPage extends Component {
 
     /*
     Callback to update the state of whether this user is in VR mode (headset) or not.
+    Then tell everyone.
     */
     handleVRModeUpdate = (inVR) => {
-        this.setState({inVR: inVR});
+        this.setState({inVR: inVR}, () => {
+            this.state.socket.emit('Marco', {id: this.props._id + this.props._id, caller: this.props.email});
+        });
     }
 
 
